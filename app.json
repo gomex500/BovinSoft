@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "BovinSoft",
-    "slug": "BovinSoft",
+    "slug": "bovinsoft",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,6 +22,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "70ae5bbb-90d1-4e60-b23d-36193f3422de"
+      }
+    },
+    "owner": "gomex5"
   }
 }
