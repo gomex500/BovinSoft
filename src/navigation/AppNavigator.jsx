@@ -10,7 +10,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       {/* {isAuthenticated ? <MainStackNavigator userRole={userRole} /> : <AuthStackNavigator />} */}
-      <AuthStackNavigator />
+      <MainStackNavigator />
     </NavigationContainer>
   );
 };
