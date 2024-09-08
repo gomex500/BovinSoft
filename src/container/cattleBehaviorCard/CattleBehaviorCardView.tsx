@@ -4,20 +4,21 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from '../../components/card/CardIndex'
+} from '../../components/card/CardIndex.tsx'
 import TextWrapper from '../../components/componentTailwind/TextWrapper'
 import ViewWrapper from '../../components/componentTailwind/ViewWrapper'
+import React from 'react'
 
 const CattleBehaviorCardView = () => {
   return (
-    <Card className2="w-11/12 mb-2">
+    <Card className="w-11/12 mb-2">
       <CardHeader>
-        <CardTitle className2="text-sm font-medium">Cattle Behavior</CardTitle>
+        <CardTitle className="text-sm font-medium">Cattle Behavior</CardTitle>
       </CardHeader>
-      <CardContent className2="space-y-2">
+      <CardContent className="space-y-2">
          <ViewWrapper className="flex flex-row justify-between items-center mb-2">
           <ViewWrapper className="flex flex-row justify-between items-center space-x-2">
-            <Activity className2="h-5 w-5 text-green-500" />
+            <Activity />
             <TextWrapper>Activity Level</TextWrapper>
           </ViewWrapper>
           <TextWrapper>Normal</TextWrapper>

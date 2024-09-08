@@ -2,7 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import tailwind from 'tailwind-rn';
 
-const Progress = ({ progress }) => {
+interface IProps {
+  progress:number
+}
+
+const Progress = ({ progress }:IProps) => {
   // Asegúrate de que el valor de progreso esté entre 0 y 100
   const progressPercentage = Math.max(0, Math.min(progress, 100));
 

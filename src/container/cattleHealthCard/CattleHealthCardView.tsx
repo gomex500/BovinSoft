@@ -6,15 +6,15 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from '../../components/card/CardIndex'
+} from '../../components/card/CardIndex.tsx'
 
 const CattleHealthCardView = () => {
   return (
-    <Card className2='w-11/12 mt-2 mb-2'>
+    <Card className='w-11/12 mt-2 mb-2'>
       <CardHeader>
-        <CardTitle className2="text-sm font-medium">Cattle Health</CardTitle>
+        <CardTitle className="text-sm font-medium">Cattle Health</CardTitle>
       </CardHeader>
-      <CardContent className2="space-y-4">
+      <CardContent className="space-y-4">
         <View>
           <Text>Last Vet Visit: 2 weeks ago</Text>
           <Text>Vaccinations: Up to date</Text>

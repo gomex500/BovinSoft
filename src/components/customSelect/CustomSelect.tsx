@@ -2,7 +2,19 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
 import tailwind from 'tailwind-rn';
 
-const CustomSelect = ({ options, onSelect, selectedValue }) => {
+export interface IOption {
+  label: string;
+  value: string | any;
+}
+
+interface IProps {
+  onSelect: React.Dispatch<React.SetStateAction<string | any>>
+  selectedValue: string | any
+  options:IOption[]
+}
+
+
+const CustomSelect = ({ options, onSelect, selectedValue }:IProps) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const renderItem = ({ item }) => (

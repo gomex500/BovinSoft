@@ -5,8 +5,9 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from './../../components/card/CardIndex'
-import Progress from "./../../components/progressBar/ProgressBar"
+} from '../../components/card/CardIndex.tsx'
+import Progress from "../../components/progressBar/ProgressBar"
+import React from 'react'
 
 const OverviewCards = () => {
   return (
@@ -15,9 +16,9 @@ const OverviewCards = () => {
         'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-11/12 mt-4'
       )}
     >
-      <Card className2="mb-2">
-        <CardHeader className2="pb-2">
-          <CardTitle className2="text-sm font-medium">Total Cattle</CardTitle>
+      <Card className="mb-2">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Total Cattle</CardTitle>
         </CardHeader>
         <CardContent>
           <Text style={tailwind('text-2xl font-bold')}>1,234</Text>
@@ -26,9 +27,9 @@ const OverviewCards = () => {
           </Text>
         </CardContent>
       </Card>
-      <Card className2="mb-2">
-        <CardHeader className2="pb-2">
-          <CardTitle className2="text-sm font-medium">
+      <Card className="mb-2">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">
             Average Health Score
           </CardTitle>
         </CardHeader>
@@ -37,9 +38,9 @@ const OverviewCards = () => {
           <Progress progress={87} />
         </CardContent>
       </Card>
-      <Card className2="mb-2">
-        <CardHeader className2="pb-2">
-          <CardTitle className2="text-sm font-medium">
+      <Card className="mb-2">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">
             Total Pasture Area
           </CardTitle>
         </CardHeader>
@@ -50,9 +51,9 @@ const OverviewCards = () => {
           </Text>
         </CardContent>
       </Card>
-      <Card className2="mb-2">
-        <CardHeader className2="pb-2">
-          <CardTitle className2="text-sm font-medium">Alert Status</CardTitle>
+      <Card className="mb-2">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Alert Status</CardTitle>
         </CardHeader>
         <CardContent>
           <Text style={tailwind('text-2xl font-bold text-green-500')}>

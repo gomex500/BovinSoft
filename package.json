@@ -21,7 +21,8 @@
     "react-native-maps": "^1.18.0",
     "react-native-svg": "^15.6.0",
     "react-native-web": "~0.19.10",
-    "tailwind-rn": "^3.0.1"
+    "tailwind-rn": "^3.0.1",
+    "typescript": "~5.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

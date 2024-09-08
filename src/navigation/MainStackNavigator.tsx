@@ -7,7 +7,11 @@ import GanaderoStackNavigator from './GanaderoStackNavigator'
 
 const Stack = createStackNavigator()
 
-const MainStackNavigator = ({ userRole }) => {
+interface Props {
+  userRole:string
+}
+
+const MainStackNavigator = ({ userRole }:Props) => {
   let StackNavigator
 
   switch (userRole) {

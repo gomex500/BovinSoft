@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropertySelectorView from "./PropertySelectorView" 
 
 const PropertySelectorContainer = () => {
-  const [selectedValue, setSelectedValue] = useState(null)
+  const [selectedValue, setSelectedValue] = useState("")
 
   const options = [
     { label: 'Finca norte', value: 'option1' },

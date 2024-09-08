@@ -5,17 +5,17 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from '../../components/card/CardIndex'
+} from '../../components/card/CardIndex.tsx'
 import TextWrapper from '../../components/componentTailwind/TextWrapper'
 import ViewWrapper from '../../components/componentTailwind/ViewWrapper'
-import SproutIcon from "./../../icon/Sprout"
-import WarehouseIcon from "./../../icon/WarehouseIcon"
+import SproutIcon from "../../icon/Sprout"
+import WarehouseIcon from "../../icon/WarehouseIcon"
 
 const FarmConditionCardView = () => {
   return (
-    <Card className2='w-11/12 mb-2'>
+    <Card className='w-11/12 mb-2'>
       <CardHeader>
-        <CardTitle className2='text-sm font-medium'>Farm Condition</CardTitle>
+        <CardTitle className='text-sm font-medium'>Farm Condition</CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
         <ViewWrapper className="flex flex-row justify-between items-center">

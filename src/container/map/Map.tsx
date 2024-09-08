@@ -6,22 +6,29 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from './../../components/card/CardIndex'
+} from '../../components/card/CardIndex.tsx'
+import React from 'react'
+import { IOrigin } from './MapContainer'
 
-const Map = ({ origin }) => {
+interface IProps {
+  origin:IOrigin
+}
+
+
+const Map = ({ origin }:IProps) => {
   return (
     <View
       style={tailwind(
         'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-11/12 mt-4'
       )}
     >
-      <Card className2="col-span-full mb-2">
+      <Card className="col-span-full mb-2">
         <CardHeader>
-          <CardTitle className2="text-base font-medium">
+          <CardTitle className="text-base font-medium">
             Property Locations
           </CardTitle>
         </CardHeader>
-        <CardContent className2="h-60 bg-muted flex items-center justify-center">
+        <CardContent className="h-60 bg-muted flex items-center justify-center">
           <MapView
             provider={PROVIDER_GOOGLE}
             style={styles.map}
