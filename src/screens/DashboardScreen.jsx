@@ -1,36 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import tailwind from 'tailwind-rn';
-import CustomSelect from "./../gen/CustomSelect"
-import React, { useState } from 'react';
+import { StatusBar } from 'expo-status-bar'
+import { View, ScrollView } from 'react-native'
+import tailwind from 'tailwind-rn'
+import CustomSelect from './../components/customSelect/CustomSelect.jsx'
+import React, { useState } from 'react'
+import OverviewCardsContainer from './../container/overviewCards/OverviewCardsContainer'
+import MapContainer from './../container/map/MapContainer.jsx'
+import ClimateConditionsContainer from "./../container/climateConditions/ClimateConditionsContainer"
+import PropertySelectorContainer from "./../container/propertySelector/PropertySelectorContainer"
+import CattleHealthCardContainer from "./../container/cattleHealthCard/CattleHealthCardContainer"
+import CattleBehaviorCardContainer from "./../container/cattleBehaviorCard/CattleBehaviorCardContainer"
+import FarmConditionCardContainer from "./../container/farmConditionCard/FarmConditionCardContainer.jsx"
 
 export default function DashboardScreen() {
 
-  const [selectedValue, setSelectedValue] = useState(null);
-
-  const options = [
-    { label: 'Finca norte', value: 'option1' },
-    { label: 'Finca sur', value: 'option2' },
-    { label: 'Finca este', value: 'option3' },
-  ];
-
   return (
-    <View style={{...tailwind('flex flex-col bg-white flex-1 items-center justify-start')}}>
-      <CustomSelect
-        options={options}
-        onSelect={(value) => setSelectedValue(value)}
-        selectedValue={selectedValue}
-      />
-      <StatusBar style="auto" />
-    </View>
-  );
+    <ScrollView>
+      <View
+        style={{
+          ...tailwind(
+            'flex flex-col bg-white flex-1 items-center justify-start'
+          ),
+        }}
+      >
+        <PropertySelectorContainer />
+        <OverviewCardsContainer />
+        <MapContainer />
+        <ClimateConditionsContainer />
+        <CattleHealthCardContainer />
+        <CattleBehaviorCardContainer />
+        <FarmConditionCardContainer />
+        <StatusBar style="auto" />
+      </View>
+    </ScrollView>
+  )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'red',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
