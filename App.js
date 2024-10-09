@@ -1,20 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import Login from './views/Inicio';
+import Navbar from './views/Navbar';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Hola mundo!</Text>
-      <StatusBar style="auto" />
-    </View>
+    // <Inicio/>
+    <Navbar/>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
