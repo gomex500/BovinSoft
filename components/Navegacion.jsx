@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StyleSheet, Animated, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Animated, Text, TouchableOpacity, View, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6'; 
 import Chatbot from '../views/Chatbot';
 import Fincas from '../views/Fincas';
@@ -13,6 +13,7 @@ const Tab = createBottomTabNavigator();
 
 const Navegacion = () => {
   const [animationValues] = useState({});
+  const [tituloBar, setTituloBar] = useState('');
 
   const handleTabPress = (navigation, label) => {
     // Inicia la animación
@@ -21,7 +22,7 @@ const Navegacion = () => {
     }
 
     Animated.spring(animationValues[label], {
-      toValue: 1.3, // Escalar a 1.2
+      toValue: 1.3, // Escalar a 1.3
       useNativeDriver: true,
       bounciness: 30, // Efecto de rebote
     }).start(() => {
@@ -33,6 +34,7 @@ const Navegacion = () => {
     });
 
     // Navega a la pantalla correspondiente
+    setTituloBar(label);
     navigation.navigate(label);
   };
 
@@ -58,47 +60,81 @@ const Navegacion = () => {
 
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route, navigation }) => ({
-          headerShown: false,
-          tabBarStyle: {
-            backgroundColor: '#1B4725',
-            borderTopWidth: 0,
-            elevation: 0,
-            height: 75,
-            borderTopLeftRadius: 15,
-            borderTopEndRadius: 15,
-          },
-          tabBarIcon: ({ focused }) => {
-            let iconName;
+      <View style={styles.container}>
+        <View style={styles.appbar}>
+          <Text style={styles.title}>{tituloBar}</Text>
+          <TouchableOpacity onPress={() => alert('Foto de perfil presionada')}>
+            <Image
+              source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV4LhpLVBdrXKI_qE4E1bCEMuV0onLPIJaTw&s' }} // Reemplaza con la URL de tu foto de perfil
+              style={styles.profileImage}
+            />
+          </TouchableOpacity>
+        </View>
+        
+        <Tab.Navigator
+          screenOptions={({ route, navigation }) => ({
+            headerShown: false,
+            tabBarStyle: {
+              backgroundColor: '#1B4725',
+              borderTopWidth: 0,
+              elevation: 0,
+              height: 75,
+              borderTopLeftRadius: 15,
+              borderTopEndRadius: 15,
+            },
+            tabBarIcon: ({ focused }) => {
+              let iconName;
 
-            if (route.name === 'Comunidad') {
-              iconName = 'hat-cowboy-side';
-            } else if (route.name === 'Bovinos') {
-              iconName = 'cow';
-            } else if (route.name === 'Metricas') {
-              iconName = 'chart-pie';
-            } else if (route.name === 'Chatbot') {
-              iconName = 'dice-d20';
-            } else if (route.name === 'Fincas') {
-              iconName = 'seedling';
-            }
+              if (route.name === 'Comunidad') {
+                iconName = 'hat-cowboy-side';
+              } else if (route.name === 'Bovinos') {
+                iconName = 'cow';
+              } else if (route.name === 'Metricas') {
+                iconName = 'chart-pie';
+              } else if (route.name === 'Chatbot') {
+                iconName = 'dice-d20';
+              } else if (route.name === 'Fincas') {
+                iconName = 'seedling';
+              }
 
-            return renderIcon(iconName, route.name, focused, navigation); // Aquí se pasa navigation correctamente
-          },
-        })}
-      >
-        <Tab.Screen name="Metricas" component={Metricas} options={{ tabBarLabel: () => null }} />
-        <Tab.Screen name="Fincas" component={Fincas} options={{ tabBarLabel: () => null }} />
-        <Tab.Screen name="Comunidad" component={Comunidad} options={{ tabBarLabel: () => null }} />
-        <Tab.Screen name="Bovinos" component={Bovinos} options={{ tabBarLabel: () => null }} />
-        <Tab.Screen name="Chatbot" component={Chatbot} options={{ tabBarLabel: () => null }} />
-      </Tab.Navigator>
+              return renderIcon(iconName, route.name, focused, navigation); // Aquí se pasa navigation correctamente
+            },
+          })}
+        >
+          <Tab.Screen name="Metricas" component={Metricas} options={{ tabBarLabel: () => null }} />
+          <Tab.Screen name="Fincas" component={Fincas} options={{ tabBarLabel: () => null }} />
+          <Tab.Screen name="Comunidad" component={Comunidad} options={{ tabBarLabel: () => null }} />
+          <Tab.Screen name="Bovinos" component={Bovinos} options={{ tabBarLabel: () => null }} />
+          <Tab.Screen name="Chatbot" component={Chatbot} options={{ tabBarLabel: () => null }} />
+        </Tab.Navigator>
+      </View>
     </NavigationContainer>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  appbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#1B4725',
+    padding: 10,
+    paddingTop:28,
+    // borderBottomLeftRadius:15,
+    // borderBottomRightRadius:15
+  },
+  title: {
+    color: '#f2f2f2',
+    fontSize: 20,
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
