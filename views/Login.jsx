@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import { StyleSheet, View, Text, Image, TextInput, Button, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, View, Text, Image, TextInput, Animated, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import * as Font from 'expo-font';
 
 const Login = () => {
     
     const [ver, setVer] = useState(true);
+    const [animationValue] = useState(new Animated.Value(0));
 
     const verPassword = () =>{
         if (ver) {
@@ -15,10 +15,19 @@ const Login = () => {
         }
     }
 
+    useEffect(() => {
+        Animated.timing(animationValue, {
+            toValue: 1,
+            duration: 1200,
+            useNativeDriver: true
+        }).start();
+    }, [])
+    
+
+
     return (
-        <KeyboardAvoidingView 
-            style={styles.container}
-            behavior="height"
+        <Animated.View 
+            style={[styles.container, { opacity: animationValue }]}
         >
             <Image
                 source={require('../assets/img/Logo.png')} 
@@ -57,7 +66,7 @@ const Login = () => {
                     <Text style={styles.btnText}>Iniciar</Text>
                 </TouchableOpacity>
             </View>
-        </KeyboardAvoidingView>
+        </Animated.View>
     );
 }
 
