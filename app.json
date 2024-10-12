@@ -28,6 +28,9 @@
         "projectId": "70ae5bbb-90d1-4e60-b23d-36193f3422de"
       }
     },
-    "owner": "gomex5"
+    "owner": "gomex5",
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
