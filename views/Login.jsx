@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, TextInput, Animated, KeyboardAvoidingView, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const Login = () => {
+const Login = ({navigation}) => {
     const [ver, setVer] = useState(true);
     const [animationValue] = useState(new Animated.Value(0));
 
@@ -63,7 +63,10 @@ const Login = () => {
                                 />
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={styles.btn}>
+                        <TouchableOpacity 
+                            style={styles.btn}
+                            onPress={() => navigation.navigate('Navegacion')}
+                        >
                             <Text style={styles.btnText}>Iniciar</Text>
                         </TouchableOpacity>
                     </View>

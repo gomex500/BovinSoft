@@ -59,7 +59,6 @@ const Navegacion = () => {
   };
 
   return (
-    <NavigationContainer>
       <View style={styles.container}>
         <View style={styles.appbar}>
           <Text style={styles.title}>{tituloBar}</Text>
@@ -108,7 +107,6 @@ const Navegacion = () => {
           <Tab.Screen name="Chatbot" component={Chatbot} options={{ tabBarLabel: () => null }} />
         </Tab.Navigator>
       </View>
-    </NavigationContainer>
   );
 };
 
