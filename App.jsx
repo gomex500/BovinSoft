@@ -1,5 +1,6 @@
 import Navegacion from './components/Navegacion';
 import Splash from './components/Splash.jsx';
+import { StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Inicio from './views/Inicio';
 import Login from './views/Login';
 import Signup from './views/Signup';
@@ -37,9 +38,15 @@ export default function App() {
         <Stack.Screen 
           name='Navegacion' 
           component={Navegacion}
-          options={{ headerShown: false }}
+          options={({navigation}) =>({
+            headerShown: false
+          })}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
+}
+
+const MyStactNavigation = () =>{
+  
 }

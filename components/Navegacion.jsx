@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { StyleSheet, Animated, Text, TouchableOpacity, View, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6'; 
 import Chatbot from '../views/Chatbot';
@@ -8,12 +8,13 @@ import Fincas from '../views/Fincas';
 import Metricas from '../views/Metricas';
 import Comunidad from '../views/Comunidad';
 import Bovinos from '../views/Bovinos';
+import Profile from '../views/Profile';
 
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
-const Navegacion = () => {
+const MyStackNavigation = () => {
   const [animationValues] = useState({});
-  const [tituloBar, setTituloBar] = useState('');
 
   const handleTabPress = (navigation, label) => {
     // Inicia la animación
@@ -34,7 +35,6 @@ const Navegacion = () => {
     });
 
     // Navega a la pantalla correspondiente
-    setTituloBar(label);
     navigation.navigate(label);
   };
 
@@ -59,17 +59,7 @@ const Navegacion = () => {
   };
 
   return (
-      <View style={styles.container}>
-        <View style={styles.appbar}>
-          <Text style={styles.title}>{tituloBar}</Text>
-          <TouchableOpacity onPress={() => alert('Foto de perfil presionada')}>
-            <Image
-              source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV4LhpLVBdrXKI_qE4E1bCEMuV0onLPIJaTw&s' }} // Reemplaza con la URL de tu foto de perfil
-              style={styles.profileImage}
-            />
-          </TouchableOpacity>
-        </View>
-        
+      <View style={styles.container}>      
         <Tab.Navigator
           screenOptions={({ route, navigation }) => ({
             headerShown: false,
@@ -110,28 +100,50 @@ const Navegacion = () => {
   );
 };
 
+const Navegacion = () => {
+  return (
+      <Drawer.Navigator
+      screenOptions={({ navigation }) => ({
+        activeTintColor: '#f2f2f2',
+        itemStyle: { marginVertical: 10 },
+        drawerStyle: {
+          backgroundColor: '#1B4725',
+          width: 250,
+          paddingTop:50,
+        },
+        headerStyle: {
+          backgroundColor: '#1B4725', // Cambia este valor al color que desees
+        },
+        drawerActiveTintColor: '#f2f2f2',
+        drawerInactiveTintColor: '#f2f2f2',
+        headerTintColor:'#f2f2f2',
+        headerTitle: () => null,
+        // headerLeft: () => (
+        //   <Icon.Button
+        //     name="hat-cowboy" // Nombre del icono de FontAwesome
+        //     backgroundColor="#1B4725" // Asegúrate de que coincida con el color del header
+        //     onPress={() => navigation.toggleDrawer()}
+        //   />
+        // ),
+        headerRight: () => (
+          <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            <Image
+              source={require('../assets/img/usuario.png')} // Reemplaza con la ruta de tu imagen
+              style={{ width: 32, height: 32, borderRadius: 15, marginRight: 10 }}
+            />
+          </TouchableOpacity>
+        ),
+      })}
+      >
+        <Drawer.Screen name="Bovinsoft" component={MyStackNavigation} />
+        <Drawer.Screen name="Perfil" component={Profile} />
+      </Drawer.Navigator>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  appbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#1B4725',
-    padding: 10,
-    paddingTop:28,
-    // borderBottomLeftRadius:15,
-    // borderBottomRightRadius:15
-  },
-  title: {
-    color: '#f2f2f2',
-    fontSize: 20,
-  },
-  profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
   },
   iconContainer: {
     alignItems: 'center',
