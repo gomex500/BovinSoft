@@ -217,6 +217,8 @@ const styles = StyleSheet.create({
         height: 50,
         marginTop:40,
         borderRadius:10,
+        borderTopLeftRadius:0,
+        borderTopRightRadius:0,
         justifyContent: 'center'
     },
     btnText:{

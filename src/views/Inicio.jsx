@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, TextInput, Animated, KeyboardAvoidingView, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, View, Text, Image, Animated, ScrollView, TouchableOpacity} from 'react-native';
+import LottieView from 'lottie-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Inicio = ({navigation}) => {
+    const animation = useRef(null);
     const [animationValue] = useState(new Animated.Value(0));
     
     // Animación de la opacidad
@@ -17,10 +19,17 @@ const Inicio = ({navigation}) => {
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <Animated.View style={[styles.container, { opacity: animationValue }]}>
-                    <Image
-                        source={require('../../assets/img/home.png')}
-                        style={styles.logo}
+                <View style={styles.contAnimate}>
+                    <LottieView
+                        autoPlay // Puedes mantener esto si quieres que la animación inicie automáticamente
+                        ref={animation} // Asignar la ref
+                        style={{
+                            width: '100%',
+                            height: 300,
+                        }}
+                        source={require('../../assets/animations/LogoAnimate.json')}
                     />
+                </View>
                 <Text style={styles.title}>Bienvenido</Text>
                 <View style={styles.contLogin}>
                     <TouchableOpacity 
@@ -35,6 +44,14 @@ const Inicio = ({navigation}) => {
                     >
                         <Text style={styles.btnText2}>Crear Cuenta</Text>
                     </TouchableOpacity>
+                    <View style={styles.contRedes}>
+                        <View>
+                            <Icon name="google" size={25} style={styles.icon} />
+                        </View>
+                        <View>
+                            <Icon name="facebook" size={25} style={styles.icon} />
+                        </View>
+                    </View>
                 </View>
             </Animated.View>
         </ScrollView>
@@ -43,49 +60,52 @@ const Inicio = ({navigation}) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#f1f1f1',
+        backgroundColor: '#ffffff',
+        alignItems: 'center',
+        justifyContent: 'center',
         flex: 1,
     },
-    logo: {
-        position:'absolute',
-        width:360,
-        height:800,
-        top:0,
-        left:0,
-        elevation: 5
+    contAnimate: {
+        width:'100%',
+        marginTop:100
     },
     title: {
         fontSize: 32,
+        marginTop:20,
         fontWeight: '900',
-        marginTop: 400,
-        marginLeft:70,
-        color: '#422B13',
+        color: '#1B4725',
+        textShadowColor: 'rgba(0, 0, 0, 0.4)', // Color de sombra
+        textShadowOffset: { width: 0, height: 2 }, // Desplazamiento de la sombra
+        textShadowRadius: 1, // Radio de sombra
     },
     contLogin: {
         flex: 1,
         width: '80%',
-        padding: 40,
+        padding: 40
     },
     btn: {
         backgroundColor: '#1B4725',
         width: '100%',
         height: 50,
-        marginTop: 30,
         borderRadius: 10,
+        borderBottomLeftRadius:0,
+        borderBottomRightRadius:0,
         paddingTop: 12,
     },
     btn2: {
-        backgroundColor: '#f2f2f2',
+        backgroundColor: '#ffffff',
         width: '100%',
         height: 50,
-        marginTop: 30,
+        marginTop: 10,
         borderRadius: 10,
+        borderTopLeftRadius:0,
+        borderTopRightRadius:0,
         paddingTop: 12,
         borderWidth:2,
         borderColor: '#1B4725'
     },
     btnText: {
-        color: '#f2f2f2',
+        color: '#ffffff',
         textAlign: 'center',
         fontSize: 20,
     },
@@ -94,6 +114,22 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         fontWeight:'bold'
+    },
+    contRedes:{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems:'center',
+        marginTop:40,
+    },
+    icon: {
+        width: 42,
+        height:42,
+        backgroundColor:'#1B4725',
+        color:"#ffffff",
+        borderRadius: 50,
+        textAlign: 'center',
+        padding:9,
+        marginRight:10
     },
 });
 

@@ -1,6 +1,4 @@
 import Navegacion from './src/components/Navegacion';
-// import Splash from './src/components/Splash.jsx';
-// import { StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Inicio from './src/views/Inicio';
 import Login from './src/views/Login';
 import Signup from './src/views/Signup';

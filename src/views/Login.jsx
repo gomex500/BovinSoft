@@ -139,6 +139,8 @@ const styles = StyleSheet.create({
         marginTop: 50,
         borderRadius: 10,
         paddingTop: 12,
+        borderTopLeftRadius:0,
+        borderTopRightRadius:0,
     },
     btnText: {
         color: '#f2f2f2',
