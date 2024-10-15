@@ -7,9 +7,9 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/img/splashLogo.png",
+      "resizeMode": "center",
+      "backgroundColor": "#1B4725"
     },
     "ios": {
       "supportsTablet": true
@@ -28,6 +28,9 @@
         "projectId": "70ae5bbb-90d1-4e60-b23d-36193f3422de"
       }
     },
-    "owner": "gomex5"
+    "owner": "gomex5",
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
