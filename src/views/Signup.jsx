@@ -59,13 +59,13 @@ const Signup = () => {
                 <Animated.View style={[styles.container, { opacity: animationValue }]}>
                     <View style={styles.contHeader}>
                         <Image
-                            source={require('../assets/img/splashLogo.png')}
+                            source={require('../../assets/img/splashLogo.png')}
                             style={styles.logo}
                         />
                         <Text style={styles.title}>Crear Cuenta</Text>
                         <View style={styles.contImgProfile}>
                             <Image
-                                source={selectImg ? { uri: image } : require('../assets/img/usuario.png')}
+                                source={selectImg ? { uri: image } : require('../../assets/img/usuario.png')}
                                 style={styles.imgProfile}
                             />
                             <Icon

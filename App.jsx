@@ -1,9 +1,9 @@
-import Navegacion from './components/Navegacion';
-import Splash from './components/Splash.jsx';
-import { StyleSheet, TouchableOpacity, Image } from 'react-native';
-import Inicio from './views/Inicio';
-import Login from './views/Login';
-import Signup from './views/Signup';
+import Navegacion from './src/components/Navegacion';
+// import Splash from './src/components/Splash.jsx';
+// import { StyleSheet, TouchableOpacity, Image } from 'react-native';
+import Inicio from './src/views/Inicio';
+import Login from './src/views/Login';
+import Signup from './src/views/Signup';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';

@@ -16,7 +16,7 @@ const Splash = () => {
                     width: 300,
                     height: 300,
                 }}
-                source={require('../assets/animations/LogoAnimate.json')}
+                source={require('../../assets/animations/LogoAnimate.json')}
             />
         </View>
     );

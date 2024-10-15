@@ -18,7 +18,7 @@ const Inicio = ({navigation}) => {
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <Animated.View style={[styles.container, { opacity: animationValue }]}>
                     <Image
-                        source={require('../assets/img/home.png')}
+                        source={require('../../assets/img/home.png')}
                         style={styles.logo}
                     />
                 <Text style={styles.title}>Bienvenido</Text>

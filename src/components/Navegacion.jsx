@@ -128,7 +128,7 @@ const Navegacion = () => {
         headerRight: () => (
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <Image
-              source={require('../assets/img/usuario.png')} // Reemplaza con la ruta de tu imagen
+              source={require('../../assets/img/usuario.png')} // Reemplaza con la ruta de tu imagen
               style={{ width: 32, height: 32, borderRadius: 15, marginRight: 10 }}
             />
           </TouchableOpacity>
