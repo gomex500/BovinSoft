@@ -1,76 +1,88 @@
+// App.js
 import React, { useRef, useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { GLView } from 'expo-gl';
-import { Renderer } from 'expo-three';
 import * as THREE from 'three';
+import { Renderer } from 'expo-three';
 
-const Esquema = React.memo(() => {
-  const glViewRef = useRef(null);
+export default Esquema = () => {
+  const requestRef = useRef();
+  const clockRef = useRef(new THREE.Clock());
 
-  useEffect(() => {
-    const initThree = async (gl) => {
-      // Crear la escena
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xf2f2f2); // Fondo color #f2f2f2
+  const onContextCreate = async (gl) => {
+    // Configurar la escena
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xffffff);
 
-      // Configurar la cámara
-      const { drawingBufferWidth: width, drawingBufferHeight: height } = gl;
-      const camera = new THREE.PerspectiveCamera(25, width / height, 0.1, 100);
-      camera.position.set(20, 2, 5); // Ajusta la posición de la cámara para mejor visualización
-      camera.lookAt(new THREE.Vector3(0, 0, 0));
-      scene.add(camera);
-      // Configurar el renderizador
-      const renderer = new Renderer({ gl });
-      renderer.setSize(width, height);
+    // Configurar la cámara
+    const camera = new THREE.PerspectiveCamera(
+      130,
+      gl.drawingBufferWidth / gl.drawingBufferHeight,
+      0.1,
+      1000
+    );
+    camera.position.z = 2;
 
-      // Crear geometría y material
-      const geometry = new THREE.DodecahedronGeometry(1);
-      const material = new THREE.MeshPhongMaterial({
-        color: 0x1B4725,
-        wireframe: false
-      });
+    // Configurar el renderizador
+    const renderer = new Renderer({ gl });
+    renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
 
-      const cube = new THREE.Mesh(geometry, material);
-      scene.add(cube);
+    // Agregar un cubo
+    // const geometry = new THREE.DodecahedronGeometry(1);
+    // const geometry = new THREE.SphereGeometry(1, 32, 32);
+    const geometry = new THREE.IcosahedronGeometry(0.8);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0x1B4725,
+      wireframe: false
+    });
+    material.wireframeLinewidth = 10;
 
-      // Añadir luces
-      const ambientLight = new THREE.AmbientLight(0x1B4725, 10);
-      scene.add(ambientLight);
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
 
-      const pointLight = new THREE.PointLight(0xc3c3c3, 10000);
-      pointLight.position.set(8, 8, 20);
-      scene.add(pointLight);
+    const ambientLight = new THREE.AmbientLight(0x1B4725, 10);
+    scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight(0xc3c3c3, 10000);
+    pointLight.position.set(8, 8, 20);
+    scene.add(pointLight);
 
 
-      // Animación
-      const clock = new THREE.Clock();
-      const animate = () => {
-        const elapsedTime = clock.getElapsedTime();
-        cube.rotation.x = elapsedTime;
-        cube.rotation.y = elapsedTime;
-        cube.position.y = Math.sin(elapsedTime);
+    const clock = clockRef.current;
 
-        renderer.render(scene, camera);
-        gl.endFrameEXP();
-        requestAnimationFrame(animate);
-      };
-      animate();
+    // Función de animación
+    const animate = () => {
+      requestRef.current = requestAnimationFrame(animate);
+      const elapsedTime = clock.getElapsedTime();
+
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+      cube.position.y = Math.sin(elapsedTime);
+
+      renderer.render(scene, camera);
+      gl.endFrameEXP();
     };
 
-    if (glViewRef.current) {
-      const gl = glViewRef.current;
-      initThree(gl);
-    }
+    animate();
+  };
+
+  useEffect(() => {
+    return () => cancelAnimationFrame(requestRef.current);
   }, []);
 
-
   return (
-    <GLView
-      style={{ flex: 1 }} // Asegúrate de que GLView ocupe todo el espacio
-      onContextCreate={(gl) => {
-        glViewRef.current = gl;
-      }}
-    />
+    <View style={styles.container}>
+      <GLView style={styles.glview} onContextCreate={onContextCreate} />
+    </View>
   );
-});
+}
 
-export default Esquema;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  glview: {
+    flex: 1,
+  },
+});
