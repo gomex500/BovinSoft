@@ -1,0 +1,31 @@
+ <View style={styles.container}>
+            {visible && (
+                <View style={styles.chatContainer}>
+                    <View style={styles.chatHead}>
+                        <Text style={styles.chatTitle}>CubeBot</Text>
+                    </View>
+                    <ScrollView
+                        ref={chatboxRef}
+                        style={styles.chatBody}
+                        contentContainerStyle={styles.chatContent}
+                        showsVerticalScrollIndicator={false}
+                    >
+                        {conversation.map((message, index) => (
+                            <View key={index} style={message.type === 'user' ? styles.userMessage : styles.botMessage}>
+                                <Text style={styles.messageUser}>{message.user}: </Text>
+                                <Text>{message.message}</Text>
+                            </View>
+                        ))}
+                    </ScrollView>
+                    <View style={styles.chatFooter}>
+                        <TextInput
+                            style={styles.inputChat}
+                            value={input}
+                            placeholder="Ingrese su pregunta"
+                            onChangeText={setInput}
+                        />
+                        <TouchableOpacity style={styles.btnSend} onPress={conversacion}>
+                            <Text style={styles.btnSendText}>✈️</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
