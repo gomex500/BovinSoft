@@ -3,11 +3,11 @@ import React from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, Image, ScrollView } from 'react-native';
 
 const data = [
-    { id: '1', code: '001', image: require('../assets/Finca.jpg') },
-    { id: '2', code: '002', image: require('../assets/Finca.jpg') },
-    { id: '3', code: '003', image: require('../assets/Finca.jpg') },
-    { id: '4', code: '004', image: require('../assets/Finca.jpg') },
-    { id: '5', code: '005', image: require('../assets/Finca.jpg') },
+    { id: '1', code: '001', image: require('../../assets/Finca.jpg') },
+    { id: '2', code: '002', image: require('../../assets/Finca.jpg') },
+    { id: '3', code: '003', image: require('../../assets/Finca.jpg') },
+    { id: '4', code: '004', image: require('../../assets/Finca.jpg') },
+    { id: '5', code: '005', image: require('../../assets/Finca.jpg') },
 ];
 
 const Bovinos = () => {

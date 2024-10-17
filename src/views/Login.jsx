@@ -29,7 +29,7 @@ const Login = ({navigation}) => {
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <Animated.View style={[styles.container, { opacity: animationValue }]}>
                     <Image
-                        source={require('../assets/img/Logo.png')}
+                        source={require('../../assets/img/Logo.png')}
                         style={styles.logo}
                     />
                     <Text style={styles.title}>Inicio de Sesion</Text>
@@ -139,6 +139,8 @@ const styles = StyleSheet.create({
         marginTop: 50,
         borderRadius: 10,
         paddingTop: 12,
+        borderTopLeftRadius:0,
+        borderTopRightRadius:0,
     },
     btnText: {
         color: '#f2f2f2',
