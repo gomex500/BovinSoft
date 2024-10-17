@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import LottieView from 'lottie-react-native';
 // import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
@@ -16,15 +16,15 @@ const Splash = () => {
                     width: 300,
                     height: 300,
                 }}
-                source={require('../assets/animations/LogoAnimate.json')}
+                source={require('../../assets/animations/LogoAnimate.json')}
             />
+            <ActivityIndicator size={50} color="#1B4725" />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
         flex: 1,

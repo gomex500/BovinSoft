@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { StyleSheet, Animated, Text, TouchableOpacity, View, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6'; 
 import Chatbot from '../views/Chatbot';
@@ -136,7 +136,7 @@ const Navegacion = () => {
       })}
       >
         <Drawer.Screen name="Bovinsoft" component={MyStackNavigation} />
-        <Drawer.Screen name="Perfil" component={Profile} />
+        <Drawer.Screen name="Perfil" component={Profile} options={({navigation}) =>({})}/>
       </Drawer.Navigator>
   );
 }
