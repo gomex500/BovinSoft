@@ -2,11 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Image, Animated, ScrollView, TouchableOpacity} from 'react-native';
 import LottieView from 'lottie-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Inicio = ({navigation}) => {
     const animation = useRef(null);
     const [animationValue] = useState(new Animated.Value(0));
     
+
+    // Recuperar datos
+    const getData = async (key) => {
+        try {
+        const value = await AsyncStorage.getItem(key);
+            console.log(value);
+        } catch (error) {
+            console.error('Error getting data:', error);
+        }
+    };
+
     // Animación de la opacidad
     useEffect(() => {
         Animated.timing(animationValue, {
@@ -14,6 +26,7 @@ const Inicio = ({navigation}) => {
             duration: 1200,
             useNativeDriver: true,
         }).start();
+        console.log(getData('token'));
     }, []);
 
     return (
@@ -136,3 +149,13 @@ const styles = StyleSheet.create({
 export default Inicio;
 
 //#422B13
+
+
+// const removeData = async (key) => {
+//     try {
+//       await AsyncStorage.removeItem(key);
+//       console.log(`Data with key "${key}" removed.`);
+//     } catch (error) {
+//       console.error('Error removing data:', error);
+//     }
+//   };

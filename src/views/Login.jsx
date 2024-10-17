@@ -1,14 +1,74 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, TextInput, Animated, KeyboardAvoidingView, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { ActivityIndicator, StyleSheet, View, Text, Image, TextInput, Animated, KeyboardAvoidingView, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import Alerta from '../components/Alerta';
+
 
 const Login = ({navigation}) => {
     const [ver, setVer] = useState(true);
     const [animationValue] = useState(new Animated.Value(0));
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
 
     // Alternar la visibilidad de la contraseña
     const verPassword = () => {
         setVer(!ver);
+    };
+
+    const showAlert = () => {
+        setAlertVisible(true);
+    };
+    
+    const closeAlert = () => {
+        setAlertVisible(false);
+    };
+
+    const validacionLogin = () =>{
+        setLoading(true);
+        setMessage('');
+        if (email.trim() === '' && password.trim() === '') {
+            setMessage("Rellenar todos los campos");
+            showAlert();
+            setLoading(false);
+        } else {
+            handleLogin();
+        } 
+    }
+
+    const handleLogin = async () => {
+        setLoading(true);
+        setMessage('');
+        try {
+            const response = await axios.post('https://bovinsoft-backend.onrender.com/login', {
+                email,
+                password,
+            });
+        
+            // Si la respuesta es exitosa, guarda los datos en AsyncStorage
+            if (response.status === 200) {
+                await AsyncStorage.removeItem('id');
+                await AsyncStorage.removeItem('token');
+                await AsyncStorage.setItem('id', response.data.id);
+                await AsyncStorage.setItem('token', response.data.token); // Asumiendo que el token viene en la respuesta
+                console.log(response.data);
+                setMessage('Bienvenido');
+                showAlert();
+                setLoading(false);
+                navigation.navigate('Navegacion');
+            }
+        } catch (error) {
+            console.error('Error en la autenticación:', error);
+            setMessage('Error en el inicio de sesión. Verifica tus credenciales.');
+            showAlert();
+            setLoading(false);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Animación de la opacidad
@@ -40,6 +100,8 @@ const Login = ({navigation}) => {
                                 placeholder="Correo"
                                 keyboardType="email-address"
                                 placeholderTextColor="#c2c2c2"
+                                value={email}
+                                onChangeText={setEmail}
                             />
                             <Icon name="user" size={25} style={styles.icon} />
                         </View>
@@ -49,6 +111,8 @@ const Login = ({navigation}) => {
                                 placeholder="Password"
                                 secureTextEntry={ver}
                                 placeholderTextColor="#c2c2c2"
+                                value={password}
+                                onChangeText={setPassword}
                             />
                             <Icon
                                 name="lock"
@@ -63,13 +127,23 @@ const Login = ({navigation}) => {
                                 />
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity 
+                        {loading ? (
+                            <ActivityIndicator style={styles.loandig} size={50} color="#1B4725" />
+                        ) : (
+                            <TouchableOpacity 
                             style={styles.btn}
-                            onPress={() => navigation.navigate('Navegacion')}
-                        >
-                            <Text style={styles.btnText}>Iniciar</Text>
-                        </TouchableOpacity>
+                            // onPress={() => navigation.navigate('Navegacion')}
+                            onPress={validacionLogin}
+                            >
+                                <Text style={styles.btnText}>Iniciar</Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
+                    <Alerta
+                        visible={alertVisible}
+                        onClose={closeAlert}
+                        message={message}
+                    />
                 </Animated.View>
             </ScrollView>
         </KeyboardAvoidingView>
@@ -147,6 +221,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
     },
+    loandig:{
+        marginTop:50
+    }
 });
 
 export default Login;
