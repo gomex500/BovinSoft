@@ -33,7 +33,7 @@ const Profile = ({navigation}) => {
     const cerrarSesion = () =>{
         removeData('id');
         removeData('token');
-        navigation.navigate('Login');
+        // navigation.navigate('Login');
     }
 
     const pickImage = async () => {

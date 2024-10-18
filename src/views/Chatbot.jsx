@@ -25,7 +25,6 @@ const Chatbot = () => {
             };
             setConversation((prevConversation) => [...prevConversation, Usuario, bot]);
             setInput('');
-            enviarTools('chatbot');
         } catch (error) {
             console.log(error);
         }
