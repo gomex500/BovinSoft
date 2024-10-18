@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { StyleSheet, View, Text, Image, Animated, ScrollView, TouchableOpacity} from 'react-native';
 import LottieView from 'lottie-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GlobalContext } from '../Context/GlobalContext';
 
 const Inicio = ({navigation}) => {
     const animation = useRef(null);
@@ -18,9 +18,10 @@ const Inicio = ({navigation}) => {
             console.error('Error getting data:', error);
         }
     };
+    const {user} = useContext(GlobalContext)
 
     // Animación de la opacidad
-    useEffect(() => {
+    useEffect( () => {
         Animated.timing(animationValue, {
             toValue: 1,
             duration: 1200,
@@ -43,7 +44,7 @@ const Inicio = ({navigation}) => {
                         source={require('../../assets/animations/LogoAnimate.json')}
                     />
                 </View>
-                <Text style={styles.title}>Bienvenido</Text>
+                <Text style={styles.title}>Bienvenido {user.nombre}</Text>
                 <View style={styles.contLogin}>
                     <TouchableOpacity 
                         style={styles.btn}
@@ -55,7 +56,7 @@ const Inicio = ({navigation}) => {
                         style={styles.btn2}
                         onPress={() => navigation.navigate('Signup')}
                     >
-                        <Text style={styles.btnText2}>Crear Cuenta</Text>
+                        <Text style={styles.btnText2}>Crear Cuenta rol {user.rol} </Text>
                     </TouchableOpacity>
                     <View style={styles.contRedes}>
                         <View>

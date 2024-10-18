@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Navegacion from './src/components/Navegacion';
+import { ProviderGlobalContext } from './src/Context/GlobalContext';
 import Inicio from './src/views/Inicio';
 import Login from './src/views/Login';
 import Signup from './src/views/Signup';
