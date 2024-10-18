@@ -136,7 +136,7 @@ const Navegacion = () => {
       })}
       >
         <Drawer.Screen name="Bovinsoft" component={MyStackNavigation} />
-        <Drawer.Screen name="Perfil" component={Profile} options={({navigation}) =>({})}/>
+        <Drawer.Screen name="Perfil" component={Profile}/>
       </Drawer.Navigator>
   );
 }
