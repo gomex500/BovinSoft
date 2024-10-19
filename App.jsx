@@ -4,7 +4,7 @@ import { ProviderGlobalContext } from './src/Context/GlobalContext';
 import Inicio from './src/views/Inicio';
 import Login from './src/views/Login';
 import Signup from './src/views/Signup';
-
+import InfoFinca from './src/views/InfoFinca';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -47,6 +47,7 @@ export default function App() {
                         options={{ headerShown: false }}
                     />
                 ) : isLoggedIn ? (
+                    <>
                     <Stack.Screen 
                         name='Navegacion' 
                         component={Navegacion}
@@ -54,6 +55,14 @@ export default function App() {
                           headerShown: false
                         })}
                     />
+                    <Stack.Screen 
+                            name='InfoFinca' 
+                            component={InfoFinca}
+                            options={({navigation}) =>({
+                              headerShown: false
+                            })}
+                            />
+                    </>
                     
                 ) : (
                     <>
@@ -85,6 +94,15 @@ export default function App() {
                           headerShown: false
                         })}
                     />
+                    <Stack.Screen 
+                            name='InfoFinca' 
+                            component={InfoFinca}
+                            screenOptions={{
+                                headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
+                                headerTintColor: '#FFFFFF', // Color del texto en el header
+                                headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
+                              }}
+                            />
                     </>
                 )}
             </Stack.Navigator>

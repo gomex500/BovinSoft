@@ -62,6 +62,7 @@ const Metricas = () => {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.conttainerCHair}>
+                <Text style={styles.title}>Dashboard</Text>
                 <View style={styles.contChart}>
                     <Text style={{ textAlign: 'center', fontSize: 20 }}>Gráfico de Líneas</Text>
                     <LineChart
@@ -151,6 +152,12 @@ const styles = StyleSheet.create({
     },
     conttainerCHair:{
         alignItems:'center'
+    },
+    title:{
+        marginTop:20,
+        fontSize:40,
+        color:'#1B4725',
+        fontWeight:'bold'
     }
 });
 

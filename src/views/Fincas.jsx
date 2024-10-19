@@ -1,11 +1,26 @@
-import React, { useContext } from 'react';
-import { StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity, Image } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity, Image, FlatList, Animated } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import { GlobalContext } from '../Context/GlobalContext';
 
-const Fincas = () => {
+
+const Fincas = ({navigation}) => {
+
+    const {finca} = useContext(GlobalContext);
+    const [animationValue] = useState(new Animated.Value(0));
+    console.log(finca[0].nombre);
+
+    // Animación de la opacidad
+    useEffect(() => {
+        Animated.timing(animationValue, {
+            toValue: 1,
+            duration: 1200,
+            useNativeDriver: true,
+        }).start();
+    }, []);
+
     return (
-        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <Animated.View contentContainerStyle={[styles.contentContainer, { opacity: animationValue }]}>
             <View style={styles.contenedorFiltro}>
                 <View style={styles.contenedorInpunt}>
                     <TextInput placeholder='Buscar finca...' style={styles.input} />
@@ -18,40 +33,29 @@ const Fincas = () => {
                 </View>
             </View>
 
-            {/* Varias tarjetas */}
-            <CardComponente />
-            <CardComponente />
-            <CardComponente />
-            <CardComponente />
-            <CardComponente />
-        </ScrollView>
-    );
-};
-
-const CardComponente = () => {
-
-    const {finca} = useContext(GlobalContext);
-    console.log(finca[0].nombre);
-  
-    
-    return (
-        <View style={styles.contenedorCard}>
-            <View style={styles.card}>
-                <View style={styles.contenedorImagen}>
-                    <Image source={require('../../assets/Finca.jpg')} style={styles.imagen} />
-                </View>
-                <View style={styles.contenedorTexto}>
-                    <View>
-                        <Text style={styles.titulo}>{finca[0].nombre}</Text>
-                    </View>
-                    <View>
-                        <Text style={styles.descripcion}>
-                            {finca[0].descripcion}
-                        </Text>
-                    </View>
-                </View>
-            </View>
-        </View>
+            <FlatList
+                data={finca}
+                style={{ padding: 5 }}
+                renderItem={({ item }) => (
+                    <TouchableOpacity
+                        style={styles.contenedorCard}
+                        onPress={() => navigation.navigate('InfoFinca', { newsItem: item })}
+                    >
+                        <View style={styles.card}>
+                            <Image 
+                                source={require('../../assets/Finca.jpg')}
+                                style={{ width: '100%', height: 200 }}
+                            />
+                            <View style={styles.contTexto}>
+                                <Text style={styles.titulo}>{item.nombre}</Text>
+                                <Text style={styles.descripcion}>{item.descripcion}</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                )}
+                keyExtractor={(item) => item.id} // Asegúrate de que 'id' sea único
+            />
+        </Animated.View>
     );
 };
 
@@ -130,6 +134,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#000',
     },
+    contTexto:{
+        paddingHorizontal:10,
+        paddingVertical:5
+    }
 });
 
 export default Fincas;
