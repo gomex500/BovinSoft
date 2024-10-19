@@ -37,6 +37,7 @@ export default function App() {
     }, []);
 
     return (
+      <ProviderGlobalContext>
         <NavigationContainer>
             <Stack.Navigator>
                 {isLoggedIn === null ? ( // Mientras se está verificando el estado, puedes mostrar un cargando o similar
@@ -61,7 +62,7 @@ export default function App() {
                             options={({navigation}) =>({
                               headerShown: false
                             })}
-                        />
+                            />
                         <Stack.Screen 
                             name='Login' 
                             component={Login}
@@ -80,6 +81,7 @@ export default function App() {
                 )}
             </Stack.Navigator>
         </NavigationContainer>
+      </ProviderGlobalContext>
     );
 }
 

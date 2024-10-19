@@ -1,9 +1,12 @@
 import React, { useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity, Image } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
+import { GlobalContext } from '../Context/GlobalContext';
 
 const Fincas = () => {
 
+    const {user} = useContext(GlobalContext);
+    console.log(user)
     return (
         <ScrollView contentContainerStyle={styles.contentContainer}>
             <View style={styles.contenedorFiltro}>
@@ -30,9 +33,9 @@ const Fincas = () => {
 
 const CardComponente = () => {
 
-    const { user} = useContext(GlobalContext)
-
-    console.log(user)
+   
+  
+    
     return (
         <View style={styles.contenedorCard}>
             <View style={styles.card}>

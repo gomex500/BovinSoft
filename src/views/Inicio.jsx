@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Image, Animated, ScrollView, TouchableOpacity} 
 import LottieView from 'lottie-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { GlobalContext } from '../Context/GlobalContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Inicio = ({navigation}) => {
     const animation = useRef(null);
@@ -44,7 +45,7 @@ const Inicio = ({navigation}) => {
                         source={require('../../assets/animations/LogoAnimate.json')}
                     />
                 </View>
-                <Text style={styles.title}>Bienvenido {user.nombre}</Text>
+                <Text style={styles.title}>Bienvenido</Text>
                 <View style={styles.contLogin}>
                     <TouchableOpacity 
                         style={styles.btn}
