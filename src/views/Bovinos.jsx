@@ -7,7 +7,6 @@ const data = [
     { id: '2', code: '002', image: require('../../assets/Finca.jpg') },
     { id: '3', code: '003', image: require('../../assets/Finca.jpg') },
     { id: '4', code: '004', image: require('../../assets/Finca.jpg') },
-    { id: '5', code: '005', image: require('../../assets/Finca.jpg') },
 ];
 
 const Bovinos = () => {
@@ -26,6 +25,7 @@ const Bovinos = () => {
             </View>
 
             {/* tarjetas de los animales */}
+            <View style={styles.conBvi}>
             <FlatList
                 data={data}
                 renderItem={({ item }) => <CardComponente item={item} />}
@@ -66,6 +66,7 @@ const Bovinos = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.flatListContainer}
             />
+            </View>
         </ScrollView>
     );
 }
@@ -90,41 +91,50 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     contenedorInpunt: {
-        width: '90%',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        paddingHorizontal:20
     },
     input: {
-        backgroundColor: '#C2C2C2',
-        width: '70%',
-        padding: 12,
+        flex: 1,
         borderRadius: 8,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
-        borderBottomWidth: 4,
         borderColor: '#1B4725',
+        borderWidth: 2,
+        borderTopWidth: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+        fontSize: 18,
+        color: '#1B4725',
+        fontWeight: 'bold',
+        padding: 10,
+        marginRight: 10,
     },
     boton: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#1B4725',
-        height: 56,
-        width: 56,
+        padding: 10,
     },
     flatListContainer: {
         paddingHorizontal: 10,
         paddingVertical: 20,
     },
     card: {
-        backgroundColor: '#1B4725',
+        backgroundColor: '#f2f2f2',
         borderRadius: 8,
         width: 80, 
         height: 120,
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 5,
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 3,
+        overflow: 'hidden',
     },
     imagen: {
         width: 60,
@@ -134,9 +144,14 @@ const styles = StyleSheet.create({
     },
     codigo: {
         marginTop: 10,
-        color: 'white',
+        color: '#252525',
         fontWeight: 'bold',
     },
+    conBvi:{
+        alignContent:'center',
+        alignItems:'center',
+        width:'98%'
+    }
 });
 
 export default Bovinos;

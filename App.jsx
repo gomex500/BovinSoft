@@ -54,6 +54,7 @@ export default function App() {
                           headerShown: false
                         })}
                     />
+                    
                 ) : (
                     <>
                         <Stack.Screen 
@@ -77,6 +78,13 @@ export default function App() {
                               headerShown: false
                             })}
                         />
+                    <Stack.Screen 
+                        name='Navegacion' 
+                        component={Navegacion}
+                        options={({navigation}) =>({
+                          headerShown: false
+                        })}
+                    />
                     </>
                 )}
             </Stack.Navigator>

@@ -4,9 +4,6 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { GlobalContext } from '../Context/GlobalContext';
 
 const Fincas = () => {
-
-    const {user} = useContext(GlobalContext);
-    console.log(user)
     return (
         <ScrollView contentContainerStyle={styles.contentContainer}>
             <View style={styles.contenedorFiltro}>
@@ -33,7 +30,8 @@ const Fincas = () => {
 
 const CardComponente = () => {
 
-   
+    const {finca} = useContext(GlobalContext);
+    console.log(finca[0].nombre);
   
     
     return (
@@ -44,11 +42,11 @@ const CardComponente = () => {
                 </View>
                 <View style={styles.contenedorTexto}>
                     <View>
-                        <Text style={[styles.titulo,{color:'white'}]}>Nombre</Text>
+                        <Text style={styles.titulo}>{finca[0].nombre}</Text>
                     </View>
                     <View>
-                        <Text style={[styles.descripcion,{color:'white'}]}>
-                            Hermosa finca ubicada 
+                        <Text style={styles.descripcion}>
+                            {finca[0].descripcion}
                         </Text>
                     </View>
                 </View>
@@ -69,28 +67,30 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     contenedorInpunt: {
-        width: '90%',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        paddingHorizontal:5
     },
     input: {
-        backgroundColor: '#C2C2C2',
-        width: '70%',
-        padding: 12,
+        flex: 1,
         borderRadius: 8,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
-        borderBottomWidth:4,
-        borderColor:'#1B4725'
+        borderColor: '#1B4725',
+        borderWidth: 2,
+        borderTopWidth: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+        fontSize: 18,
+        color: '#1B4725',
+        fontWeight: 'bold',
+        padding: 10,
+        marginRight: 10,
     },
     boton: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#1B4725',
-        height: 56,
-        width: 56,
+        padding: 10,
     },
     contenedorCard: {
         alignItems: 'center',
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: 300,
-        backgroundColor: '#1B4725',
+        backgroundColor: '#f2f2f2',
         borderRadius: 10,
         shadowColor: '#000',
         shadowOpacity: 0.2,
@@ -124,10 +124,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 5,
+        color:'#252525'
     },
     descripcion: {
         fontSize: 14,
-        color: '#777',
+        color: '#000',
     },
 });
 

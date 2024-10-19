@@ -57,7 +57,7 @@ const Inicio = ({navigation}) => {
                         style={styles.btn2}
                         onPress={() => navigation.navigate('Signup')}
                     >
-                        <Text style={styles.btnText2}>Crear Cuenta rol {user.rol} </Text>
+                        <Text style={styles.btnText2}>Crear Cuenta</Text>
                     </TouchableOpacity>
                     <View style={styles.contRedes}>
                         <View>

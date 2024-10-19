@@ -51,8 +51,6 @@ const Login = ({navigation}) => {
         
             // Si la respuesta es exitosa, guarda los datos en AsyncStorage
             if (response.status === 200) {
-                await AsyncStorage.removeItem('id');
-                await AsyncStorage.removeItem('token');
                 await AsyncStorage.setItem('id', response.data.id);
                 await AsyncStorage.setItem('token', response.data.token); // Asumiendo que el token viene en la respuesta
                 console.log(response.data);

@@ -1,25 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Image, Button, Alert, TouchableOpacity, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GlobalContext } from '../Context/GlobalContext';
 
 
 const Profile = ({navigation}) => {
+
+    const {user} = useContext(GlobalContext);
+    // console.log(user);
     // Estado para manejar la imagen seleccionada
     const [image, setImage] = useState(null);
-
-    // Datos del usuario
-    const userData = {
-        nombre: 'Freddy',
-        apellido: 'Gomez',
-        fecha_nacimiento: 'YYYY-MM-DD',
-        email: 'gomex6798@gmail.com',
-        telefono: '+505 82181 663',
-        tipoSuscripcion: 'mensual',
-        rol: 'admin',
-        direccion: 'juigalpa, chontales',
-    };
 
     const removeData = async (key) => {
         try {
@@ -33,7 +25,7 @@ const Profile = ({navigation}) => {
     const cerrarSesion = () =>{
         removeData('id');
         removeData('token');
-        // navigation.navigate('Login');
+        navigation.navigate('Inicio');
     }
 
     const pickImage = async () => {
@@ -93,11 +85,12 @@ const Profile = ({navigation}) => {
             { cancelable: true }
         );
     };
+    
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View style={styles.container}>
-            <Text style={styles.name}>{`${userData.nombre} ${userData.apellido}`}</Text>
+            <Text style={styles.name}>{`${user.nombre} ${user.apellido}`}</Text>
                 <View style={styles.contImgProfile}>
                     <Image
                         source={image ? { uri: image } : require('../../assets/img/usuario.png')}
@@ -114,7 +107,7 @@ const Profile = ({navigation}) => {
                     <Text style={styles.info}>Fecha de Nacimiento:</Text>
                     <View style={styles.contData}>
                         <Text style={styles.textInfo}>
-                            {userData.fecha_nacimiento}
+                            {user.fecha_nacimiento}
                             {/* <Icon
                                 style={styles.icon}
                                 name={'pencil-alt'}
@@ -126,7 +119,7 @@ const Profile = ({navigation}) => {
                     <Text style={styles.info}>Email:</Text>   
                     <View style={styles.contData}>
                         <Text style={styles.textInfo}>
-                            {userData.email}
+                            {user.email}
                             {/* <Icon
                                 style={styles.icon}
                                 name={'pencil-alt'}
@@ -138,7 +131,7 @@ const Profile = ({navigation}) => {
                     <Text style={styles.info}>Teléfono:</Text>   
                     <View style={styles.contData}>
                         <Text style={styles.textInfo}>
-                        {userData.telefono}
+                        {user.telefono}
                             {/* <Icon
                                 style={styles.icon}
                                 name={'pencil-alt'}
@@ -150,7 +143,7 @@ const Profile = ({navigation}) => {
                     <Text style={styles.info}>Tipo de Suscripción:</Text> 
                     <View style={styles.contData}>
                         <Text style={styles.textInfo}>
-                            {userData.tipoSuscripcion}
+                            {user.tipoSuscripcion}
                             {/* <Icon
                                 style={styles.icon}
                                 name={'pencil-alt'}
@@ -162,7 +155,7 @@ const Profile = ({navigation}) => {
                     <Text style={styles.info}>Rol:</Text>
                     <View style={styles.contData}>
                         <Text style={styles.textInfo}>
-                            {userData.rol}
+                            {user.rol}
                             {/* <Icon
                                 style={styles.icon}
                                 name={'pencil-alt'}
@@ -174,7 +167,7 @@ const Profile = ({navigation}) => {
                     <Text style={styles.info}>Dirección:</Text>
                     <View style={styles.contData}>
                         <Text style={styles.textInfo}>
-                        {userData.direccion}
+                        {user.direccion}
                             {/* <Icon
                                 style={styles.icon}
                                 name={'pencil-alt'}

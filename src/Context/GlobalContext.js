@@ -7,18 +7,15 @@ export const GlobalContext = createContext();
 
 export const ProviderGlobalContext = ({children}) => {
     //estados para las funciones
-    const [user,setUser] = useState('Jorge')
-    const [vacas, setVacas] = useState([])
-    const [finca, setFinca] = useState([])
+    const [user,setUser] = useState({});
+    const [vacas, setVacas] = useState([]);
+    const [finca, setFinca] = useState([]);
 
-    //token de autenticacion
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJGcmVkZHkiLCJhcGVsbGlkbyI6IkdvbWV6IiwiZmVjaGFfbmFjaW1pZW50byI6IllZWVktTU0tREQiLCJlbWFpbCI6ImRkZmRmZGZAZ21haWwuY29tIiwidGVsZWZvbm8iOiIrNTA1IDgyMTgxIDY2MyIsInJvbCI6ImFkbWluIiwiZGlyZWNjaW9uIjoianVpZ2FscGEsIGNob250YWxlcyIsInRpcG9TdXNjcmlwY2lvbiI6Im1lbnN1YWwiLCJleHAiOjE3MjkyNzcwNTd9.UhAE-hKI9H74g-ksrDmA8qlQfsi9NMyrQgY49kLy2J4'
-    
     //obtener Ganados
     const ObtenerGanado =async () => { 
         try {
-            const {data} = await axios.get('')
-            setVacas(data)
+            const {data} = await axios.get('');
+            setVacas(data);
         } catch (error) {
             
         }
@@ -27,33 +24,36 @@ export const ProviderGlobalContext = ({children}) => {
      //obtener listado de fincas
      const ObtenerFinca =async () => { 
         try {
-            const {data} = await axios.get('')
-            setFinca(data)
+            const {data} = await axios.get('https://bovinsoft-backend.onrender.com/fincas/66ff6c787a81ade5258dc6e6',{
+                headers:{
+                    Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJqdWFuIiwiYXBlbGxpZG8iOiJnb256YWxleiIsImZlY2hhX25hY2ltaWVudG8iOiJZWVlZLU1NLUREIiwiZW1haWwiOiJnb21lemZyZWRkeTg4NkBnbWFpbC5jb20iLCJ0ZWxlZm9ubyI6Iis1MDUgODI4MSA2NjMiLCJyb2wiOiJhZG1pbiIsImRpcmVjY2lvbiI6Imp1aWdhbHBhLCBjaG9udGFsZXMiLCJ0aXBvU3VzY3JpcGNpb24iOiJtZW5zdWFsIiwiZXhwIjoxNzI5NDIxNTI5fQ.kalntEwAY9v52KUm4dQpZ_6JDfc9X2SrdE3LQD6n0yg'
+                }
+            })
+            setFinca(data);
         } catch (error) {
-            
+            console.log(error);
         }
      }
 
      //obtener usuario por Id
-     const ObtenerUsuario =async () => { 
+     const ObtenerUsuario = async () => { 
         try {
             const {data} = await axios.get('https://bovinsoft-backend.onrender.com/user/66ff6c787a81ade5258dc6e6',{
                 headers:{
-                    Authorization:`Bearer ${token}`
+                    Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJqdWFuIiwiYXBlbGxpZG8iOiJnb256YWxleiIsImZlY2hhX25hY2ltaWVudG8iOiJZWVlZLU1NLUREIiwiZW1haWwiOiJnb21lemZyZWRkeTg4NkBnbWFpbC5jb20iLCJ0ZWxlZm9ubyI6Iis1MDUgODI4MSA2NjMiLCJyb2wiOiJhZG1pbiIsImRpcmVjY2lvbiI6Imp1aWdhbHBhLCBjaG9udGFsZXMiLCJ0aXBvU3VzY3JpcGNpb24iOiJtZW5zdWFsIiwiZXhwIjoxNzI5NDIxNTI5fQ.kalntEwAY9v52KUm4dQpZ_6JDfc9X2SrdE3LQD6n0yg'
                 }
             })
-            setUser(data)
+            setUser(data);
         } catch (error) {
-            
+            console.log(error);
         }
      }
 
      //peticion la primera ves que se cargue la vista
      useEffect( () => {
-        
         const fetchData = async ()=>{
-            await ObtenerUsuario();
-            await ObtenerFinca()
+            await ObtenerUsuario(); 
+            await ObtenerFinca();
         }
         
         fetchData();
