@@ -10,6 +10,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text } from 'react-native';
 import Splash from './src/components/Splash';
+import InfoBovino from './src/views/InfoBovino';
 
 const Stack = createStackNavigator();
 
@@ -58,10 +59,21 @@ export default function App() {
                     <Stack.Screen 
                             name='InfoFinca' 
                             component={InfoFinca}
-                            options={({navigation}) =>({
-                              headerShown: false
-                            })}
+                            screenOptions={{
+                                headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
+                                headerTintColor: '#1B4725', // Color del texto en el header
+                                headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
+                            }}
                             />
+                            <Stack.Screen 
+                            name='InfoBovino' 
+                            component={InfoBovino}
+                            screenOptions={{
+                                headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
+                                headerTintColor: '#1B4725', // Color del texto en el header
+                                headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
+                            }}
+                        />
                     </>
                     
                 ) : (
@@ -103,6 +115,15 @@ export default function App() {
                                 headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
                               }}
                             />
+                        <Stack.Screen 
+                            name='InfoBovino' 
+                            component={InfoBovino}
+                            screenOptions={{
+                                headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
+                                headerTintColor: '#FFFFFF', // Color del texto en el header
+                                headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
+                            }}
+                        />
                     </>
                 )}
             </Stack.Navigator>

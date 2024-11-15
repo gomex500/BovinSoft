@@ -14,15 +14,19 @@ export const ProviderGlobalContext = ({children}) => {
     //obtener Ganados
     const ObtenerGanado =async () => { 
         try {
-            const {data} = await axios.get('');
+            const {data} = await axios.get('https://bovinsoft-backend.onrender.com/bovino/byFarm/6713a87affe35c5e70d86f8b',{
+                headers:{
+                    Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJqdWFuIiwiYXBlbGxpZG8iOiJnb256YWxleiIsImZlY2hhX25hY2ltaWVudG8iOiJZWVlZLU1NLUREIiwiZW1haWwiOiJnb21lemZyZWRkeTg4NkBnbWFpbC5jb20iLCJ0ZWxlZm9ubyI6Iis1MDUgODI4MSA2NjMiLCJyb2wiOiJhZG1pbiIsImRpcmVjY2lvbiI6Imp1aWdhbHBhLCBjaG9udGFsZXMiLCJ0aXBvU3VzY3JpcGNpb24iOiJtZW5zdWFsIiwiZXhwIjoxNzI5NDIxNTI5fQ.kalntEwAY9v52KUm4dQpZ_6JDfc9X2SrdE3LQD6n0yg'
+                }
+            })
             setVacas(data);
         } catch (error) {
-            
+            console.log(error);
         }
      }
      
      //obtener listado de fincas
-     const ObtenerFinca =async () => { 
+     const ObtenerFinca = async () => { 
         try {
             const {data} = await axios.get('https://bovinsoft-backend.onrender.com/fincas/66ff6c787a81ade5258dc6e6',{
                 headers:{
@@ -54,6 +58,7 @@ export const ProviderGlobalContext = ({children}) => {
         const fetchData = async ()=>{
             await ObtenerUsuario(); 
             await ObtenerFinca();
+            await ObtenerGanado();
         }
         
         fetchData();

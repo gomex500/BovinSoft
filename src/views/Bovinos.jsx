@@ -1,20 +1,28 @@
 import { Entypo } from '@expo/vector-icons';
-import React from 'react';
+import React, {useContext} from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, Image, ScrollView } from 'react-native';
+import { GlobalContext } from '../Context/GlobalContext';
 
 const data = [
     { id: '1', code: '001', image: require('../../assets/Finca.jpg') },
     { id: '2', code: '002', image: require('../../assets/Finca.jpg') },
     { id: '3', code: '003', image: require('../../assets/Finca.jpg') },
     { id: '4', code: '004', image: require('../../assets/Finca.jpg') },
+    { id: '4', code: '004', image: require('../../assets/Finca.jpg') },
+    { id: '4', code: '004', image: require('../../assets/Finca.jpg') },
+    { id: '4', code: '004', image: require('../../assets/Finca.jpg') },
 ];
 
-const Bovinos = () => {
+const Bovinos = ({navigation}) => {
+
+    const {vacas} = useContext(GlobalContext);
+    console.log(vacas);
+
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.contenedorFiltro}>
                 <View style={styles.contenedorInpunt}>
-                    <TextInput placeholder='Buscar finca...' style={styles.input} />
+                    <TextInput placeholder='Buscar Ganado...' style={styles.input} />
                     <TouchableOpacity style={styles.boton}>
                         <Entypo name="magnifying-glass" size={24} color="white" />
                     </TouchableOpacity>
@@ -26,48 +34,30 @@ const Bovinos = () => {
 
             {/* tarjetas de los animales */}
             <View style={styles.conBvi}>
-            <FlatList
-                data={data}
-                renderItem={({ item }) => <CardComponente item={item} />}
-                keyExtractor={(item) => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.flatListContainer}
-            />
-             <FlatList
-                data={data}
-                renderItem={({ item }) => <CardComponente item={item} />}
-                keyExtractor={(item) => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.flatListContainer}
-            />
-             <FlatList
-                data={data}
-                renderItem={({ item }) => <CardComponente item={item} />}
-                keyExtractor={(item) => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.flatListContainer}
-            />
-             <FlatList
-                data={data}
-                renderItem={({ item }) => <CardComponente item={item} />}
-                keyExtractor={(item) => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.flatListContainer}
-            />
-             <FlatList
-                data={data}
-                renderItem={({ item }) => <CardComponente item={item} />}
-                keyExtractor={(item) => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.flatListContainer}
-            />
+                <FlatList
+                    data={vacas}
+                    renderItem={({item}) =>(
+                        <TouchableOpacity
+                            style={styles.contenedorCard}
+                            onPress={() => navigation.navigate('InfoBovino', { newsItem: item })}
+                        >
+                            <View style={styles.card}>
+                                <Image 
+                                    source={{ uri: item.image }}
+                                    style={styles.imagen}
+                                />
+                                <View style={styles.contTexto}>
+                                    <Text style={styles.codigo}>{item.codigo}</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                    keyExtractor={(item) => item.id}
+                    numColumns={3} // Cambia este valor para ajustar el número de columnas
+                    columnWrapperStyle={styles.row} // Estilo para las filas
+                />
             </View>
-        </ScrollView>
+        </View>
     );
 }
 
@@ -123,11 +113,12 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#f2f2f2',
         borderRadius: 8,
-        width: 80, 
-        height: 120,
+        width: 100, 
+        height: 140,
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 5,
+        marginBottom:20,
         borderRadius: 10,
         shadowColor: '#000',
         shadowOpacity: 0.2,
@@ -137,20 +128,22 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     imagen: {
-        width: 60,
-        height: 60,
+        width: 80,
+        height: 80,
         resizeMode: 'cover',
-        borderRadius: 30, 
+        borderRadius: 5, 
     },
     codigo: {
         marginTop: 10,
-        color: '#252525',
+        color: '#1B4725',
         fontWeight: 'bold',
+        fontSize:12
     },
     conBvi:{
         alignContent:'center',
         alignItems:'center',
-        width:'98%'
+        width:'98%',
+        marginTop:20
     }
 });
 
