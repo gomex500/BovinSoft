@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Alerta from '../components/Alerta';
+import { useUserStore } from '../store/userStore';
 
 
 const Login = ({navigation}) => {
@@ -14,6 +15,25 @@ const Login = ({navigation}) => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
+
+    const { obtenerUsuario, setToken, setUser } = useUserStore();
+
+    const removeData = async (key) => {
+        try {
+          await AsyncStorage.removeItem(key);
+          console.log(`Data with key "${key}" removed.`);
+        } catch (error) {
+          console.error('Error removing data:', error);
+        }
+    };
+
+    useEffect(() => {
+        removeData('id');
+        removeData('token');
+        setToken(null);
+        setUser(null);
+    }, []);
+    
 
     // Alternar la visibilidad de la contraseña
     const verPassword = () => {
@@ -44,20 +64,30 @@ const Login = ({navigation}) => {
         setLoading(true);
         setMessage('');
         try {
-            const response = await axios.post('https://bovinsoft-backend.onrender.com/login', {
+            const response = await axios.post('https://bovinsoft-backend-plae.onrender.com/login', {
                 email,
                 password,
             });
+
+            
         
             // Si la respuesta es exitosa, guarda los datos en AsyncStorage
             if (response.status === 200) {
-                await AsyncStorage.setItem('id', response.data.id);
-                await AsyncStorage.setItem('token', response.data.token); // Asumiendo que el token viene en la respuesta
+                let  id = response.data.id;
+                let token = response.data.token
+
+                await AsyncStorage.setItem('id', id);
+                await AsyncStorage.setItem('token', token); // Asumiendo que el token viene en la respuesta
+
+                await obtenerUsuario(id, token);
+                setToken(token)
                 console.log(response.data);
                 setMessage('Bienvenido');
                 showAlert();
                 setLoading(false);
                 navigation.navigate('Navegacion');
+                console.log(response.data);
+                
             }
         } catch (error) {
             console.error('Error en la autenticación:', error);

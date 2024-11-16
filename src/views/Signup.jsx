@@ -10,20 +10,60 @@ import {
     SafeAreaView, 
     KeyboardAvoidingView, 
     Platform, 
-    ScrollView 
+    ScrollView ,
+    ActivityIndicator
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import IConMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
+import IConEntypo from 'react-native-vector-icons/Entypo';
+import IConFontisto from 'react-native-vector-icons/Fontisto';
 import * as ImagePicker from 'expo-image-picker';
+import Alerta from '../components/Alerta';
+import axios from "axios";
+import DatePickerExample from '../components/DataPicker';
+import { useUserStore } from '../store/userStore';
 
-const Signup = () => {
+const Signup = ({navigation}) => {
     const [animationValue] = useState(new Animated.Value(0));
     const [image, setImage] = useState('');
     const [selectImg, setSelectImg] = useState(false);
     const [siguente, setSiguiente] = useState(false);
+    const [nombre, setNombre] = useState('');
+    const [apellido, setApellido] = useState('');
+    const [email, setEmail] = useState('');
+    const [telefono, setTelefono] = useState('');
+    const [tipoSuscripcion, setTipoSuscripcion] = useState('');
+    const [rol, setRol] = useState('');
+    const [direccion, setDireccion] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
+    const [date, setDate] = useState(new Date());
+
+    const { obtenerUsuario, setToken } = useUserStore();
+
+
+    // Alternar la visibilidad de la contraseña
+    const verPassword = () => {
+        setVer(!ver);
+    };
+
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [password, setPassword] = useState('');
+    const [ver, setVer] = useState(true);
+    
     const [boll, setBoll] = useState({
         colo1: '#1B4725',
         colo2: '#c2c2c2'
     })
+
+    const showAlert = () => {
+      setAlertVisible(true);
+  };
+  
+  const closeAlert = () => {
+      setAlertVisible(false);
+  };
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -38,6 +78,49 @@ const Signup = () => {
         if (!result.canceled) {
             setSelectImg(true);
             setImage(result.assets[0].uri);
+        }
+    };
+
+    const handleSignup = async () => {
+        setLoading(true);
+        setMessage('');
+        try {
+            const response = await axios.post('https://bovinsoft-backend-plae.onrender.com/signin', {
+              nombre,
+              apellido,
+              fecha_nacimiento:date.toString(),
+              telefono:telefono,
+              tipoSuscripcion,
+              direccion,
+              rol,
+              email,
+              password,
+              image: image
+          });
+
+            // Si la respuesta es exitosa, guarda los datos en AsyncStorage
+            if (response.status === 200) {
+                let  id = response.data.id;
+                let token = response.data.token
+
+                await AsyncStorage.setItem('id', id);
+                await AsyncStorage.setItem('token', token); // Asumiendo que el token viene en la respuesta
+
+                await obtenerUsuario(id, token);
+                setToken(token)
+
+                setMessage('Bienvenido');
+                showAlert();
+                setLoading(false);
+                navigation.navigate('Navegacion');
+            }
+        } catch (error) {
+            console.error('Error en la autenticación:', error);
+            setMessage('Error en el inicio de sesión. Verifica tus credenciales.');
+            showAlert();
+            setLoading(false);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -83,15 +166,23 @@ const Signup = () => {
                                 style={styles.input} 
                                 placeholder="Nombre" 
                                 placeholderTextColor="#c2c2c2" 
+                                name="nombre"
+                                onChangeText={setNombre}
                             />
                         </View>
                         <View style={styles.inputContainer}>
                             <Icon name="user" size={25} style={styles.icon} />
-                            <TextInput
-                                style={styles.input}
+                            <TextInput 
+                                style={styles.input} 
                                 placeholder="Apellido"
-                                placeholderTextColor="#c2c2c2"
+                                placeholderTextColor="#c2c2c2" 
+                                name="apellido"
+                                onChangeText={setApellido}
                             />
+                        </View>
+                        <View style={styles.inputContainer}>
+                            <IConFontisto name="date" size={25} style={styles.icon} />
+                            <DatePickerExample date={date} setDate={setDate} />
                         </View>
                         <View style={styles.inputContainer}>
                             <Icon name="phone" size={25} style={styles.icon} />
@@ -100,16 +191,81 @@ const Signup = () => {
                                 placeholder="Telefono"
                                 keyboardType='phone-pad'
                                 placeholderTextColor="#c2c2c2"
+                                name="telefono"
+                                onChangeText={setTelefono}
                             />
                         </View>
-                        <TouchableOpacity style={styles.btn} onPress={() => { /* Maneja el envío del formulario */ }}>
+                        <View style={styles.inputContainer}>
+                            <IConEntypo name="location" size={25} style={styles.icon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Direccion"
+                                placeholderTextColor="#c2c2c2"
+                                name="direccion"
+                                onChangeText={setDireccion}
+                            />
+                        </View>
+                      
+                        <View style={styles.inputContainer}>
+                            <Icon name="user" size={25} style={styles.icon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Rol"
+                                placeholderTextColor="#c2c2c2"
+                                name="rol"
+                                onChangeText={setRol}
+                            />
+                        </View>
+
+                        <View style={styles.inputContainer}>
+                            <Icon name="user" size={25} style={styles.icon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Tipo de Suscripcion"
+                                placeholderTextColor="#c2c2c2"
+                                name="tipoSuscripcion"
+                                onChangeText={setTipoSuscripcion}
+                            />
+                        </View>
+                       
+                        <View style={styles.inputContainer}>
+                            <Icon name="lock" size={25} style={styles.icon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="password"
+                                placeholderTextColor="#c2c2c2"
+                                name="password"
+                                onChangeText={setPassword}
+                            />
+                        </View>
+                        <View style={styles.inputContainer}>
+                            <IConMaterial name="email" size={25} style={styles.icon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="email"
+                                placeholderTextColor="#c2c2c2"
+                                name="email"
+                                onChangeText={setEmail}
+                                keyboardType='email-address'
+                            />
+                        </View>
+                        {loading ? (
+                            <ActivityIndicator style={styles.loandig} size={50} color="#1B4725" />
+                        ) : (
+                        <TouchableOpacity style={styles.btn} onPress={() => { handleSignup() }}>
                             <Text style={styles.btnText}>Siguiente</Text>
                         </TouchableOpacity>
+                        )}
                         <View style={styles.bollContainer}>
                             <View style={[styles.boll1, {backgroundColor: boll.colo1}]}></View>
                             <View style={[styles.boll2, {backgroundColor: boll.colo2}]}></View>
                         </View>
                     </View>
+                    <Alerta
+                        visible={alertVisible}
+                        onClose={closeAlert}
+                        message={message}
+                    />
                 </Animated.View>
             </ScrollView>
         </KeyboardAvoidingView>

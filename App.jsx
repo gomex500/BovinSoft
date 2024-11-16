@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text } from 'react-native';
 import Splash from './src/components/Splash';
 import InfoBovino from './src/views/InfoBovino';
+import { useUserStore } from './src/store/userStore';
 
 const Stack = createStackNavigator();
 
@@ -26,11 +27,16 @@ const getData = async (key) => {
 };
 
 export default function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(null); // Estado para manejar la autenticación
+    const { isLoggedIn, setIsLoggedIn } = useUserStore();
 
     useEffect(() => {
         const checkLoginStatus = async () => {
-            const userId = await getData('id'); // Espera el resultado de getData
+            console.log("se ejecuta el logout");
+            // await AsyncStorage.removeItem('token');	
+            // await AsyncStorage.removeItem('id');
+            const userId = await getData('id');
+            console.log(userId);
+            
             setIsLoggedIn(userId !== null); // Actualiza el estado según el valor recuperado
         };
 

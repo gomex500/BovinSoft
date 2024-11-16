@@ -55,7 +55,7 @@ export const ProviderGlobalContext = ({children}) => {
 
      //peticion la primera ves que se cargue la vista
      useEffect( () => {
-        const fetchData = async ()=>{
+        const fetchData = async ()=> {
             await ObtenerUsuario(); 
             await ObtenerFinca();
             await ObtenerGanado();

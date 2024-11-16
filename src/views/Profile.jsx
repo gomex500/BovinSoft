@@ -4,11 +4,12 @@ import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GlobalContext } from '../Context/GlobalContext';
+import { useUserStore } from '../store/userStore';
 
 
 const Profile = ({navigation}) => {
 
-    const {user} = useContext(GlobalContext);
+  const { user, setIsLoggedIn } = useUserStore();
     // console.log(user);
     // Estado para manejar la imagen seleccionada
     const [image, setImage] = useState(null);
@@ -22,10 +23,9 @@ const Profile = ({navigation}) => {
         }
     };
 
-    const cerrarSesion = () =>{
-        removeData('id');
-        removeData('token');
-        navigation.navigate('Inicio');
+    const cerrarSesion = () => {
+        setIsLoggedIn(null);
+        navigation.navigate('Login');
     }
 
     const pickImage = async () => {
