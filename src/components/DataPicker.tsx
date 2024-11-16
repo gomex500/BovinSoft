@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { View, Button, Text } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const DatePickerExample = (props) => {
+interface IDataPicker {
+  date: Date;
+  setDate: React.Dispatch<React.SetStateAction<Date>>;
+}
+
+const DatePickerExample = ({ date, setDate }: IDataPicker) => {
   const [show, setShow] = useState(false);
 
-  const { date, setDate } = props;
 
-  const onChange = (event, selectedDate) => {
+  const onChange = (event: any, selectedDate: Date | null) => {
     const currentDate = selectedDate || date;
     setShow(false);
     setDate(currentDate);

@@ -14,7 +14,6 @@ const Inicio = ({navigation}) => {
     const getData = async (key) => {
         try {
         const value = await AsyncStorage.getItem(key);
-            console.log(value);
         } catch (error) {
             console.error('Error getting data:', error);
         }
@@ -28,7 +27,6 @@ const Inicio = ({navigation}) => {
             duration: 1200,
             useNativeDriver: true,
         }).start();
-        console.log(getData('token'));
     }, []);
 
     return (
@@ -156,7 +154,7 @@ export default Inicio;
 // const removeData = async (key) => {
 //     try {
 //       await AsyncStorage.removeItem(key);
-//       console.log(`Data with key "${key}" removed.`);
+//       console.`Data with key "${key}" removed.`);
 //     } catch (error) {
 //       console.error('Error removing data:', error);
 //     }

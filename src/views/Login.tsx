@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Alerta from '../components/Alerta';
 import { useUserStore } from '../store/userStore';
+import { API_URL } from '@env';
 
 
 const Login = ({navigation}) => {
@@ -64,7 +65,7 @@ const Login = ({navigation}) => {
         setLoading(true);
         setMessage('');
         try {
-            const response = await axios.post('https://bovinsoft-backend-plae.onrender.com/login', {
+            const response = await axios.post(`${API_URL}/login`, {
                 email,
                 password,
             });
@@ -81,13 +82,10 @@ const Login = ({navigation}) => {
 
                 await obtenerUsuario(id, token);
                 setToken(token)
-                console.log(response.data);
                 setMessage('Bienvenido');
                 showAlert();
                 setLoading(false);
                 navigation.navigate('Navegacion');
-                console.log(response.data);
-                
             }
         } catch (error) {
             console.error('Error en la autenticación:', error);

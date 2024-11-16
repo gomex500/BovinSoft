@@ -3,17 +3,22 @@ import { StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity, Image,
 import Entypo from '@expo/vector-icons/Entypo';
 import { GlobalContext } from '../Context/GlobalContext';
 import FormFinca from './FormFinca';
+import { useFincaStore } from '../store/fincaStore';
 
 
 const Fincas = ({navigation}) => {
 
-    const {finca} = useContext(GlobalContext);
+    // const {finca} = useContext(GlobalContext);
+    const { fincas, obtenerFincaPorUsuario } = useFincaStore();
     const [animationValue] = useState(new Animated.Value(0));
     const [ingresar, setIngresar] = useState(false);
-    // console.log(finca[0].nombre);
 
-    // Animación de la opacidad
     useEffect(() => {
+        const fetchData = async () => {
+            await obtenerFincaPorUsuario();
+        }
+        fetchData();
+
         Animated.timing(animationValue, {
             toValue: 1,
             duration: 1200,
@@ -21,55 +26,51 @@ const Fincas = ({navigation}) => {
         }).start();
     }, []);
 
-    const ingresarD = () =>{
-        setIngresar(!ingresar);
+    const goForm = () =>{
+        navigation.navigate('FormFinca');
     }
 
-    if (ingresar == true) {
-        return <FormFinca/>
-    } else {
-        return (
-            <Animated.View contentContainerStyle={[styles.contentContainer, { opacity: animationValue }]}>
-                <View style={styles.contenedorFiltro}>
-                    <View style={styles.contenedorInpunt}>
-                        <TextInput placeholder='Buscar finca...' style={styles.input} />
-                        <TouchableOpacity style={styles.boton}>
-                            <Entypo name="magnifying-glass" size={24} color="white" />
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                            style={[styles.boton, { borderTopRightRadius: 8, borderBottomRightRadius: 8 }]}
-                            onPress={ingresarD}
-                        >
-                            <Entypo name="plus" size={24} color="white" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-    
-                <FlatList
-                    data={finca}
-                    style={{ padding: 5 }}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                            style={styles.contenedorCard}
-                            onPress={() => navigation.navigate('InfoFinca', { newsItem: item })}
-                        >
-                            <View style={styles.card}>
-                                <Image 
-                                    source={require('../../assets/Finca.jpg')}
-                                    style={{ width: '100%', height: 200 }}
-                                />
-                                <View style={styles.contTexto}>
-                                    <Text style={styles.titulo}>{item.nombre}</Text>
-                                    <Text style={styles.descripcion}>{item.descripcion}</Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    )}
-                    keyExtractor={(item) => item.id} // Asegúrate de que 'id' sea único
-                />
-            </Animated.View>
-        );
-    }
+    return (
+      <Animated.View style={[styles.contentContainer, { opacity: animationValue }]}>
+          <View style={styles.contenedorFiltro}>
+              <View style={styles.contenedorInpunt}>
+                  <TextInput placeholder='Buscar finca...' style={styles.input} />
+                  <TouchableOpacity style={styles.boton}>
+                      <Entypo name="magnifying-glass" size={24} color="white" />
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                      style={[styles.boton, { borderTopRightRadius: 8, borderBottomRightRadius: 8 }]}
+                      onPress={goForm}
+                  >
+                      <Entypo name="plus" size={24} color="white" />
+                  </TouchableOpacity>
+              </View>
+          </View>
+
+          <FlatList
+              data={fincas}
+              style={{ padding: 5 }}
+              renderItem={({ item }) => (
+                  <TouchableOpacity
+                      style={styles.contenedorCard}
+                      onPress={() => navigation.navigate('InfoFinca', { newsItem: item })}
+                  >
+                      <View style={styles.card}>
+                          <Image 
+                              source={require('../../assets/Finca.jpg')}
+                              style={{ width: '100%', height: 200 }}
+                          />
+                          <View style={styles.contTexto}>
+                              <Text style={styles.titulo}>{item.nombre}</Text>
+                              <Text style={styles.descripcion}>{item.descripcion}</Text>
+                          </View>
+                      </View>
+                  </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item._id} // Asegúrate de que 'id' sea único
+          />
+      </Animated.View>
+  );
 };
 
 const styles = StyleSheet.create({

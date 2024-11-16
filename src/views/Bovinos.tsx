@@ -1,52 +1,52 @@
 import { Entypo } from '@expo/vector-icons';
-import React, { useContext, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, Image, ScrollView } from 'react-native';
-import { GlobalContext } from '../Context/GlobalContext';
-import FormBovino from './FormBovino';
+import React, { useEffect } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, Image } from 'react-native';
+import { useBovinosStore } from '../store/vacasStore';
 
 
 const Bovinos = ({navigation}) => {
 
-    const {vacas} = useContext(GlobalContext);
-    const [ingresar, setIngresar] = useState(false);
+   const { vacas, obtenerGanadoPorUsuario } = useBovinosStore();
 
-    const ingresarD = () =>{
-        setIngresar(!ingresar);
-    }
+    useEffect(() => {
+        const fetchData = async () => {
+            await obtenerGanadoPorUsuario();
+        }
 
-    if (ingresar == true) {
-      return <FormBovino/>
-  } else {
+        fetchData();
+    }, []);
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.contenedorFiltro}>
-                <View style={styles.contenedorInpunt}>
-                    <TextInput placeholder='Buscar Ganado...' style={styles.input} />
-                    <TouchableOpacity style={styles.boton}>
-                        <Entypo name="magnifying-glass" size={24} color="white" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.boton, { borderTopRightRadius: 8, borderBottomRightRadius: 8 }]} onPress={ingresarD}>
-                        <Entypo name="plus" size={24} color="white" />
-                    </TouchableOpacity>
-                </View>
-            </View>
+    const goForm = () =>{
+      navigation.navigate('FormBovino');
+  }
 
-            {/* tarjetas de los animales */}
-            <View style={styles.conBvi}>
-                <FlatList
-                    data={vacas}
-                    renderItem={({item}) =>(
-                       <CardComponente navigation={navigation} item={item}/>
-                    )}
-                    keyExtractor={(item) => item.id}
-                    numColumns={3} // Cambia este valor para ajustar el número de columnas
-                    columnWrapperStyle={styles.row} // Estilo para las filas
-                />
+  return (
+    <View style={styles.container}>
+        <View style={styles.contenedorFiltro}>
+            <View style={styles.contenedorInpunt}>
+                <TextInput placeholder='Buscar Ganado...' style={styles.input} />
+                <TouchableOpacity style={styles.boton}>
+                    <Entypo name="magnifying-glass" size={24} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.boton, { borderTopRightRadius: 8, borderBottomRightRadius: 8 }]} onPress={goForm}>
+                    <Entypo name="plus" size={24} color="white" />
+                </TouchableOpacity>
             </View>
         </View>
-    )
-  }
+
+        {/* tarjetas de los animales */}
+        <View style={styles.conBvi}>
+            <FlatList
+                data={vacas}
+                renderItem={({item}) =>(
+                   <CardComponente navigation={navigation} item={item}/>
+                )}
+                keyExtractor={(item) => item._id}
+                numColumns={3} // Cambia este valor para ajustar el número de columnas
+            />
+        </View>
+    </View>
+)
 }
 
 const CardComponente = ({ item, navigation }) => {
@@ -83,6 +83,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal:20
     },
+    contTexto:{
+      paddingHorizontal:10,
+      paddingVertical:5
+    },
     input: {
         flex: 1,
         borderRadius: 8,
@@ -117,7 +121,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginHorizontal: 5,
         marginBottom:20,
-        borderRadius: 10,
         shadowColor: '#000',
         shadowOpacity: 0.2,
         shadowRadius: 5,
@@ -125,6 +128,11 @@ const styles = StyleSheet.create({
         elevation: 3,
         overflow: 'hidden',
     },
+    contenedorCard: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginVertical: 10,
+  },
     imagen: {
         width: 80,
         height: 80,
@@ -146,3 +154,4 @@ const styles = StyleSheet.create({
 });
 
 export default Bovinos;
+

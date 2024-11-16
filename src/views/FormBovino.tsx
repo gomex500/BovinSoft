@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -8,21 +8,47 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native'
-import { useTailwind } from 'tailwind-rn'
+import { useTailwind } from "tailwind-rn"
 import { CustomSelect } from '../components/CustomSelect'
 import { RadioButtonGroup } from '../components/RadioButtonGroup'
+import { API_URL } from '@env';
+import { IOptions } from '../interfaces/IGen'
+import { useFincaStore } from '../store/fincaStore'
+import { FincaModel } from '../interfaces/IFinca'
+import { useUserStore } from '../store/userStore'
+import { useBovinosStore } from '../store/vacasStore'
 
 const FormBovino = () => {
   const [nombre, setNombre] = useState('')
   const [errorMsg, setErrorMsg] = useState(null)
-  const [imagen, setImagen] = useState('')
+  const [image, setImagen] = useState('')
   const [raza, setRaza] = useState('')
-  const [edad, setEdad] = useState(0)
-  const [peso, setPeso] = useState(0)
+  const [edad, setEdad] = useState("")
+  const [peso, setPeso] = useState("")
   const [genero, setGenero] = useState('')
   const [tipo, setTipo] = useState('')
   const [estadoSalud, setEstadoSalud] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [fincaId, setFinca] = useState('')
+  const [fincas, setFincas] = useState<IOptions[]>([])
+
+  const { obtenerFincaPorUsuario } = useFincaStore();
+  const { crearGanado } = useBovinosStore();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data:FincaModel[] = await obtenerFincaPorUsuario();
+      data.map((finca) => {
+        setFincas((prevState) => [...prevState, { label: finca.nombre, value: finca._id }]);
+      });
+    };
+
+    fetchData();
+  }, []);
+
+  let disabledButton = nombre === '' || image === '' || raza === '' || edad === "" || peso === "" || genero === '' || tipo === '' || estadoSalud === ''
 
   const tw = useTailwind()
 
@@ -66,15 +92,21 @@ const FormBovino = () => {
     { label: 'Chianina', value: '37' }
   ];
   
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setLoading(true)
     const data = {
       nombre,
-      descripcion,
       image,
-      recursosN: recursos.filter((recurso) => recurso !== ''), // Filtra recursos vacíos
+      raza: razasDeGanado.find((item) => item.value === raza).label,
+      edad,
+      peso,
+      genero: generosGanado.find((item) => item.value === genero).label,
+      tipo: tipoDeGanado.find((item) => item.value === tipo).label,
+      estadoSalud: estadoSaludGanado.find((item) => item.value === estadoSalud).label,
+      fincaId
     }
-    console.log(data)
-    // Aquí puedes enviar los datos a tu API o manejarlos como necesites
+    let result = await crearGanado(data)
+    setLoading(false)
   }
 
   const generosGanado = [
@@ -82,15 +114,26 @@ const FormBovino = () => {
     { label: 'Hembra', value: '2G' },
   ];
 
-  const tipoDeGAnado = [
+  const tipoDeGanado = [
     { label: 'Carne', value: '1TG' },
     { label: 'Leche', value: '2TG' },
     { label: 'Mixto', value: '3TG' },
   ];
 
+  const estadoSaludGanado = [
+    { label: 'Saludable', value: 'saludable' },
+    { label: 'Enfermo', value: 'enfermo' },
+    { label: 'En tratamiento', value: 'en_tratamiento' },
+    { label: 'En cuarentena', value: 'en_cuarentena' },
+    { label: 'Lesionado', value: 'lesionado' },
+    { label: 'Recuperado', value: 'recuperado' },
+    { label: 'En observación', value: 'en_observacion' }
+  ];
+  
+
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Ingresar Finca</Text>
+      <Text style={styles.title}>Ingresar Ganado</Text>
       <TextInput
         style={styles.input}
         value={nombre}
@@ -99,15 +142,9 @@ const FormBovino = () => {
       />
       <TextInput
         style={styles.input}
-        value={imagen}
+        value={image}
         onChangeText={setImagen}
         placeholder={'Imagen URL:'}
-      />
-      <TextInput
-        style={styles.input}
-        value={raza}
-        onChangeText={setRaza}
-        placeholder={'raza :'}
       />
       <TextInput
         style={styles.input}
@@ -117,6 +154,14 @@ const FormBovino = () => {
         keyboardType="numeric"
         maxLength={2}
       />
+      <SafeAreaView style={tw('flex-1 bg-gray-50')}>
+          <CustomSelect
+            options={fincas}
+            selectedValue={fincaId}
+            onSelect={setFinca}
+            placeholder="Fincas:"
+          />
+      </SafeAreaView>
       <SafeAreaView style={tw('flex-1 bg-gray-50')}>
           <CustomSelect
             options={razasDeGanado}
@@ -136,7 +181,7 @@ const FormBovino = () => {
       </SafeAreaView>
       <SafeAreaView style={tw('flex-1 bg-gray-50')}>
           <CustomSelect
-            options={tipoDeGAnado}
+            options={tipoDeGanado}
             selectedValue={tipo}
             onSelect={setTipo}
             placeholder="Tipo de Ganado:"
@@ -146,34 +191,25 @@ const FormBovino = () => {
         style={styles.input}
         value={peso}
         onChangeText={setPeso}
-        placeholder={'peso :'}
+        placeholder={'peso (kg) :'}
         keyboardType="numeric"
         maxLength={2}
       />
-      <TextInput
-        style={styles.input}
-        value={genero}
-        onChangeText={setGenero}
-        placeholder={'genero :'}
-        keyboardType="text"
-      />
-      <TextInput
-        style={styles.input}
-        value={tipo}
-        onChangeText={setTipo}
-        placeholder={'tipo :'}
-        keyboardType="text"
-      />
-      <TextInput
-        style={styles.input}
-        value={estadoSalud}
-        onChangeText={setEstadoSalud}
-        placeholder={'estado de salud :'}
-      />
-
-      <TouchableOpacity style={styles.btn2} onPress={() => {}}>
-        <Text style={styles.btnText}>Enviar</Text>
-      </TouchableOpacity>
+      <SafeAreaView style={tw('flex-1 bg-gray-50')}>
+          <CustomSelect
+            options={estadoSaludGanado}
+            selectedValue={estadoSalud}
+            onSelect={setEstadoSalud}
+            placeholder="Estado de salud:"
+          />
+      </SafeAreaView>
+      {loading ? (
+        <ActivityIndicator style={styles.loandig} size={50} color="#1B4725" />
+      ) : (
+        <TouchableOpacity disabled={disabledButton} style={disabledButton ? styles.btn2 : styles.btn} onPress={handleSubmit}>
+          <Text style={disabledButton ? styles.btnText : styles.btnText2}>Enviar</Text>
+        </TouchableOpacity>
+      )}
     </ScrollView>
   )
 }
@@ -214,17 +250,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   btn: {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#1B4725',
     width: '100%',
     height: 50,
+    borderRadius: 10,
     paddingTop: 12,
-    marginTop: 10,
+    marginTop: 20,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
     overflow: 'hidden',
+    borderColor: '#c2c2c2',
+    marginBottom: 50,
   },
   btn2: {
     backgroundColor: '#f2f2f2',
@@ -245,11 +286,24 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   btnText: {
-    color: '#1B4725',
+    color: '#c2c2c2',
     textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
   },
+  btnText2: {
+    color: '#f2f2f2',
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  loandig:{
+    paddingTop: 12,
+    marginTop: 20,
+    elevation: 3,
+    height: 50,
+    marginBottom: 50,
+  }
 })
 
 export default FormBovino

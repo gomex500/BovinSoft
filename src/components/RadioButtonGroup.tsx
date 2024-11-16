@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
+import { IOptions } from '../interfaces/IGen';
 
-export const RadioButtonGroup = ({ options, selectedValue, onSelect, placeholder, orientation = 'vertical' }) => {
+interface IRadioButtonGroup {
+  options: IOptions[];
+  onSelect: (value: string) => void;
+  selectedValue: string;
+  placeholder: string;
+  orientation?: 'horizontal' | 'vertical';
+}
+
+export const RadioButtonGroup = ({ options, selectedValue, onSelect, placeholder, orientation = 'vertical' }:IRadioButtonGroup) => {
   const flexDirection = orientation === 'horizontal' ? 'flex-row' : 'flex-col';
   const tailwind = useTailwind();
 

@@ -5,9 +5,14 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GlobalContext } from '../Context/GlobalContext';
 import { useUserStore } from '../store/userStore';
+import { NavigationProp } from '@react-navigation/native';
+
+interface IProfile {
+  navigation: NavigationProp<any>;
+}
 
 
-const Profile = ({navigation}) => {
+const Profile = ({navigation}:IProfile) => {
 
   const { user, setIsLoggedIn } = useUserStore();
     // console.log(user);
@@ -17,15 +22,16 @@ const Profile = ({navigation}) => {
     const removeData = async (key) => {
         try {
           await AsyncStorage.removeItem(key);
-          console.log(`Data with key "${key}" removed.`);
         } catch (error) {
           console.error('Error removing data:', error);
         }
     };
 
     const cerrarSesion = () => {
-        setIsLoggedIn(null);
-        navigation.navigate('Login');
+        setIsLoggedIn(false);
+        setTimeout(() => {
+          navigation.navigate('Inicio');
+        }, 1000);
     }
 
     const pickImage = async () => {
@@ -106,7 +112,7 @@ const Profile = ({navigation}) => {
                 <View style={styles.datos}>
                     <Text style={styles.info}>Fecha de Nacimiento:</Text>
                     <View style={styles.contData}>
-                        <Text style={styles.textInfo}>
+                        <Text>
                             {user.fecha_nacimiento}
                             {/* <Icon
                                 style={styles.icon}
@@ -118,7 +124,7 @@ const Profile = ({navigation}) => {
                     </View>
                     <Text style={styles.info}>Email:</Text>   
                     <View style={styles.contData}>
-                        <Text style={styles.textInfo}>
+                        <Text>
                             {user.email}
                             {/* <Icon
                                 style={styles.icon}
@@ -130,7 +136,7 @@ const Profile = ({navigation}) => {
                     </View>
                     <Text style={styles.info}>Teléfono:</Text>   
                     <View style={styles.contData}>
-                        <Text style={styles.textInfo}>
+                        <Text>
                         {user.telefono}
                             {/* <Icon
                                 style={styles.icon}
@@ -142,7 +148,7 @@ const Profile = ({navigation}) => {
                     </View>
                     <Text style={styles.info}>Tipo de Suscripción:</Text> 
                     <View style={styles.contData}>
-                        <Text style={styles.textInfo}>
+                        <Text>
                             {user.tipoSuscripcion}
                             {/* <Icon
                                 style={styles.icon}
@@ -154,7 +160,7 @@ const Profile = ({navigation}) => {
                     </View>
                     <Text style={styles.info}>Rol:</Text>
                     <View style={styles.contData}>
-                        <Text style={styles.textInfo}>
+                        <Text>
                             {user.rol}
                             {/* <Icon
                                 style={styles.icon}
@@ -166,7 +172,7 @@ const Profile = ({navigation}) => {
                     </View>
                     <Text style={styles.info}>Dirección:</Text>
                     <View style={styles.contData}>
-                        <Text style={styles.textInfo}>
+                        <Text>
                         {user.direccion}
                             {/* <Icon
                                 style={styles.icon}

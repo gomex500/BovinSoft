@@ -23,6 +23,7 @@ import Alerta from '../components/Alerta';
 import axios from "axios";
 import DatePickerExample from '../components/DataPicker';
 import { useUserStore } from '../store/userStore';
+import { API_URL } from '@env';
 
 const Signup = ({navigation}) => {
     const [animationValue] = useState(new Animated.Value(0));
@@ -73,8 +74,6 @@ const Signup = ({navigation}) => {
             quality: 1,
         });
 
-        console.log(result.assets[0].uri);
-
         if (!result.canceled) {
             setSelectImg(true);
             setImage(result.assets[0].uri);
@@ -85,7 +84,7 @@ const Signup = ({navigation}) => {
         setLoading(true);
         setMessage('');
         try {
-            const response = await axios.post('https://bovinsoft-backend-plae.onrender.com/signin', {
+            const response = await axios.post(`${API_URL}/signin`, {
               nombre,
               apellido,
               fecha_nacimiento:date.toString(),
@@ -166,7 +165,6 @@ const Signup = ({navigation}) => {
                                 style={styles.input} 
                                 placeholder="Nombre" 
                                 placeholderTextColor="#c2c2c2" 
-                                name="nombre"
                                 onChangeText={setNombre}
                             />
                         </View>
@@ -176,7 +174,6 @@ const Signup = ({navigation}) => {
                                 style={styles.input} 
                                 placeholder="Apellido"
                                 placeholderTextColor="#c2c2c2" 
-                                name="apellido"
                                 onChangeText={setApellido}
                             />
                         </View>
@@ -191,7 +188,6 @@ const Signup = ({navigation}) => {
                                 placeholder="Telefono"
                                 keyboardType='phone-pad'
                                 placeholderTextColor="#c2c2c2"
-                                name="telefono"
                                 onChangeText={setTelefono}
                             />
                         </View>
@@ -201,7 +197,6 @@ const Signup = ({navigation}) => {
                                 style={styles.input}
                                 placeholder="Direccion"
                                 placeholderTextColor="#c2c2c2"
-                                name="direccion"
                                 onChangeText={setDireccion}
                             />
                         </View>
@@ -212,7 +207,6 @@ const Signup = ({navigation}) => {
                                 style={styles.input}
                                 placeholder="Rol"
                                 placeholderTextColor="#c2c2c2"
-                                name="rol"
                                 onChangeText={setRol}
                             />
                         </View>
@@ -223,7 +217,6 @@ const Signup = ({navigation}) => {
                                 style={styles.input}
                                 placeholder="Tipo de Suscripcion"
                                 placeholderTextColor="#c2c2c2"
-                                name="tipoSuscripcion"
                                 onChangeText={setTipoSuscripcion}
                             />
                         </View>
@@ -234,7 +227,6 @@ const Signup = ({navigation}) => {
                                 style={styles.input}
                                 placeholder="password"
                                 placeholderTextColor="#c2c2c2"
-                                name="password"
                                 onChangeText={setPassword}
                             />
                         </View>
@@ -244,7 +236,6 @@ const Signup = ({navigation}) => {
                                 style={styles.input}
                                 placeholder="email"
                                 placeholderTextColor="#c2c2c2"
-                                name="email"
                                 onChangeText={setEmail}
                                 keyboardType='email-address'
                             />
@@ -353,7 +344,6 @@ const styles = StyleSheet.create({
         borderColor:'#1B4725',
         borderWidth: 2,
         fontSize:18,
-        color:'#1B4725',
         fontWeight: 'bold',
         borderTopWidth:0,
         borderLeftWidth:0,
@@ -397,7 +387,10 @@ const styles = StyleSheet.create({
         width:20,
         height:20,
         borderRadius: 50,
-    }
+    },
+    loandig:{
+      marginTop:50
+  }
 });
 
 export default Signup;

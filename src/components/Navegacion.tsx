@@ -9,9 +9,32 @@ import Metricas from '../views/Metricas';
 import Comunidad from '../views/Comunidad';
 import Bovinos from '../views/Bovinos';
 import Profile from '../views/Profile';
+import FormFinca from '../views/FormFinca';
+import { createStackNavigator } from '@react-navigation/stack';
+import FormBovino from '../views/FormBovino';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator()
+
+// Crear el stack para Fincas y FormFinca
+const FincasStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Fincas" component={Fincas} />
+      <Stack.Screen name="FormFinca" component={FormFinca} />
+    </Stack.Navigator>
+  );
+};
+
+const BovinosStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Bovinos" component={Bovinos} />
+      <Stack.Screen name="FormBovino" component={FormBovino} />
+    </Stack.Navigator>
+  );
+};
 
 const MyStackNavigation = () => {
   const [animationValues] = useState({});
@@ -91,9 +114,9 @@ const MyStackNavigation = () => {
           })}
         >
           <Tab.Screen name="Metricas" component={Metricas} options={{ tabBarLabel: () => null }} />
-          <Tab.Screen name="Fincas" component={Fincas} options={{ tabBarLabel: () => null }} />
+          <Tab.Screen name="Fincas" component={FincasStack} options={{ tabBarLabel: () => null }} />
           <Tab.Screen name="Comunidad" component={Comunidad} options={{ tabBarLabel: () => null }} />
-          <Tab.Screen name="Bovinos" component={Bovinos} options={{ tabBarLabel: () => null }} />
+          <Tab.Screen name="Bovinos" component={BovinosStack} options={{ tabBarLabel: () => null }} />
           <Tab.Screen name="Chatbot" component={Chatbot} options={{ tabBarLabel: () => null }} />
         </Tab.Navigator>
       </View>

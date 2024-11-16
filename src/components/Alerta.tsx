@@ -2,7 +2,13 @@ import React, {useState, useEffect} from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const Alerta = ({ visible, onClose, message }) => {
+interface IAlerta {
+    visible: boolean;
+    onClose: () => void;
+    message: string;
+}
+
+const Alerta = ({ visible, onClose, message }:IAlerta) => {
 
     const [animationValue] = useState(new Animated.Value(0));
 

@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
+import { IOptions } from '../interfaces/IGen';
 
-export const CustomSelect = ({ options, onSelect, selectedValue, placeholder }) => {
+interface ICustomSelect {
+  options: IOptions[];
+  onSelect: (value: string) => void;
+  selectedValue: string;
+  placeholder: string;
+}
+
+export const CustomSelect = ({ options, onSelect, selectedValue, placeholder }:ICustomSelect) => {
   const [modalVisible, setModalVisible] = useState(false);
   const tailwind = useTailwind();
 
@@ -29,7 +37,7 @@ export const CustomSelect = ({ options, onSelect, selectedValue, placeholder }) 
         <Text style={tailwind('text-lg')}>
           {selectedValue
             ? options.find((opt) => opt.value === selectedValue)?.label
-            : 'Select an option'}
+            : 'Seleccione una opcion'}
         </Text>
       </TouchableOpacity>
 

@@ -18,7 +18,7 @@ import utilities from './tailwind.json';
 const Stack = createStackNavigator()
 
 // Recuperar datos
-const getData = async (key) => {
+const getData = async (key:string) => {
   try {
     const value = await AsyncStorage.getItem(key)
     return value // Devuelve el valor recuperado
@@ -30,28 +30,32 @@ const getData = async (key) => {
 
 export default function App() {
   const { isLoggedIn, setIsLoggedIn, obtenerUsuario } = useUserStore()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      console.log('se ejecuta el logout')
+
       const userId = await getData('id')
-      console.log(userId)
+      const token = await getData('token')
 
       setIsLoggedIn(userId !== null) // Actualiza el estado según el valor recuperado
       if (userId !== null) {
-        await obtenerUsuario(userId)
+        await obtenerUsuario(userId, token)
       }
+
+      setLoading(false)
     }
 
     checkLoginStatus() // Llama a la función para verificar el estado de inicio de sesión
   }, [])
 
   return (
-    <TailwindProvider utilities={utilities}>
+    //@ts-ignore
+    <TailwindProvider utilities={utilities as any}>
       <ProviderGlobalContext>
         <NavigationContainer>
           <Stack.Navigator>
-            {isLoggedIn === null ? ( // Mientras se está verificando el estado, puedes mostrar un cargando o similar
+            {loading ? ( // Mientras se está verificando el estado, puedes mostrar un cargando o similar
               <Stack.Screen
                 name="Loading"
                 component={LoadingScreen} // Crea un componente de carga si lo deseas
@@ -69,20 +73,20 @@ export default function App() {
                 <Stack.Screen
                   name="InfoFinca"
                   component={InfoFinca}
-                  screenOptions={{
+                  options={({ navigation }) => ({
                     headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
                     headerTintColor: '#1B4725', // Color del texto en el header
                     headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
-                  }}
+                  })}
                 />
                 <Stack.Screen
                   name="InfoBovino"
                   component={InfoBovino}
-                  screenOptions={{
+                  options={({ navigation }) => ({
                     headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
                     headerTintColor: '#1B4725', // Color del texto en el header
                     headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
-                  }}
+                  })}
                 />
               </>
             ) : (
@@ -118,20 +122,20 @@ export default function App() {
                 <Stack.Screen
                   name="InfoFinca"
                   component={InfoFinca}
-                  screenOptions={{
+                  options={({ navigation }) => ({
                     headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
-                    headerTintColor: '#FFFFFF', // Color del texto en el header
+                    headerTintColor: '#1B4725', // Color del texto en el header
                     headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
-                  }}
+                  })}
                 />
                 <Stack.Screen
                   name="InfoBovino"
                   component={InfoBovino}
-                  screenOptions={{
+                  options={({ navigation }) => ({
                     headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
-                    headerTintColor: '#FFFFFF', // Color del texto en el header
+                    headerTintColor: '#1B4725', // Color del texto en el header
                     headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
-                  }}
+                  })}
                 />
               </>
             )}
