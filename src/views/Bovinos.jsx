@@ -1,22 +1,22 @@
 import { Entypo } from '@expo/vector-icons';
-import React, {useContext} from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, Image, ScrollView } from 'react-native';
 import { GlobalContext } from '../Context/GlobalContext';
+import FormBovino from './FormBovino';
 
-const data = [
-    { id: '1', code: '001', image: require('../../assets/Finca.jpg') },
-    { id: '2', code: '002', image: require('../../assets/Finca.jpg') },
-    { id: '3', code: '003', image: require('../../assets/Finca.jpg') },
-    { id: '4', code: '004', image: require('../../assets/Finca.jpg') },
-    { id: '4', code: '004', image: require('../../assets/Finca.jpg') },
-    { id: '4', code: '004', image: require('../../assets/Finca.jpg') },
-    { id: '4', code: '004', image: require('../../assets/Finca.jpg') },
-];
 
 const Bovinos = ({navigation}) => {
 
     const {vacas} = useContext(GlobalContext);
-    console.log(vacas);
+    const [ingresar, setIngresar] = useState(false);
+
+    const ingresarD = () =>{
+        setIngresar(!ingresar);
+    }
+
+    if (ingresar == true) {
+      return <FormBovino/>
+  } else {
 
     return (
         <View style={styles.container}>
@@ -26,7 +26,7 @@ const Bovinos = ({navigation}) => {
                     <TouchableOpacity style={styles.boton}>
                         <Entypo name="magnifying-glass" size={24} color="white" />
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.boton, { borderTopRightRadius: 8, borderBottomRightRadius: 8 }]}>
+                    <TouchableOpacity style={[styles.boton, { borderTopRightRadius: 8, borderBottomRightRadius: 8 }]} onPress={ingresarD}>
                         <Entypo name="plus" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
@@ -37,20 +37,7 @@ const Bovinos = ({navigation}) => {
                 <FlatList
                     data={vacas}
                     renderItem={({item}) =>(
-                        <TouchableOpacity
-                            style={styles.contenedorCard}
-                            onPress={() => navigation.navigate('InfoBovino', { newsItem: item })}
-                        >
-                            <View style={styles.card}>
-                                <Image 
-                                    source={{ uri: item.image }}
-                                    style={styles.imagen}
-                                />
-                                <View style={styles.contTexto}>
-                                    <Text style={styles.codigo}>{item.codigo}</Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
+                       <CardComponente navigation={navigation} item={item}/>
                     )}
                     keyExtractor={(item) => item.id}
                     numColumns={3} // Cambia este valor para ajustar el número de columnas
@@ -58,15 +45,26 @@ const Bovinos = ({navigation}) => {
                 />
             </View>
         </View>
-    );
+    )
+  }
 }
 
-const CardComponente = ({ item }) => {
+const CardComponente = ({ item, navigation }) => {
     return (
-        <View style={styles.card}>
-            <Image source={item.image} style={styles.imagen} />
-            <Text style={styles.codigo}>{item.code}</Text>
-        </View>
+      <TouchableOpacity
+      style={styles.contenedorCard}
+      onPress={() => navigation.navigate('InfoBovino', { newsItem: item })}
+  >
+      <View style={styles.card}>
+          <Image 
+              source={{ uri: item.image }}
+              style={styles.imagen}
+          />
+          <View style={styles.contTexto}>
+              <Text style={styles.codigo}>{item.codigo}</Text>
+          </View>
+      </View>
+  </TouchableOpacity>
     );
 };
 
