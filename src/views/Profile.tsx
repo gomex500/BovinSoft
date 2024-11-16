@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Image, Button, Alert, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, Alert, TouchableOpacity, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GlobalContext } from '../Context/GlobalContext';
 import { useUserStore } from '../store/userStore';
 import { NavigationProp } from '@react-navigation/native';
 
 interface IProfile {
   navigation: NavigationProp<any>;
 }
-
 
 const Profile = ({navigation}:IProfile) => {
 

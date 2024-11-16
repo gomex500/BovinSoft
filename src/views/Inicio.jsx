@@ -1,25 +1,12 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import { StyleSheet, View, Text, Image, Animated, ScrollView, TouchableOpacity} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, View, Text, Animated, ScrollView, TouchableOpacity} from 'react-native';
 import LottieView from 'lottie-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { GlobalContext } from '../Context/GlobalContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Inicio = ({navigation}) => {
     const animation = useRef(null);
     const [animationValue] = useState(new Animated.Value(0));
     
-
-    // Recuperar datos
-    const getData = async (key) => {
-        try {
-        const value = await AsyncStorage.getItem(key);
-        } catch (error) {
-            console.error('Error getting data:', error);
-        }
-    };
-    const {user} = useContext(GlobalContext)
-
     // Animación de la opacidad
     useEffect( () => {
         Animated.timing(animationValue, {

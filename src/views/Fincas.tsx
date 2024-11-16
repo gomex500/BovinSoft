@@ -1,17 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity, Image, FlatList, Animated } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, FlatList, Animated } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
-import { GlobalContext } from '../Context/GlobalContext';
-import FormFinca from './FormFinca';
 import { useFincaStore } from '../store/fincaStore';
 
 
 const Fincas = ({navigation}) => {
 
-    // const {finca} = useContext(GlobalContext);
     const { fincas, obtenerFincaPorUsuario } = useFincaStore();
     const [animationValue] = useState(new Animated.Value(0));
-    const [ingresar, setIngresar] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
