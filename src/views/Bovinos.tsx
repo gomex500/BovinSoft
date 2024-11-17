@@ -2,19 +2,45 @@ import { Entypo } from '@expo/vector-icons';
 import React, { useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, Image } from 'react-native';
 import { useBovinosStore } from '../store/vacasStore';
+import { useTailwind } from 'tailwind-rn';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { BovinoModel } from '../interfaces/IBovino';
+import { useFincaStore } from '../store/fincaStore';
+import { useFocusEffect } from '@react-navigation/native';
+
+interface BovinoRouteParams {
+  info: {
+    from: string;
+    id: string;
+  } | null;
+}
 
 
-const Bovinos = ({navigation}) => {
+const Bovinos = ({ navigation }) => {
 
-   const { vacas, obtenerGanadoPorUsuario } = useBovinosStore();
+   const { vacas, obtenerGanadoPorUsuario, obtenerGanadoPorFinca } = useBovinosStore();
+   const tw = useTailwind()
+   const { fincaSelected, setFincaId } = useFincaStore();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await obtenerGanadoPorUsuario();
+   useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        if (fincaSelected === null) {
+          await obtenerGanadoPorUsuario(); 
         }
+        if (fincaSelected) {
+          await obtenerGanadoPorFinca(fincaSelected._id);
+        }
+      }
 
-        fetchData();
-    }, []);
+      fetchData();
+
+      return () => {
+        setFincaId(null);
+        console.log('Saliste de la pantalla BovinosHome');
+      };
+    }, [fincaSelected])
+  );
 
     const goForm = () =>{
       navigation.navigate('FormBovino');
@@ -37,7 +63,8 @@ const Bovinos = ({navigation}) => {
         {/* tarjetas de los animales */}
         <View style={styles.conBvi}>
             <FlatList
-                data={vacas}
+                data={ vacas}
+                style={[tw('h-3/5') ,{ padding: 5 }]}
                 renderItem={({item}) =>(
                    <CardComponente navigation={navigation} item={item}/>
                 )}

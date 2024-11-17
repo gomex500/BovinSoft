@@ -13,6 +13,7 @@ import InfoBovino from './src/views/InfoBovino'
 import { useUserStore } from './src/store/userStore'
 import { TailwindProvider } from 'tailwind-rn'
 import utilities from './tailwind.json'
+import Bovinos from './src/views/Bovinos'
 
 const Stack = createStackNavigator()
 
@@ -68,15 +69,6 @@ export default function App() {
                 })}
               />
               <Stack.Screen
-                name="InfoFinca"
-                component={InfoFinca}
-                options={({ navigation }) => ({
-                  headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
-                  headerTintColor: '#1B4725', // Color del texto en el header
-                  headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
-                })}
-              />
-              <Stack.Screen
                 name="InfoBovino"
                 component={InfoBovino}
                 options={({ navigation }) => ({
@@ -84,6 +76,7 @@ export default function App() {
                   headerTintColor: '#1B4725', // Color del texto en el header
                   headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
                 })}
+                
               />
             </>
           ) : (
@@ -114,15 +107,6 @@ export default function App() {
                 component={Navegacion}
                 options={({ navigation }) => ({
                   headerShown: false,
-                })}
-              />
-              <Stack.Screen
-                name="InfoFinca"
-                component={InfoFinca}
-                options={({ navigation }) => ({
-                  headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
-                  headerTintColor: '#1B4725', // Color del texto en el header
-                  headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
                 })}
               />
               <Stack.Screen

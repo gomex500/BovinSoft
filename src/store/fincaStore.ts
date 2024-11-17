@@ -12,6 +12,8 @@ interface FincaState {
   fincas: FincaModel[];
   obtenerFincaPorUsuario: () => Promise<FincaModel[]>;
   createFinca: ({ finca, token }: ICreateFinca) => Promise<boolean>
+  fincaSelected: FincaModel | null;
+  setFincaId: (finca: FincaModel) => void;
 }
 
 interface ICreateFinca {
@@ -21,6 +23,7 @@ interface ICreateFinca {
 
 export const useFincaStore = create<FincaState>((set, get) => ({
   fincas: null,
+  fincaSelected: null,
   obtenerFincaPorUsuario: async () => {
 
     const stateUser = useUserStore.getState();
@@ -58,4 +61,5 @@ export const useFincaStore = create<FincaState>((set, get) => ({
       return false;
     }
   },
+  setFincaId: (finca) => set({ fincaSelected: finca }),
 }));

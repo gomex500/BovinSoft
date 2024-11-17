@@ -12,6 +12,7 @@ import Profile from '../views/Profile';
 import FormFinca from '../views/FormFinca';
 import { createStackNavigator } from '@react-navigation/stack';
 import FormBovino from '../views/FormBovino';
+import InfoFinca from '../views/InfoFinca';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -20,16 +21,17 @@ const Stack = createStackNavigator()
 // Crear el stack para Fincas y FormFinca
 const FincasStack = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Fincas" component={Fincas} />
+    <Stack.Navigator initialRouteName="FincasHome" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="FincasHome" component={Fincas} />
       <Stack.Screen name="FormFinca" component={FormFinca} />
+      <Stack.Screen name="InfoFinca" component={InfoFinca} />
     </Stack.Navigator>
   );
 };
 
 const BovinosStack = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="Bovinos" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Bovinos" component={Bovinos} />
       <Stack.Screen name="FormBovino" component={FormBovino} />
     </Stack.Navigator>
@@ -38,7 +40,7 @@ const BovinosStack = () => {
 
 const MyStackNavigation = () => {
   const [animationValues] = useState({});
-
+ 
   const handleTabPress = (navigation, label) => {
     // Inicia la animación
     if (!animationValues[label]) {

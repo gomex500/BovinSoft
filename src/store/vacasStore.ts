@@ -8,6 +8,7 @@ interface VacasState {
   vacas: BovinoModel[];
   obtenerGanadoPorUsuario: () => Promise<void>;
   crearGanado: (vaca: BovinoModel) => Promise<boolean>;
+  obtenerGanadoPorFinca: (fincaId: string) => Promise<void>
 }
 
 // Crear el store de vacas
@@ -47,6 +48,21 @@ export const useBovinosStore = create<VacasState>((set) => ({
     } catch (error) {
       console.error('Error create vacas:', error);
       return false
+    }
+  },
+  obtenerGanadoPorFinca: async (fincaId: string) => {
+    try {
+      const stateUser = useUserStore.getState();
+      const token = stateUser.token;
+
+      const { data } = await axios.get(`${API_URL}/bovino/byFarm/${fincaId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      set({ vacas: data });
+    } catch (error) {
+      console.error('@obtenerGanadoPorFinca Error fetching vacas:', error);
     }
   },
 }));

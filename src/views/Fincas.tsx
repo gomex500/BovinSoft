@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, FlatList, Animated } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useFincaStore } from '../store/fincaStore';
+import { useTailwind } from 'tailwind-rn';
 
 
 const Fincas = ({navigation}) => {
 
     const { fincas, obtenerFincaPorUsuario } = useFincaStore();
     const [animationValue] = useState(new Animated.Value(0));
+    const tw = useTailwind()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,7 +47,7 @@ const Fincas = ({navigation}) => {
 
           <FlatList
               data={fincas}
-              style={{ padding: 5 }}
+              style={[tw('h-3/5') ,{ padding: 5 }]}
               renderItem={({ item }) => (
                   <TouchableOpacity
                       style={styles.contenedorCard}
@@ -73,6 +75,7 @@ const styles = StyleSheet.create({
     contentContainer: {
         flexGrow: 1,
         padding: 16,
+        paddingBottom: 24,
         backgroundColor: '#fff',
     },
     contenedorFiltro: {

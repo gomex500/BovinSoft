@@ -39,29 +39,19 @@
 			"display": "none"
 		}
 	},
+	"h-3/5": {
+		"style": {
+			"height": "60%"
+		}
+	},
 	"h-5": {
 		"style": {
 			"height": 20
 		}
 	},
-	"h-80": {
-		"style": {
-			"height": 320
-		}
-	},
-	"max-h-32": {
-		"style": {
-			"maxHeight": 128
-		}
-	},
 	"max-h-96": {
 		"style": {
 			"maxHeight": 384
-		}
-	},
-	"max-h-80": {
-		"style": {
-			"maxHeight": 320
 		}
 	},
 	"min-h-32": {
