@@ -160,6 +160,7 @@ const FormBovino = () => {
             selectedValue={fincaId}
             onSelect={setFinca}
             placeholder="Fincas:"
+            customStyle={tw('w-11/12')}
           />
       </SafeAreaView>
       <SafeAreaView style={tw('flex-1 bg-gray-50')}>
@@ -168,6 +169,7 @@ const FormBovino = () => {
             selectedValue={raza}
             onSelect={setRaza}
             placeholder="Razas:"
+            customStyle={tw('w-11/12')}
           />
       </SafeAreaView>
       <SafeAreaView style={tw('flex-1 bg-gray-50')}>
@@ -185,6 +187,7 @@ const FormBovino = () => {
             selectedValue={tipo}
             onSelect={setTipo}
             placeholder="Tipo de Ganado:"
+            customStyle={tw('w-11/12')}
           />
       </SafeAreaView>
       <TextInput
@@ -201,6 +204,7 @@ const FormBovino = () => {
             selectedValue={estadoSalud}
             onSelect={setEstadoSalud}
             placeholder="Estado de salud:"
+            customStyle={tw('w-11/12')}
           />
       </SafeAreaView>
       {loading ? (

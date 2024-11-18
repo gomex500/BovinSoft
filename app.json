@@ -30,7 +30,8 @@
     },
     "owner": "gomex5",
     "plugins": [
-      "expo-font"
+      "expo-font",
+      "expo-router"
     ]
   }
 }

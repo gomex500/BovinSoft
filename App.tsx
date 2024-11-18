@@ -127,7 +127,7 @@ export default function App() {
 }
 
 // Componente de carga (opcional)
-const LoadingScreen = () => (
+export const LoadingScreen = () => (
   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
     <Splash />
   </View>

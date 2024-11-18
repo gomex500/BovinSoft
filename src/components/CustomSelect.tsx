@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
-import { useTailwind } from 'tailwind-rn';
+import { Style, useTailwind } from 'tailwind-rn';
 import { IOptions } from '../interfaces/IGen';
 
 interface ICustomSelect {
@@ -8,9 +8,10 @@ interface ICustomSelect {
   onSelect: (value: string) => void;
   selectedValue: string;
   placeholder: string;
+  customStyle?: Style;
 }
 
-export const CustomSelect = ({ options, onSelect, selectedValue, placeholder }:ICustomSelect) => {
+export const CustomSelect = ({ options, onSelect, selectedValue, placeholder, customStyle }:ICustomSelect) => {
   const [modalVisible, setModalVisible] = useState(false);
   const tailwind = useTailwind();
 
@@ -27,7 +28,7 @@ export const CustomSelect = ({ options, onSelect, selectedValue, placeholder }:I
   );
 
   return (
-    <View style={tailwind('w-11/12 mt-4')}>
+    <View style={[tailwind('mt-4'), customStyle]}>
       <Text style={tailwind('text-lg')}> {placeholder}</Text>
       {/* Botón para abrir el modal */}
       <TouchableOpacity

@@ -6,13 +6,15 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import Chatbot from '../views/Chatbot';
 import Fincas from '../views/Fincas';
 import Metricas from '../views/Metricas';
-import Comunidad from '../views/Comunidad';
+import Feed from '../views/Comunidad';
 import Bovinos from '../views/Bovinos';
 import Profile from '../views/Profile';
 import FormFinca from '../views/FormFinca';
 import { createStackNavigator } from '@react-navigation/stack';
 import FormBovino from '../views/FormBovino';
 import InfoFinca from '../views/InfoFinca';
+import { RecommendedActivities } from '../views/RecommendedActivities';
+import PostDetail from '../views/PostDetail';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -34,6 +36,24 @@ const BovinosStack = () => {
     <Stack.Navigator initialRouteName="Bovinos" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Bovinos" component={Bovinos} />
       <Stack.Screen name="FormBovino" component={FormBovino} />
+    </Stack.Navigator>
+  );
+};
+
+const MetricasStack = () => {
+  return (
+    <Stack.Navigator initialRouteName="Metricas" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="MetricasHome" component={Metricas} />
+      <Stack.Screen name="RecommendedActivities" component={RecommendedActivities} />
+    </Stack.Navigator>
+  );
+};
+
+const FeedStack = () => {
+  return (
+    <Stack.Navigator initialRouteName="FeedHome" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="FeedHome" component={Feed} />
+      <Stack.Screen name="PostDetail" component={PostDetail} />
     </Stack.Navigator>
   );
 };
@@ -99,7 +119,7 @@ const MyStackNavigation = () => {
             tabBarIcon: ({ focused }) => {
               let iconName;
 
-              if (route.name === 'Comunidad') {
+              if (route.name === 'Foro') {
                 iconName = 'hat-cowboy-side';
               } else if (route.name === 'Bovinos') {
                 iconName = 'cow';
@@ -115,9 +135,9 @@ const MyStackNavigation = () => {
             },
           })}
         >
-          <Tab.Screen name="Metricas" component={Metricas} options={{ tabBarLabel: () => null }} />
+          <Tab.Screen name="Metricas" component={MetricasStack} options={{ tabBarLabel: () => null }} />
           <Tab.Screen name="Fincas" component={FincasStack} options={{ tabBarLabel: () => null }} />
-          <Tab.Screen name="Comunidad" component={Comunidad} options={{ tabBarLabel: () => null }} />
+          <Tab.Screen name="Foro" component={FeedStack} options={{ tabBarLabel: () => null }} />
           <Tab.Screen name="Bovinos" component={BovinosStack} options={{ tabBarLabel: () => null }} />
           <Tab.Screen name="Chatbot" component={Chatbot} options={{ tabBarLabel: () => null }} />
         </Tab.Navigator>
