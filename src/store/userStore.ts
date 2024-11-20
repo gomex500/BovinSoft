@@ -25,7 +25,7 @@ export const useUserStore = create<IUserState>((set) => ({
           Authorization: `Bearer ${token}`,
         },
       });
-      set({ user: data });
+      set({ user: data, token });
     } catch (error) {
       console.error('Error fetching user:', error);
     }

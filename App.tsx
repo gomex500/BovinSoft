@@ -13,7 +13,7 @@ import InfoBovino from './src/views/InfoBovino'
 import { useUserStore } from './src/store/userStore'
 import { TailwindProvider } from 'tailwind-rn'
 import utilities from './tailwind.json'
-import Bovinos from './src/views/Bovinos'
+import { LoadingScreen } from './src/components/LoadingStream'
 
 const Stack = createStackNavigator()
 
@@ -126,9 +126,3 @@ export default function App() {
   )
 }
 
-// Componente de carga (opcional)
-export const LoadingScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Splash />
-  </View>
-)

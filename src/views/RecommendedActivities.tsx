@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, View, Text } from 'react-native'
 import { getMonicaResponse } from '../helpers/getGeminiIA'
 import { useTailwind } from 'tailwind-rn'
 import { CustomMarkdown } from '../components/customMarkdown'
-import { LoadingScreen } from '../../App'
+import { LoadingScreen } from '../components/LoadingStream'
 
 interface newItem {
   day: string
@@ -16,7 +16,7 @@ interface RecommendedActivitiesRouteParams {
   newsItem: newItem
 }
 
-export const RecommendedActivities = () => {
+const RecommendedActivities = () => {
   const route =
     useRoute<
       RouteProp<
@@ -68,6 +68,8 @@ export const RecommendedActivities = () => {
     </ScrollView>
   )
 }
+
+export default RecommendedActivities;
 
 const styles = StyleSheet.create({
   container: {

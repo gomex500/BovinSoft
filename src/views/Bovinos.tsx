@@ -9,7 +9,7 @@ import {
   FlatList,
   Image,
 } from 'react-native'
-import { useBovinosStore } from '../store/vacasStore'
+import { useBovinosStore } from '../store/useBovinoStore'
 import { useTailwind } from 'tailwind-rn'
 import { useFincaStore } from '../store/fincaStore'
 import { useFocusEffect } from '@react-navigation/native'
@@ -24,8 +24,7 @@ interface BovinoRouteParams {
 }
 
 const Bovinos = ({ navigation }) => {
-  const { vacas, obtenerGanadoPorUsuario, obtenerGanadoPorFinca } =
-    useBovinosStore()
+  const { bovinos: vacas, obtenerGanadoPorUsuario, obtenerGanadoPorFinca } = useBovinosStore()
   const tw = useTailwind()
   const { fincaSelected, setFincaId } = useFincaStore()
 

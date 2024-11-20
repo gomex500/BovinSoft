@@ -18,7 +18,12 @@ import { IOptions } from '../interfaces/IGen'
 import { useFincaStore } from '../store/fincaStore'
 import { FincaModel } from '../interfaces/IFinca'
 import { useUserStore } from '../store/userStore'
-import { useBovinosStore } from '../store/vacasStore'
+import { useBovinosStore } from '../store/useBovinoStore'
+import { useRoute, useNavigation } from '@react-navigation/native'
+import { RootStackParamList } from '../interfaces/navigationTypes'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+
+type NavigationProps = NativeStackNavigationProp<RootStackParamList>
 
 const FormBovino = () => {
   const [nombre, setNombre] = useState('')
@@ -33,6 +38,8 @@ const FormBovino = () => {
   const [loading, setLoading] = useState(false)
   const [fincaId, setFinca] = useState('')
   const [fincas, setFincas] = useState<IOptions[]>([])
+
+  const navigate = useNavigation<NavigationProps>()
 
   const { obtenerFincaPorUsuario } = useFincaStore();
   const { crearGanado } = useBovinosStore();
@@ -107,6 +114,7 @@ const FormBovino = () => {
     }
     let result = await crearGanado(data)
     setLoading(false)
+    navigate.navigate('Bovinos')
   }
 
   const generosGanado = [
@@ -196,7 +204,6 @@ const FormBovino = () => {
         onChangeText={setPeso}
         placeholder={'peso (kg) :'}
         keyboardType="numeric"
-        maxLength={2}
       />
       <SafeAreaView style={tw('flex-1 bg-gray-50')}>
           <CustomSelect

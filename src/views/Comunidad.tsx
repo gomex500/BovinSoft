@@ -2,151 +2,81 @@ import {
   View,
   Text,
   FlatList,
-  Image,
   StyleSheet,
   TouchableOpacity,
   Modal,
   TextInput,
-} from 'react-native';
-import { useState } from 'react';
-import moment from 'moment';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../interfaces/navigationTypes';
-import { useNavigation } from '@react-navigation/native';
+} from 'react-native'
+import { useEffect, useState } from 'react'
+import { useForoStore } from '../store/useForoStore'
+import { PostView } from '../components/PostView'
+import { useUserStore } from '../store/userStore'
+import { agregarPublicacionService } from '../services/foroServices'
+import { IPublicacion } from '../interfaces/IForo'
+import { LoadingScreen } from '../components/LoadingStream'
 
-const initialPublicaciones = [
-  {
-    id: '1',
-    usuario: 'Juan Perez',
-    avatar: 'https://via.placeholder.com/50',
-    titulo: 'Primera Publicación',
-    contenido: 'Este es un resumen de mi publicación.',
-    likes: 5,
-    dislikes: 1,
-    reportes: 0,
-    createdAt: new Date(Date.now() - 3600 * 1000), // Hace 1 hora
-    userInteractions: { like: false, dislike: false, report: false },
-  },
-  {
-    id: '2',
-    usuario: 'Ana Gomez',
-    avatar: 'https://via.placeholder.com/50',
-    titulo: 'Segunda Publicación',
-    contenido: 'Aquí hay algo interesante que compartir.',
-    likes: 8,
-    dislikes: 0,
-    reportes: 2,
-    createdAt: new Date(Date.now() - 7200 * 1000), // Hace 2 horas
-    userInteractions: { like: false, dislike: false, report: false },
-  },
-];
-
-type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 export default function Feed() {
-  const [publicaciones, setPublicaciones] = useState(initialPublicaciones);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [nuevoTitulo, setNuevoTitulo] = useState('');
-  const [nuevoContenido, setNuevoContenido] = useState('');
-  const navigation = useNavigation<NavigationProps>();
+  const [modalVisible, setModalVisible] = useState(false)
+  const [nuevoTitulo, setNuevoTitulo] = useState('')
+  const [nuevoContenido, setNuevoContenido] = useState('')
+  const [loading, setLoading] = useState(true);
 
-  const goToPostDetail = (id) => {
-    navigation.navigate('PostDetail', { postId: id });
-  };
+  const { agregarPublicacion, publicaciones, obtenerPublicaciones } = useForoStore()
 
-  const manejarInteraccion = (id, tipo) => {
-    setPublicaciones((prev) =>
-      prev.map((pub) => {
-        if (pub.id === id) {
-          const isActive = pub.userInteractions[tipo];
-          return {
-            ...pub,
-            [tipo === 'like' ? 'likes' : tipo === 'dislike' ? 'dislikes' : 'reportes']: isActive
-              ? pub[tipo === 'like' ? 'likes' : tipo === 'dislike' ? 'dislikes' : 'reportes'] - 1
-              : pub[tipo === 'like' ? 'likes' : tipo === 'dislike' ? 'dislikes' : 'reportes'] + 1,
-            userInteractions: { ...pub.userInteractions, [tipo]: !isActive },
-          };
-        }
-        return pub;
-      })
-    );
-  };
+  useEffect(() => {
+    const fetchPublicaciones = async () => {
+      await obtenerPublicaciones();
+      setLoading(false)
+    };
 
-  const agregarPublicacion = () => {
+    fetchPublicaciones();
+  }, []);
+
+  const agregarPublicacionView = async () => {
     if (nuevoTitulo.trim() && nuevoContenido.trim()) {
-      setPublicaciones([
-        ...publicaciones,
-        {
-          id: (publicaciones.length + 1).toString(),
-          usuario: 'Nuevo Usuario',
-          avatar: 'https://via.placeholder.com/50',
-          titulo: nuevoTitulo,
-          contenido: nuevoContenido,
-          likes: 0,
-          dislikes: 0,
-          reportes: 0,
-          createdAt: new Date(),
-          userInteractions: { like: false, dislike: false, report: false },
-        },
-      ]);
-      setNuevoTitulo('');
-      setNuevoContenido('');
-      setModalVisible(false);
-    }
-  };
 
-  const tiempoTranscurrido = (fecha) => {
-    return moment(fecha).fromNow();
-  };
+      let publicacion:IPublicacion = {
+        usuario: useUserStore.getState().user.nombre,
+        idUsuario: useUserStore.getState().user._id,
+        avatar: useUserStore.getState().user.image || 'https://via.placeholder.com/50',
+        titulo: nuevoTitulo,
+        contenido: nuevoContenido,
+        interacciones: { likes: 0, dislikes: 0, reports: 0 },
+        create_at: new Date(),
+        userInteractions: { likes: false, dislikes: false, reports: false },
+        comentarios: [],
+      }
+
+      const data = await agregarPublicacionService(publicacion)
+      publicacion.id = data.id
+
+      agregarPublicacion(publicacion)
+
+      setNuevoTitulo('')
+      setNuevoContenido('')
+      setModalVisible(false)
+    }
+  }
 
   const renderItem = ({ item, index }) => {
-    if ((index + 1) % 3 === 0) {
-      // Mostrar publicidad cada tercer elemento
-      return (
-        <View style={styles.adContainer}>
-          <Text style={styles.adText}>Publicidad: ¡Consigue nuestro producto!</Text>
-        </View>
-      );
-    }
-
     return (
-      <View style={styles.postContainer}>
-            <TouchableOpacity onPress={() => goToPostDetail(item.id)}>
-              <View style={styles.header}>
-                <Image source={{ uri: item.avatar }} style={styles.avatar} />
-                <View>
-                  <Text style={styles.username}>{item.usuario}</Text>
-                  <Text style={styles.postTitle}>{item.titulo}</Text>
-                  <Text style={styles.timeAgo}>
-                    {tiempoTranscurrido(item.createdAt)}
-                  </Text>
-                </View>
-              </View>
-              <Text style={styles.postContent}>{item.contenido}</Text>
-              <View style={styles.actions}>
-                <TouchableOpacity
-                  onPress={() => manejarInteraccion(item.id, 'like')}
-                  style={item.userInteractions.like ? styles.activeAction : null}
-                >
-                  <Text style={styles.actionText}>👍 {item.likes}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => manejarInteraccion(item.id, 'dislike')}
-                  style={item.userInteractions.dislike ? styles.activeAction : null}
-                >
-                  <Text style={styles.actionText}>👎 {item.dislikes}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => manejarInteraccion(item.id, 'report')}
-                  style={item.userInteractions.report ? styles.activeAction : null}
-                >
-                  <Text style={styles.actionText}>🚩 {item.reportes}</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
+      <>
+        {(index + 1) % 4 === 0 && (
+          <View style={styles.adContainer}>
+            <Text style={styles.adText}>
+              Publicidad: ¡Consigue nuestro producto!
+            </Text>
           </View>
-    );
-  };
+        )}
+        <PostView post={item} />
+      </>
+    )
+  }
+
+  if (loading) {
+    return <LoadingScreen />; // Muestra un mensaje de carga
+  }
 
   return (
     <View style={styles.container}>
@@ -158,7 +88,7 @@ export default function Feed() {
       </TouchableOpacity>
 
       <FlatList
-        data={publicaciones}
+        data={publicaciones && publicaciones.length > 0 ? publicaciones : []}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
@@ -183,7 +113,7 @@ export default function Feed() {
             />
             <TouchableOpacity
               style={styles.saveButton}
-              onPress={agregarPublicacion}
+              onPress={agregarPublicacionView}
             >
               <Text style={styles.saveButtonText}>Guardar</Text>
             </TouchableOpacity>
@@ -197,7 +127,7 @@ export default function Feed() {
         </View>
       </Modal>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -342,4 +272,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#d48806',
   },
-});
+})

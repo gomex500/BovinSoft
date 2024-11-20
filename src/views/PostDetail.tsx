@@ -1,117 +1,85 @@
-import { View, Text, FlatList, Image, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
-import moment from 'moment';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native'
+import { useEffect, useState } from 'react'
+import { PostViewInCommentView } from '../components/PostView'
+import { RouteProp, useRoute } from '@react-navigation/native'
+import { useForoStore } from '../store/useForoStore'
+import { CommentView } from '../components/CommentView'
+import { useUserStore } from '../store/userStore'
+import { agregarComentarioService } from '../services/foroServices'
+import { IComentario } from '../interfaces/IForo'
+import { LoadingScreen } from '../components/LoadingStream'
 
-const initialComentarios = [
-  { id: '1', usuario: 'Juan Perez', avatar: 'https://via.placeholder.com/50', contenido: '¡Gran publicación!', likes: 3, createdAt: new Date(Date.now() - 1800 * 1000), userLiked: false }, // Hace 30 min
-  { id: '2', usuario: 'Ana Gomez', avatar: 'https://via.placeholder.com/50', contenido: 'Estoy de acuerdo.', likes: 5, createdAt: new Date(Date.now() - 3600 * 1000), userLiked: false }, // Hace 1 hora
-  { id: '3', usuario: 'Carlos López', avatar: 'https://via.placeholder.com/50', contenido: 'Interesante perspectiva.', likes: 2, createdAt: new Date(Date.now() - 7200 * 1000), userLiked: false }, // Hace 2 horas
-];
+interface PostDetailParams {
+  postId: string
+}
 
 export default function PostDetail() {
-  const [comentarios, setComentarios] = useState(initialComentarios);
-  const [nuevoComentario, setNuevoComentario] = useState('');
-  const [postData, setPostData] = useState({
-    titulo: 'Título de la Publicación',
-    contenido: 'Aquí va el contenido detallado de la publicación.',
-    likes: 10,
-    dislikes: 2,
-    createdAt: new Date(Date.now() - 7200 * 1000), // Hace 2 horas
-    userInteractions: { like: false, dislike: false },
-  });
+  const route = useRoute<RouteProp<Record<string, PostDetailParams>, 'PostDetail'>>()
+  const [nuevoComentario, setNuevoComentario] = useState('')
+  const [loading, setLoading] = useState(true);
 
-  // Agregar comentario
-  const agregarComentario = () => {
-    if (nuevoComentario.trim()) {
-      setComentarios([
-        ...comentarios,
-        {
-          id: (comentarios.length + 1).toString(),
-          usuario: 'Nuevo Usuario',
-          avatar: 'https://via.placeholder.com/50',
-          contenido: nuevoComentario,
-          likes: 0,
-          createdAt: new Date(),
-          userLiked: false,
-        },
-      ]);
-      setNuevoComentario('');
+  const { publicaciones, agregarComentario, obtenerComentariosByPostId } = useForoStore()
+  const postId = route.params?.postId
+
+  let postData = publicaciones.find((item) => item.id === postId)
+
+  const handleAddComment = async () => {
+    let comentario: IComentario = {
+      usuario: useUserStore.getState().user.nombre,
+      avatar: useUserStore.getState().user.image || 'https://via.placeholder.com/50',
+      idUsuario: useUserStore.getState().user._id,
+      contenido: nuevoComentario,
+      create_at: new Date(),
+      interacciones: { likes: 0, dislikes: 0, reports: 0 },
+      userInteractions: { likes: false, dislikes: false, reports: false },
+      idForo: postData.id,
     }
-  };
 
-  // Manejar likes/dislikes de la publicación
-  const manejarInteraccionPublicacion = (tipo) => {
-    setPostData((prev) => {
-      const isActive = prev.userInteractions[tipo];
-      return {
-        ...prev,
-        [tipo === 'like' ? 'likes' : 'dislikes']: isActive ? prev[tipo] - 1 : prev[tipo] + 1,
-        userInteractions: { ...prev.userInteractions, [tipo]: !isActive },
-      };
-    });
-  };
+    const data = await agregarComentarioService(comentario)
+    comentario.id = data.id
+    agregarComentario(comentario)
 
-  // Manejar likes en comentarios
-  const manejarLikeComentario = (id) => {
-    setComentarios((prev) =>
-      prev.map((comentario) =>
-        comentario.id === id
-          ? { ...comentario, likes: comentario.userLiked ? comentario.likes - 1 : comentario.likes + 1, userLiked: !comentario.userLiked }
-          : comentario
-      )
-    );
-  };
+    setNuevoComentario('')
+  }
 
-  // Función para calcular tiempo transcurrido
-  const tiempoTranscurrido = (fecha) => {
-    return moment(fecha).fromNow();
-  };
+  useEffect(() => {
+    const fetchComentarios = async () => {
+      await obtenerComentariosByPostId(postId);
+      setLoading(false);
+    };
 
+    fetchComentarios();
+  }, []);
+
+
+  if (loading) {
+    return <LoadingScreen />; // Muestra un mensaje de carga
+  }
+
+  if (!postData) {
+    return <Text>No se encontró el post.</Text>; // Manejo de error si no se encuentra el post
+  }
+  
   return (
     <View style={styles.container}>
-      {/* Información de la publicación */}
-      <View style={styles.postContainer}>
-        <Text style={styles.postTitle}>{postData.titulo}</Text>
-        <Text style={styles.postContent}>{postData.contenido}</Text>
-        <Text style={styles.timeAgo}>{tiempoTranscurrido(postData.createdAt)}</Text>
-        <View style={styles.actions}>
-          <TouchableOpacity
-            onPress={() => manejarInteraccionPublicacion('like')}
-            style={postData.userInteractions.like ? styles.activeAction : null}
-          >
-            <Text style={styles.actionText}>👍 {postData.likes}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => manejarInteraccionPublicacion('dislike')}
-            style={postData.userInteractions.dislike ? styles.activeAction : null}
-          >
-            <Text style={styles.actionText}>👎 {postData.dislikes}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Lista de comentarios */}
-      <FlatList
-        data={comentarios}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.comment}>
-            <Image source={{ uri: item.avatar }} style={styles.avatar} />
-            <View style={styles.commentContent}>
-              <Text style={styles.username}>{item.usuario}</Text>
-              <Text style={styles.commentText}>{item.contenido}</Text>
-              <Text style={styles.timeAgo}>{tiempoTranscurrido(item.createdAt)}</Text>
-              <TouchableOpacity
-                onPress={() => manejarLikeComentario(item.id)}
-                style={item.userLiked ? styles.activeAction : null}
-              >
-                <Text style={styles.actionText}>👍 {item.likes}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+        {postData && postData.comentarios.length > 0 && (
+          <FlatList
+            data={postData.comentarios}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <CommentView comment={item} postId={postData.id} />
+            )}
+            ListHeaderComponent={() => (<PostViewInCommentView post={postData} />)}
+            contentContainerStyle={styles.commentsList}
+          />
         )}
-        contentContainerStyle={styles.commentsList}
-      />
 
       {/* Formulario para agregar comentarios */}
       <View style={styles.commentInputContainer}>
@@ -121,12 +89,15 @@ export default function PostDetail() {
           value={nuevoComentario}
           onChangeText={setNuevoComentario}
         />
-        <TouchableOpacity style={styles.sendButton} onPress={agregarComentario}>
+        <TouchableOpacity
+          style={styles.sendButton}
+          onPress={handleAddComment}
+        >
           <Text style={styles.sendButtonText}>Enviar</Text>
         </TouchableOpacity>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -235,4 +206,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-});
+})

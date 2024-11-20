@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { StyleSheet, Animated, Text, TouchableOpacity, View, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6'; 
 import Chatbot from '../views/Chatbot';
@@ -13,8 +13,9 @@ import FormFinca from '../views/FormFinca';
 import { createStackNavigator } from '@react-navigation/stack';
 import FormBovino from '../views/FormBovino';
 import InfoFinca from '../views/InfoFinca';
-import { RecommendedActivities } from '../views/RecommendedActivities';
+import RecommendedActivities from '../views/RecommendedActivities';
 import PostDetail from '../views/PostDetail';
+import { useUserStore } from '../store/userStore';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -42,7 +43,7 @@ const BovinosStack = () => {
 
 const MetricasStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Metricas" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="MetricasHome" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MetricasHome" component={Metricas} />
       <Stack.Screen name="RecommendedActivities" component={RecommendedActivities} />
     </Stack.Navigator>
@@ -146,6 +147,7 @@ const MyStackNavigation = () => {
 };
 
 const Navegacion = () => {
+  const { user } = useUserStore();
   return (
       <Drawer.Navigator
       screenOptions={({ navigation }) => ({
@@ -173,8 +175,8 @@ const Navegacion = () => {
         headerRight: () => (
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <Image
-              source={require('../../assets/img/usuario.png')} // Reemplaza con la ruta de tu imagen
-              style={{ width: 32, height: 32, borderRadius: 15, marginRight: 10 }}
+              source={{uri: user.image} || require('../../assets/img/usuario.png')} // Reemplaza con la ruta de tu imagen
+              style={{ width: 40, height: 40, borderRadius: 15, marginRight: 10 }}
             />
           </TouchableOpacity>
         ),
