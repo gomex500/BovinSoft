@@ -12,10 +12,16 @@ import {
 import { useBovinosStore } from '../store/useBovinoStore'
 import { useTailwind } from 'tailwind-rn'
 import { useFincaStore } from '../store/fincaStore'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../interfaces/navigationTypes'
+import { BovinoModel } from '../interfaces/IBovino'
 
-const Bovinos = ({ navigation }) => {
-  const { bovinos: vacas, obtenerGanadoPorUsuario, obtenerGanadoPorFinca } = useBovinosStore()
+type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
+
+const Bovinos = () => {
+  const navigation = useNavigation<NavigationProps>();
+  const { bovinos, obtenerGanadoPorUsuario, obtenerGanadoPorFinca } = useBovinosStore()
   const tw = useTailwind()
   const { fincaSelected, setFincaId } = useFincaStore()
 
@@ -40,7 +46,7 @@ const Bovinos = ({ navigation }) => {
   )
 
   const goForm = () => {
-    navigation.navigate('FormBovino')
+    navigation.navigate('FormBovino', {})
   }
 
   return (
@@ -66,12 +72,12 @@ const Bovinos = ({ navigation }) => {
       {/* tarjetas de los animales */}
       <View style={styles.conBvi}>
         <FlatList
-          data={vacas}
+          data={bovinos}
           style={[tw('h-3/5'), { padding: 5 }]}
           renderItem={({ item }) => (
-            <CardComponente navigation={navigation} item={item} />
+            <CardComponente item={item} />
           )}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item._id as string}
           numColumns={3} // Cambia este valor para ajustar el número de columnas
         />
       </View>
@@ -79,7 +85,14 @@ const Bovinos = ({ navigation }) => {
   )
 }
 
-const CardComponente = ({ item, navigation }) => {
+interface ICardComponente {
+  item: BovinoModel;
+}
+
+const CardComponente = ({ item }: ICardComponente) => {
+
+  const navigation = useNavigation<NavigationProps>();
+
   return (
     <TouchableOpacity
       style={styles.contenedorCard}

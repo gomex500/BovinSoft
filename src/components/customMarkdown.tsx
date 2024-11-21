@@ -1,7 +1,11 @@
 import { ScrollView, StyleSheet } from 'react-native'
 import Markdown from 'react-native-markdown-display'
 
-export const CustomMarkdown = ({ markdownContent }) => {
+interface ICustomMarkdown {
+  markdownContent: string
+}
+
+export const CustomMarkdown = ({ markdownContent }: ICustomMarkdown) => {
   return (
     <ScrollView style={styles.container}>
       <Markdown style={markdownStyles}>{markdownContent}</Markdown>

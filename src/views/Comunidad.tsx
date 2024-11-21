@@ -15,6 +15,10 @@ import { agregarPublicacionService } from '../services/foroServices'
 import { IPublicacion } from '../interfaces/IForo'
 import { LoadingScreen } from '../components/LoadingStream'
 
+interface IRenderItem {
+  item: IPublicacion;
+  index: number;
+}
 
 export default function Feed() {
   const [modalVisible, setModalVisible] = useState(false)
@@ -59,7 +63,7 @@ export default function Feed() {
     }
   }
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item, index } : IRenderItem) => {
     return (
       <>
         {(index + 1) % 4 === 0 && (
@@ -89,7 +93,7 @@ export default function Feed() {
 
       <FlatList
         data={publicaciones && publicaciones.length > 0 ? publicaciones : []}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id as string}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
       />

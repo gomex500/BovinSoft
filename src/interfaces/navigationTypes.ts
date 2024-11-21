@@ -1,3 +1,5 @@
+import { BovinoModel } from "./IBovino";
+
 // navigationTypes.ts
 export type RootStackParamList = {
   Home: undefined; // Si no tiene parámetros
@@ -8,8 +10,14 @@ export type RootStackParamList = {
       farm: string;
     };
   };
+  InfoFinca: {};
   PostDetail: {
     postId: string;
   };
-  Bovinos:{}
+  Bovinos:{};
+  FormFinca: {};
+  FormBovino: {};
+  InfoBovino: {
+    newsItem: BovinoModel;
+  };
 };

@@ -1,39 +1,33 @@
 import React, { useState } from 'react'
-import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native'
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
 import { FincaModel } from '../interfaces/IFinca'
 import { useTailwind } from 'tailwind-rn'
 import { useFincaStore } from '../store/fincaStore'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../interfaces/navigationTypes'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
-interface InfoFincaRouteParams {
-  newsItem: FincaModel;
-}
+type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
-type RootStackParamList = {
-  Bovinsoft: undefined; // O el tipo correspondiente si tiene parámetros
-  BovinosHome: { newsItem: { from: string; id: string } }; // Define el tipo para BovinosHome
-};
+const InfoFinca = () => {
 
-const InfoFinca = ({ navigation }) => {
-
-  const { setFincaId } = useFincaStore();
+  const fincaSelected  = useFincaStore().fincaSelected as FincaModel;
+  const navigation = useNavigation<NavigationProps>();
   
-  const route = useRoute<RouteProp<Record<string, InfoFincaRouteParams>, 'InfoFinca'>>();
-  const newsItem = route.params?.newsItem
   const tw = useTailwind()
 
+
   const [origin, setOrigin] = useState({
-    latitude: parseFloat(newsItem.coordenadas.latitud as string),
-    longitude: parseFloat(newsItem.coordenadas.longitud as string),
+    latitude: parseFloat(fincaSelected.coordenadas.latitud as string),
+    longitude: parseFloat(fincaSelected.coordenadas.longitud as string),
   })
 
   const gestionarGanado = async () => {
-    setFincaId(newsItem);
-    navigation.navigate('Bovinos');
+    navigation.navigate('Bovinos', {});
   };
 
-  const [recursosN, setRecursosN] = useState(newsItem.recursosN)
+  const [recursosN, setRecursosN] = useState(fincaSelected.recursosN)
 
   return (
     <ScrollView
@@ -41,9 +35,9 @@ const InfoFinca = ({ navigation }) => {
       showsVerticalScrollIndicator={false} // Opcional: Oculta el indicador de scroll
     >
       <View>
-        <Text style={styles.title}>{newsItem.nombre}</Text>
+        <Text style={styles.title}>{fincaSelected.nombre}</Text>
         <Image
-          source={{ uri: newsItem.image }}
+          source={{ uri: fincaSelected.image }}
           style={{ width: '100%', height: 200, borderRadius: 8 }}
         />
         <TouchableOpacity 
@@ -55,19 +49,19 @@ const InfoFinca = ({ navigation }) => {
         <Text style={[ tw('mt-4') ,styles.info]}>Descripción:</Text>
         <View style={styles.contData}>
           <Text>
-            {newsItem.descripcion}
+            {fincaSelected.descripcion}
           </Text>
         </View>
         <Text style={styles.info}>Dirección:</Text>
         <View style={styles.contData}>
           <Text>
-            {newsItem.direccion}
+            {fincaSelected.direccion}
           </Text>
         </View>
         <Text style={styles.info}>Tamaño:</Text>
         <View style={styles.contData}>
           <Text>
-            {newsItem.tamano} Hectarias
+            {fincaSelected.tamano} Hectarias
           </Text>
         </View>
         <Text style={styles.info}>Recursos Naturales</Text>
@@ -81,7 +75,7 @@ const InfoFinca = ({ navigation }) => {
         <Text style={styles.caratT}>Ubicacion:</Text>
         <View>
           <MapView
-            provider={PROVIDER_GOOGLE} // Usa Google Maps
+            provider={PROVIDER_GOOGLE}
             style={styles.map}
             initialRegion={{
               latitude: origin.latitude,
@@ -90,7 +84,7 @@ const InfoFinca = ({ navigation }) => {
               longitudeDelta: 0.01,
             }}
           >
-            <Marker coordinate={origin} title="Mi Marcador" />
+          
           </MapView>
         </View>
       </View>

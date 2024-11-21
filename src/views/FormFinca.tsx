@@ -13,6 +13,11 @@ import { ICordenadas } from '../interfaces/IFinca'
 import { useFincaStore } from '../store/fincaStore'
 import { useUserStore } from '../store/userStore'
 
+interface handle {
+  text: string;
+  index: number;
+}
+
 const FormFinca = () => {
   const { createFinca } = useFincaStore()
   const { user, token } = useUserStore()
@@ -58,7 +63,7 @@ const FormFinca = () => {
       recursosN: recursos.filter((recurso) => recurso !== ''), // Filtra recursos vacíos
       idUsuario: user._id,
     }
-    let result = await createFinca({ finca: data, token })
+    let result = await createFinca(data)
 
     setLoading(false)
   }

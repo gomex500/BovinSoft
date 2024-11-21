@@ -3,9 +3,16 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, FlatList, A
 import Entypo from '@expo/vector-icons/Entypo';
 import { useFincaStore } from '../store/fincaStore';
 import { useTailwind } from 'tailwind-rn';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../interfaces/navigationTypes';
+import { useNavigation } from '@react-navigation/native';
+import { FincaModel } from '../interfaces/IFinca';
 
+type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
+const Fincas = () => {
 
-const Fincas = ({navigation}) => {
+  const navigation = useNavigation<NavigationProps>();
+  const { setFincaId } = useFincaStore();
 
     const { fincas, obtenerFincaPorUsuario } = useFincaStore();
     const [animationValue] = useState(new Animated.Value(0));
@@ -25,7 +32,12 @@ const Fincas = ({navigation}) => {
     }, []);
 
     const goForm = () =>{
-        navigation.navigate('FormFinca');
+        navigation.navigate('FormFinca', {});
+    }
+
+    const goInfoFinca = (finca:FincaModel) => {
+        setFincaId(finca);
+        navigation.navigate('InfoFinca', {});
     }
 
     return (
@@ -51,7 +63,7 @@ const Fincas = ({navigation}) => {
               renderItem={({ item }) => (
                   <TouchableOpacity
                       style={styles.contenedorCard}
-                      onPress={() => navigation.navigate('InfoFinca', { newsItem: item })}
+                      onPress={() => goInfoFinca(item)}
                   >
                       <View style={styles.card}>
                           <Image 
@@ -65,7 +77,7 @@ const Fincas = ({navigation}) => {
                       </View>
                   </TouchableOpacity>
               )}
-              keyExtractor={(item) => item._id} // Asegúrate de que 'id' sea único
+              keyExtractor={(item) => item._id as string} // Asegúrate de que 'id' sea único
           />
       </Animated.View>
   );
