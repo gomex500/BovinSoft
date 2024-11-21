@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
-  View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -13,13 +11,11 @@ import {
 import { useTailwind } from "tailwind-rn"
 import { CustomSelect } from '../components/CustomSelect'
 import { RadioButtonGroup } from '../components/RadioButtonGroup'
-import { API_URL } from '@env';
 import { IOptions } from '../interfaces/IGen'
 import { useFincaStore } from '../store/fincaStore'
 import { FincaModel } from '../interfaces/IFinca'
-import { useUserStore } from '../store/userStore'
 import { useBovinosStore } from '../store/useBovinoStore'
-import { useRoute, useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '../interfaces/navigationTypes'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
@@ -37,19 +33,15 @@ const FormBovino = () => {
   const [estadoSalud, setEstadoSalud] = useState('')
   const [loading, setLoading] = useState(false)
   const [fincaId, setFinca] = useState('')
-  const [fincas, setFincas] = useState<IOptions[]>([])
 
   const navigate = useNavigation<NavigationProps>()
 
-  const { obtenerFincaPorUsuario } = useFincaStore();
+  const { obtenerFincaPorUsuario, fincas } = useFincaStore();
   const { crearGanado } = useBovinosStore();
 
   useEffect(() => {
     const fetchData = async () => {
-      const data:FincaModel[] = await obtenerFincaPorUsuario();
-      data.map((finca) => {
-        setFincas((prevState) => [...prevState, { label: finca.nombre, value: finca._id }]);
-      });
+      await obtenerFincaPorUsuario();
     };
 
     fetchData();
@@ -59,7 +51,7 @@ const FormBovino = () => {
 
   const tw = useTailwind()
 
-  const razasDeGanado = [
+  const razasDeGanado:IOptions[] = [
     { label: 'Angus', value: '1' },
     { label: 'Hereford', value: '2' },
     { label: 'Charolais', value: '3' },
@@ -104,17 +96,17 @@ const FormBovino = () => {
     const data = {
       nombre,
       image,
-      raza: razasDeGanado.find((item) => item.value === raza).label,
+      raza: (razasDeGanado.find((item) => item.value === raza) as IOptions).label,
       edad,
       peso,
-      genero: generosGanado.find((item) => item.value === genero).label,
-      tipo: tipoDeGanado.find((item) => item.value === tipo).label,
-      estadoSalud: estadoSaludGanado.find((item) => item.value === estadoSalud).label,
+      genero: (generosGanado.find((item) => item.value === genero) as IOptions).label,
+      tipo: (tipoDeGanado.find((item) => item.value === tipo) as IOptions).label,
+      estadoSalud: (estadoSaludGanado.find((item) => item.value === estadoSalud) as IOptions).label,
       fincaId
     }
     let result = await crearGanado(data)
     setLoading(false)
-    navigate.navigate('Bovinos')
+    navigate.navigate('Bovinos', {})
   }
 
   const generosGanado = [
@@ -164,10 +156,11 @@ const FormBovino = () => {
       />
       <SafeAreaView style={tw('flex-1 bg-gray-50')}>
           <CustomSelect
-            options={fincas}
+            placeholder='Seleccione una finca'
+            options={fincas && fincas.length > 0 ? fincas.map((finca) => ({label: finca.nombre, value: (finca._id as string)})) : []}
             selectedValue={fincaId}
             onSelect={setFinca}
-            placeholder="Fincas:"
+            title="Fincas:"
             customStyle={tw('w-11/12')}
           />
       </SafeAreaView>
@@ -176,26 +169,28 @@ const FormBovino = () => {
             options={razasDeGanado}
             selectedValue={raza}
             onSelect={setRaza}
-            placeholder="Razas:"
+            title="Razas:"
+            placeholder='Selecciona una raza'
             customStyle={tw('w-11/12')}
           />
       </SafeAreaView>
       <SafeAreaView style={tw('flex-1 bg-gray-50')}>
-      <RadioButtonGroup
-        options={generosGanado}
-        selectedValue={genero}
-        onSelect={setGenero}
-        orientation={"horizontal"}
-        placeholder="Generos:"
-      />
+        <RadioButtonGroup
+          options={generosGanado}
+          selectedValue={genero}
+          onSelect={setGenero}
+          orientation={"horizontal"}
+          placeholder="Generos:"
+        />
       </SafeAreaView>
       <SafeAreaView style={tw('flex-1 bg-gray-50')}>
           <CustomSelect
             options={tipoDeGanado}
             selectedValue={tipo}
             onSelect={setTipo}
-            placeholder="Tipo de Ganado:"
+            title="Tipo de Ganado:"
             customStyle={tw('w-11/12')}
+            placeholder='Selecciona un tipo de ganado'
           />
       </SafeAreaView>
       <TextInput
@@ -210,8 +205,9 @@ const FormBovino = () => {
             options={estadoSaludGanado}
             selectedValue={estadoSalud}
             onSelect={setEstadoSalud}
-            placeholder="Estado de salud:"
+            title="Estado de salud:"
             customStyle={tw('w-11/12')}
+            placeholder='Selecciona un estado de salud'
           />
       </SafeAreaView>
       {loading ? (

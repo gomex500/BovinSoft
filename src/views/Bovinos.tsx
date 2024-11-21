@@ -13,15 +13,6 @@ import { useBovinosStore } from '../store/useBovinoStore'
 import { useTailwind } from 'tailwind-rn'
 import { useFincaStore } from '../store/fincaStore'
 import { useFocusEffect } from '@react-navigation/native'
-import { fetchWeatherApi } from 'openmeteo'
-import { openMeteoIntance } from '../helpers/openMeteo'
-
-interface BovinoRouteParams {
-  info: {
-    from: string
-    id: string
-  } | null
-}
 
 const Bovinos = ({ navigation }) => {
   const { bovinos: vacas, obtenerGanadoPorUsuario, obtenerGanadoPorFinca } = useBovinosStore()
@@ -35,7 +26,7 @@ const Bovinos = ({ navigation }) => {
           await obtenerGanadoPorUsuario()
         }
         if (fincaSelected) {
-          await obtenerGanadoPorFinca(fincaSelected._id)
+          await obtenerGanadoPorFinca(fincaSelected._id as string)
         }
       }
 

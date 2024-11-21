@@ -83,7 +83,7 @@ const Chatbot = () => {
 
     return (
         <View style={styles.container}>
-            <Esquema styles= {styles.Esquema}/>
+            <Esquema />
             <View style={styles.chatContainer}>
                 <ScrollView
                     ref={chatboxRef}

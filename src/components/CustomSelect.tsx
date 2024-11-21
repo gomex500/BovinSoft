@@ -7,15 +7,16 @@ interface ICustomSelect {
   options: IOptions[];
   onSelect: (value: string) => void;
   selectedValue: string;
-  placeholder: string;
+  title: string;
   customStyle?: Style;
+  placeholder?: string;
 }
 
-export const CustomSelect = ({ options, onSelect, selectedValue, placeholder, customStyle }:ICustomSelect) => {
+export const CustomSelect = ({ options, onSelect, selectedValue, title, customStyle, placeholder='Seleccione una opcion' }: ICustomSelect) => {
   const [modalVisible, setModalVisible] = useState(false);
   const tailwind = useTailwind();
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: IOptions }) => (
     <TouchableOpacity
       style={tailwind('p-4 border-b border-gray-300')}
       onPress={() => {
@@ -29,7 +30,7 @@ export const CustomSelect = ({ options, onSelect, selectedValue, placeholder, cu
 
   return (
     <View style={[tailwind('mt-4'), customStyle]}>
-      <Text style={tailwind('text-lg')}> {placeholder}</Text>
+      <Text style={tailwind('text-lg')}> {title}</Text>
       {/* Botón para abrir el modal */}
       <TouchableOpacity
         style={tailwind('p-4 border border-gray-400 rounded')}
@@ -38,7 +39,7 @@ export const CustomSelect = ({ options, onSelect, selectedValue, placeholder, cu
         <Text style={tailwind('text-lg')}>
           {selectedValue
             ? options.find((opt) => opt.value === selectedValue)?.label
-            : 'Seleccione una opcion'}
+            : placeholder}
         </Text>
       </TouchableOpacity>
 

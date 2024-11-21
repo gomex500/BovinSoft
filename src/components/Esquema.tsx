@@ -5,8 +5,8 @@ import { GLView } from 'expo-gl';
 import * as THREE from 'three';
 import { Renderer } from 'expo-three';
 
-export default Esquema = () => {
-  const requestRef = useRef();
+const Esquema = () => {
+  const requestRef = useRef<number>();
   const clockRef = useRef(new THREE.Clock());
 
   const onContextCreate = async (gl) => {
@@ -76,6 +76,8 @@ export default Esquema = () => {
     </View>
   );
 }
+
+export default Esquema;
 
 const styles = StyleSheet.create({
   container: {

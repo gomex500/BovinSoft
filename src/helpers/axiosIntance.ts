@@ -22,7 +22,6 @@ export enum PATH_LIST {
 
 export const createAxiosInstance = (PATH: string): AxiosInstance => {
   const JWT = useUserStore.getState().token
-  console.log(JWT)
   
   const baseURL = `${API_URL}/${PATH}`;
 

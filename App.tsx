@@ -39,7 +39,7 @@ export default function App() {
 
       setIsLoggedIn(userId !== null) // Actualiza el estado según el valor recuperado
       if (userId !== null) {
-        await obtenerUsuario(userId, token)
+        await obtenerUsuario(userId, (token as string))
       }
 
       setLoading(false)
@@ -125,4 +125,3 @@ export default function App() {
     </TailwindProvider>
   )
 }
-

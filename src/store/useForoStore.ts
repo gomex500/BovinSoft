@@ -1,16 +1,54 @@
 import { create } from 'zustand'
-import { IComentario, IInteraccionesComentarioCreate, IInteraccionesPublicacionCreate, IPublicacion } from '../interfaces/IForo'
-import { actualizarInteraccionComentarioService, actualizarInteraccionPublicacionService, obtenerComentariosService, obtenerPublicacionesService } from '../services/foroServices'
+import {
+  IComentario,
+  IInteraccionesComentarioCreate,
+  IInteraccionesPublicacionCreate,
+  IPublicacion,
+} from '../interfaces/IForo'
+import {
+  actualizarInteraccionComentarioService,
+  actualizarInteraccionPublicacionService,
+  obtenerComentariosService,
+  obtenerPublicacionesService,
+} from '../services/foroServices'
 import { useUserStore } from './userStore'
 
 interface ForoState {
   publicaciones: IPublicacion[]
   agregarComentario: (comentario: IComentario) => void
   agregarPublicacion: (publicacion: IPublicacion) => void
-  actualizarInteraccionPublicacion: (id: any, tipo: any) => void
+  actualizarInteraccionPublicacion: (id: string, tipo: string) => void
   actualizarInteraccionComentario: (id: any, postId: any, tipo: any) => void
   obtenerPublicaciones: () => Promise<void>
   obtenerComentariosByPostId: (postId: string) => Promise<void>
+}
+
+// Utilidad para actualizar interacciones
+function actualizarInteraccion(
+  items: IPublicacion[] | IComentario[],
+  itemId: string,
+  tipo: string,
+  actualizarEstado: boolean
+): IPublicacion[] | IComentario[] {
+  return items.map((item) => {
+    if (item.id === itemId) {
+      const isActive = item.userInteractions[tipo]
+      return {
+        ...item,
+        interacciones: {
+          ...item.interacciones,
+          [tipo]: isActive
+            ? item.interacciones[tipo] - 1
+            : item.interacciones[tipo] + 1,
+        },
+        userInteractions: {
+          ...item.userInteractions,
+          [tipo]: actualizarEstado,
+        },
+      }
+    }
+    return item
+  })
 }
 
 export const useForoStore = create<ForoState>((set, get) => ({
@@ -21,10 +59,7 @@ export const useForoStore = create<ForoState>((set, get) => ({
         pub.id === comentario.idForo
           ? {
               ...pub,
-              comentarios: [
-                ...pub.comentarios,
-                comentario,
-              ],
+              comentarios: [...pub.comentarios, comentario],
             }
           : pub
       ),
@@ -32,114 +67,89 @@ export const useForoStore = create<ForoState>((set, get) => ({
 
   agregarPublicacion: (publicacion: IPublicacion) =>
     set((state) => ({
-      publicaciones: [
-        ...state.publicaciones,
-        publicacion,
-      ],
+      publicaciones: [...state.publicaciones, publicacion],
     })),
 
   actualizarInteraccionPublicacion: async (id, tipo) => {
+    const { publicaciones } = get()
+    let publicacion = publicaciones.find(
+      (item) => item.id === id
+    ) as IPublicacion
 
-    let publicacion = get().publicaciones.find((item) => item.id === id)
-    const isActive = publicacion.userInteractions[tipo];
+    if (!publicacion) return
 
-    let interaccion:IInteraccionesPublicacionCreate = {
+    const isActive = publicacion.userInteractions[tipo]
+
+    let interaccion: IInteraccionesPublicacionCreate = {
       tipoInteraccion: tipo,
       idUsuario: useUserStore.getState().user._id,
       estado: !isActive,
-      idForo: id
+      idForo: id,
     }
 
     await actualizarInteraccionPublicacionService(interaccion)
 
-    set((state) => ({
-      publicaciones: state.publicaciones.map((pub) => {
-        if (pub.id === id) {
-          const isActive = pub.userInteractions[tipo];
-          return {
-            ...pub,
-            interacciones: {
-              ...pub.interacciones,
-              [tipo]: isActive ? pub.interacciones[tipo] - 1 : pub.interacciones[tipo] + 1,
-            },
-            userInteractions: { ...pub.userInteractions, [tipo]: !isActive },
-          };
-        }
-        return pub;
-      }),
-    }))
+    set({
+      publicaciones: (actualizarInteraccion(publicaciones, id, tipo, !isActive) as IPublicacion[]),
+    })
   },
 
   actualizarInteraccionComentario: async (id, postId, tipo) => {
+    let publicacion = get().publicaciones.find(
+      (item) => item.id === postId
+    ) as IPublicacion
+    let comentario = publicacion.comentarios.find(
+      (item) => item.id === id
+    ) as IComentario
+    const isActive = comentario.userInteractions[tipo]
 
-    let publicacion = get().publicaciones.find((item) => item.id === postId)
-    let comentario = publicacion.comentarios.find((item) => item.id === id)
-    const isActive = comentario.userInteractions[tipo];
-
-    let interaccion:IInteraccionesComentarioCreate = {
+    let interaccion: IInteraccionesComentarioCreate = {
       tipo: tipo,
       idUsuario: useUserStore.getState().user._id,
       estado: !isActive,
-      idComment: id
+      idComment: id,
     }
 
     await actualizarInteraccionComentarioService(interaccion)
-    
+
     set((state) => ({
-      publicaciones: state.publicaciones.map((p) => {
-        if (p.id === postId) {
+      publicaciones: state.publicaciones.map((pub) => {
+        if (pub.id === postId) {
           return {
-            ...p,
-            comentarios: p.comentarios.map((c) => {
-              if (c.id === id) {
-                const isActive = c.userInteractions[tipo];
-                return {
-                  ...c,
-                  interacciones: {
-                    ...c.interacciones,
-                    [tipo]: isActive ? c.interacciones[tipo] - 1 : c.interacciones[tipo] + 1,
-                  },
-                  userInteractions: { ...c.userInteractions, [tipo]: !isActive },
-                }
-              }
-              return c
-            }),
+            ...pub,
+            comentarios: (actualizarInteraccion(pub.comentarios, id, tipo, !isActive) as IComentario[]),
           }
         }
-        return p
+        return pub
       }),
     }))
   },
   obtenerPublicaciones: async () => {
     try {
-      const publicaciones = await obtenerPublicacionesService();
-      set({ publicaciones });
+      const publicaciones = await obtenerPublicacionesService()
+      set({ publicaciones })
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error('Error fetching user:', error)
     }
   },
-  
-  obtenerComentariosByPostId: async (postId:string) => {
+
+  obtenerComentariosByPostId: async (postId: string) => {
     try {
-      const comentario = await obtenerComentariosService(postId);
+      const comentario = await obtenerComentariosService(postId)
 
       set((state) => ({
         publicaciones: state.publicaciones.map((pub) => {
           if (pub.id === postId) {
             return {
               ...pub,
-              comentarios: [
-                ...pub.comentarios,
-                ...comentario,
-              ],
+              comentarios: [...pub.comentarios, ...comentario],
             }
           }
           return pub
         }),
       }))
-
     } catch (error) {
-      console.error('Error fetching comentario:', error);
+      console.error('Error fetching comentario:', error)
     }
   },
 }))

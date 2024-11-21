@@ -122,7 +122,7 @@ export const WeatherMetric = () => {
           }))}
           selectedValue={fincaId}
           onSelect={handleCoordenadasChange}
-          placeholder="Fincas:"
+          title="Fincas:"
           customStyle={tw('w-2/4 h-full')}
         />
         <View style={[tw('flex flex-col w-11/12 bg-black'), { width: '40%', marginTop: 24 }]}>
