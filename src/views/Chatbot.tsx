@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 
 import Esquema from '../components/Esquema';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
+import { SECRET_GEMINI } from '@env';
 
 interface IChatbot {
     user: string;
@@ -15,12 +16,9 @@ const Chatbot = () => {
     const [conversation, setConversation] = useState<IChatbot[]>([]);
     const chatboxRef = useRef<ScrollView>(null);
 
-
-    const apiKey = 'AIzaSyD2CcdBui_NlNkeLgzI4-2RExw4I5R6Em8';
-
     // Función que obtiene la respuesta de la IA
     const getMonicaResponse = async (userInput:string) => {
-        const apiKey = 'AIzaSyBDSmQgTV4Q0f3dtU-UHvYa6NYQ2vjSTzA';  // Asegúrate de reemplazar con tu clave de API real
+        const apiKey = SECRET_GEMINI  // Asegúrate de reemplazar con tu clave de API real
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
     
         try {

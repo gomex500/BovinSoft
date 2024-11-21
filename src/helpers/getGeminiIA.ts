@@ -1,5 +1,7 @@
+import { SECRET_GEMINI } from "@env";
+
 export const getMonicaResponse = async (userInput) => {
-  const apiKey = 'AIzaSyBDSmQgTV4Q0f3dtU-UHvYa6NYQ2vjSTzA';  // Asegúrate de reemplazar con tu clave de API real
+  const apiKey = SECRET_GEMINI;  // Asegúrate de reemplazar con tu clave de API real
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
   const maxRetries = 3; // Número máximo de reintentos

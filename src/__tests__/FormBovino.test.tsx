@@ -7,6 +7,7 @@ import { useBovinosStore } from '../store/useBovinoStore';
 import { useFincaStore } from '../store/fincaStore';
 import { FincaModel } from '../interfaces/IFinca';
 import { BovinoModel } from '../interfaces/IBovino';
+import { TOKEN_TEST } from '@env';
 
 // jest.mock('../store/useBovinoStore', () => ({
 //   useBovinosStore: {
@@ -68,7 +69,7 @@ describe('FormBovino', () => {
     // Limpiar el store antes de cada prueba
     (useUserStore.getState as jest.Mock).mockImplementation(() => ({
       user: { _id: '67129238732d53dfe8e112e1' },
-      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTI5MjM4NzMyZDUzZGZlOGUxMTJlMSIsIm5vbWJyZSI6Ikp1bmlvciBVbGlzZXMiLCJhcGVsbGlkbyI6ImdvbnphbGV6IiwiZmVjaGFfbmFjaW1pZW50byI6IllZWVktTU0tREQiLCJlbWFpbCI6ImdvbWV6ZnJlZGR5ODg2QGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEyJEJHMVBRRFl5VlFHb21aNnJWb0Q5RnVMZDhsUGtuN1REZFhoN29VNldCdEtZdGJYNC5FZldTIiwidGVsZWZvbm8iOiIrNTA1IDgyODEgNjYzIiwicm9sIjoiYWRtaW4iLCJkaXJlY2Npb24iOiJqdWlnYWxwYSwgY2hvbnRhbGVzIiwidGlwb1N1c2NyaXBjaW9uIjoibWVuc3VhbCIsImV4cCI6MTczMjIzNTEzNn0.LjCWpXPxIlJx0QGuOsgNUmTZ8GuaBkUXWTWYIRwLhOs'
+      token: TOKEN_TEST
     }))
   })
 

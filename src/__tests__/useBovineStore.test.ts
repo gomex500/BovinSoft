@@ -3,6 +3,7 @@ import { useBovinosStore } from '../store/useBovinoStore'
 import { BovinoModel } from '../interfaces/IBovino'
 import { useUserStore } from '../store/userStore'
 import { agregarBovinoService, obtenerGanadoPorFincaServices, obtenerGanadoPorUsuarioServices } from '../services/bovinosService'
+import { TOKEN_TEST } from '@env'
 
 // Simular los servicios
 jest.mock('../services/bovinosService', () => ({
@@ -24,7 +25,7 @@ describe('useBovinosStore', () => {
     useBovinosStore.setState({ bovinos: [] });
     (useUserStore.getState as jest.Mock).mockImplementation(() => ({
       user: { _id: '67129238732d53dfe8e112e1' },
-      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTI5MjM4NzMyZDUzZGZlOGUxMTJlMSIsIm5vbWJyZSI6Ikp1bmlvciBVbGlzZXMiLCJhcGVsbGlkbyI6ImdvbnphbGV6IiwiZmVjaGFfbmFjaW1pZW50byI6IllZWVktTU0tREQiLCJlbWFpbCI6ImdvbWV6ZnJlZGR5ODg2QGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEyJEJHMVBRRFl5VlFHb21aNnJWb0Q5RnVMZDhsUGtuN1REZFhoN29VNldCdEtZdGJYNC5FZldTIiwidGVsZWZvbm8iOiIrNTA1IDgyODEgNjYzIiwicm9sIjoiYWRtaW4iLCJkaXJlY2Npb24iOiJqdWlnYWxwYSwgY2hvbnRhbGVzIiwidGlwb1N1c2NyaXBjaW9uIjoibWVuc3VhbCIsImV4cCI6MTczMjIzNTEzNn0.LjCWpXPxIlJx0QGuOsgNUmTZ8GuaBkUXWTWYIRwLhOs'
+      token: TOKEN_TEST
     }))
   })
 
