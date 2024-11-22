@@ -1,13 +1,14 @@
 import { create } from 'zustand';
-import axios from 'axios';
-import { API_URL } from '@env';
+import { obtenerUsuarioServices } from '../services/userServices';
+import { UserModel } from '../interfaces/IUser';
+import { useFincaStore } from './fincaStore';
 
 interface IUserState {
-  user: any;
+  user: UserModel | null;
   token: string | null;
   isLoggedIn: boolean | null;
   obtenerUsuario: (id: string, token: string) => Promise<void>;
-  setUser: (user: any) => void;
+  setUser: (user: UserModel | null) => void;
   setToken: (token: string) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
 }
@@ -20,12 +21,15 @@ export const useUserStore = create<IUserState>((set) => ({
   isLoggedIn: null,
   obtenerUsuario: async (id, token) => {
     try {
-      const { data } = await axios.get(`${API_URL}/user/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      set({ user: data, token });
+      const user:UserModel = await obtenerUsuarioServices(id, token);
+
+      if (user.rol !== "ROOT") {
+        if (user.rol !== "OWNER") {
+          useFincaStore.getState().obtenerFincaById(user.fincaId)
+        }
+      }
+
+      set({ user, token });
     } catch (error) {
       console.error('Error fetching user:', error);
     }

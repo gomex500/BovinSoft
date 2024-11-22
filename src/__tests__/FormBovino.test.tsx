@@ -2,12 +2,12 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import FormBovino from '../views/FormBovino'; // Asegúrate de que la ruta sea correcta
 import { NavigationContainer } from '@react-navigation/native';
-import { useUserStore } from '../store/userStore';
 import { useBovinosStore } from '../store/useBovinoStore';
 import { useFincaStore } from '../store/fincaStore';
 import { FincaModel } from '../interfaces/IFinca';
 import { BovinoModel } from '../interfaces/IBovino';
 import { TOKEN_TEST } from '@env';
+import { useAuthStore } from '../store/authStore';
 
 // jest.mock('../store/useBovinoStore', () => ({
 //   useBovinosStore: {
@@ -19,7 +19,7 @@ import { TOKEN_TEST } from '@env';
 // }))
 
 jest.mock('../store/userStore', () => ({
-  useUserStore: {
+  useAuthStore: {
     getState: jest.fn()
   }
 }))
@@ -67,7 +67,7 @@ describe('FormBovino', () => {
     useBovinosStore.setState({ bovinos: [] });
     useFincaStore.setState({ fincas: [finca] });
     // Limpiar el store antes de cada prueba
-    (useUserStore.getState as jest.Mock).mockImplementation(() => ({
+    (useAuthStore.getState as jest.Mock).mockImplementation(() => ({
       user: { _id: '67129238732d53dfe8e112e1' },
       token: TOKEN_TEST
     }))

@@ -11,10 +11,10 @@ import { PostViewInCommentView } from '../components/PostView'
 import { RouteProp, useRoute } from '@react-navigation/native'
 import { useForoStore } from '../store/useForoStore'
 import { CommentView } from '../components/CommentView'
-import { useUserStore } from '../store/userStore'
 import { agregarComentarioService } from '../services/foroServices'
 import { IComentario } from '../interfaces/IForo'
 import { LoadingScreen } from '../components/LoadingStream'
+import { useAuthStore } from '../store/authStore'
 
 interface PostDetailParams {
   postId: string
@@ -24,17 +24,19 @@ export default function PostDetail() {
   const route = useRoute<RouteProp<Record<string, PostDetailParams>, 'PostDetail'>>()
   const [nuevoComentario, setNuevoComentario] = useState('')
   const [loading, setLoading] = useState(true);
-
+  const { user } = useAuthStore()
   const { publicaciones, agregarComentario, obtenerComentariosByPostId } = useForoStore()
   const postId = route.params?.postId
 
   let postData = publicaciones.find((item) => item.id === postId)
 
   const handleAddComment = async () => {
+    const { nombre, image, _id } = user
+
     let comentario: IComentario = {
-      usuario: useUserStore.getState().user.nombre,
-      avatar: useUserStore.getState().user.image || 'https://via.placeholder.com/50',
-      idUsuario: useUserStore.getState().user._id,
+      usuario: nombre,
+      avatar: image || 'https://via.placeholder.com/50',
+      idUsuario: _id,
       contenido: nuevoComentario,
       create_at: new Date(),
       interacciones: { likes: 0, dislikes: 0, reports: 0 },

@@ -2,8 +2,11 @@ import React from 'react'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
 import { BarChart, PieChart } from 'react-native-chart-kit'
 import { WeatherMetric } from '../components/WeatherMetric'
+import { useAuthStore } from '../store/authStore'
+import { LoadingScreen } from '../components/LoadingStream'
 
 const Metricas = () => {
+  const { user } = useAuthStore()
   const data2 = [
     {
       name: 'Comida',
@@ -57,11 +60,15 @@ const Metricas = () => {
     ],
   }
 
+  if (user === null) {
+    return <LoadingScreen />
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.conttainerCHair}>
         <Text style={styles.title}>Dashboard</Text>
-        <WeatherMetric />
+        { user?.rol !== "WORKER" && <WeatherMetric />}
         <View style={styles.contChart}>
           <Text style={{ textAlign: 'center', fontSize: 20 }}>
             Gráfico de Pastel

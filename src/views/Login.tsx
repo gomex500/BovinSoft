@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View, Text, Image, TextInput, Animated, KeyboardAvoidingView, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import Alerta from '../components/Alerta';
-import { useUserStore } from '../store/userStore';
-import { API_URL } from '@env';
+// import { useAuthService } from '../services/authService';
+import { loginService } from '../services/userServices';
+import { authService } from '../services/authService';
 
 
 const Login = ({navigation}) => {
@@ -16,25 +16,8 @@ const Login = ({navigation}) => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
+    // const { login } = useAuthService()
 
-    const { obtenerUsuario, setToken, setUser } = useUserStore();
-
-    const removeData = async (key) => {
-        try {
-          await AsyncStorage.removeItem(key);
-          console.log(`Data with key "${key}" removed.`);
-        } catch (error) {
-          console.error('Error removing data:', error);
-        }
-    };
-
-    useEffect(() => {
-        removeData('id');
-        removeData('token');
-        setToken(null);
-        setUser(null);
-    }, []);
-    
 
     // Alternar la visibilidad de la contraseña
     const verPassword = () => {
@@ -65,23 +48,17 @@ const Login = ({navigation}) => {
         setLoading(true);
         setMessage('');
         try {
-            const response = await axios.post(`${API_URL}/login`, {
-                email,
-                password,
-            });
+            const response = await loginService(email, password)
 
-            
-        
-            // Si la respuesta es exitosa, guarda los datos en AsyncStorage
             if (response.status === 200) {
                 let  id = response.data.id;
                 let token = response.data.token
-
+    
+                await authService.login(token);
+                
                 await AsyncStorage.setItem('id', id);
                 await AsyncStorage.setItem('token', token); // Asumiendo que el token viene en la respuesta
 
-                await obtenerUsuario(id, token);
-                setToken(token)
                 setMessage('Bienvenido');
                 showAlert();
                 setLoading(false);
