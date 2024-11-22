@@ -20,4 +20,6 @@ export type RootStackParamList = {
   InfoBovino: {
     newsItem: BovinoModel;
   };
+  Login: {};
+  Signup: {};
 };

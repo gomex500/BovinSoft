@@ -11,7 +11,7 @@ import {
   obtenerComentariosService,
   obtenerPublicacionesService,
 } from '../services/foroServices'
-import { useUserStore } from './userStore'
+import { useAuthStore } from './authStore'
 
 interface ForoState {
   publicaciones: IPublicacion[]
@@ -82,7 +82,7 @@ export const useForoStore = create<ForoState>((set, get) => ({
 
     let interaccion: IInteraccionesPublicacionCreate = {
       tipoInteraccion: tipo,
-      idUsuario: useUserStore.getState().user._id,
+      idUsuario: useAuthStore.getState().user._id,
       estado: !isActive,
       idForo: id,
     }
@@ -105,7 +105,7 @@ export const useForoStore = create<ForoState>((set, get) => ({
 
     let interaccion: IInteraccionesComentarioCreate = {
       tipo: tipo,
-      idUsuario: useUserStore.getState().user._id,
+      idUsuario: useAuthStore.getState().user._id,
       estado: !isActive,
       idComment: id,
     }

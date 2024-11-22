@@ -65,8 +65,6 @@ export const actualizarInteraccionPublicacionService = async (interaccion: IInte
 
 export const actualizarInteraccionComentarioService = async (interaccion: IInteraccionesComentarioCreate) => {
   try {
-    console.log(interaccion)
-    
     const axiosInstance = createAxiosInstance(PATH_LIST.InteraccionesComentario);
     const response = await axiosInstance.post(``, interaccion);
     const data = response.data;

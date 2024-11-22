@@ -3,27 +3,29 @@ import React from 'react'
 import {
   StyleSheet,
   View,
-  Text,
   TextInput,
   TouchableOpacity,
   FlatList,
-  Image,
 } from 'react-native'
 import { useBovinosStore } from '../store/useBovinoStore'
 import { useTailwind } from 'tailwind-rn'
 import { useFincaStore } from '../store/fincaStore'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../interfaces/navigationTypes'
-import { BovinoModel } from '../interfaces/IBovino'
+import { useFocusEffect } from '@react-navigation/native'
+import { CardBovinos } from '../components/CardBovinos'
+import { GoForm } from '../components/GoForm'
+import { useAuthStore } from '../store/authStore'
+import { LoadingScreen } from '../components/LoadingStream'
 
-type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 const Bovinos = () => {
-  const navigation = useNavigation<NavigationProps>();
-  const { bovinos, obtenerGanadoPorUsuario, obtenerGanadoPorFinca } = useBovinosStore()
   const tw = useTailwind()
+  const { bovinos, obtenerGanadoPorUsuario, obtenerGanadoPorFinca } = useBovinosStore()
   const { fincaSelected, setFincaId } = useFincaStore()
+  const { user } = useAuthStore()
+
+  if (user === null) {
+    return <LoadingScreen />
+  }
 
   useFocusEffect(
     React.useCallback(() => {
@@ -39,15 +41,13 @@ const Bovinos = () => {
       fetchData()
 
       return () => {
-        setFincaId(null)
-        console.log('Saliste de la pantalla BovinosHome')
+        if (user.rol === "ROOT" || user.rol === "OWNER") {
+          setFincaId(null)
+          console.log('Saliste de la pantalla BovinosHome')
+        }
       }
     }, [fincaSelected])
   )
-
-  const goForm = () => {
-    navigation.navigate('FormBovino', {})
-  }
 
   return (
     <View style={styles.container}>
@@ -57,15 +57,7 @@ const Bovinos = () => {
           <TouchableOpacity style={styles.boton}>
             <Entypo name="magnifying-glass" size={24} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.boton,
-              { borderTopRightRadius: 8, borderBottomRightRadius: 8 },
-            ]}
-            onPress={goForm}
-          >
-            <Entypo name="plus" size={24} color="white" />
-          </TouchableOpacity>
+          <GoForm />
         </View>
       </View>
 
@@ -75,36 +67,13 @@ const Bovinos = () => {
           data={bovinos}
           style={[tw('h-3/5'), { padding: 5 }]}
           renderItem={({ item }) => (
-            <CardComponente item={item} />
+            <CardBovinos item={item} />
           )}
           keyExtractor={(item) => item._id as string}
           numColumns={3} // Cambia este valor para ajustar el número de columnas
         />
       </View>
     </View>
-  )
-}
-
-interface ICardComponente {
-  item: BovinoModel;
-}
-
-const CardComponente = ({ item }: ICardComponente) => {
-
-  const navigation = useNavigation<NavigationProps>();
-
-  return (
-    <TouchableOpacity
-      style={styles.contenedorCard}
-      onPress={() => navigation.navigate('InfoBovino', { newsItem: item })}
-    >
-      <View style={styles.card}>
-        <Image source={{ uri: item.image }} style={styles.imagen} />
-        <View style={styles.contTexto}>
-          <Text style={styles.codigo}>{item.codigo}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
   )
 }
 

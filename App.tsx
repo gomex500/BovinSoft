@@ -3,80 +3,72 @@ import Navegacion from './src/components/Navegacion'
 import Inicio from './src/views/Inicio'
 import Login from './src/views/Login'
 import Signup from './src/views/Signup'
-import InfoFinca from './src/views/InfoFinca'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { View, Text } from 'react-native'
-import Splash from './src/components/Splash'
 import InfoBovino from './src/views/InfoBovino'
-import { useUserStore } from './src/store/userStore'
 import { TailwindProvider } from 'tailwind-rn'
 import utilities from './tailwind.json'
 import { LoadingScreen } from './src/components/LoadingStream'
+// import { useAuthService } from './src/services/authService'
+import { useAuthStore } from './src/store/authStore'
+import { useFincaStore } from './src/store/fincaStore'
+import { authService } from './src/services/authService'
 
 const Stack = createStackNavigator()
 
-// Recuperar datos
-const getData = async (key: string) => {
-  try {
-    const value = await AsyncStorage.getItem(key)
-    return value // Devuelve el valor recuperado
-  } catch (error) {
-    console.error('Error getting data:', error)
-    return null // Devuelve null en caso de error
-  }
-}
-
 export default function App() {
-  const { isLoggedIn, setIsLoggedIn, obtenerUsuario } = useUserStore()
+  const { obtenerFincaById } = useFincaStore()
+  const { isAuthenticated, isRestored } = useAuthStore()
+  // const { validateToken } = useAuthService()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const userId = await getData('id')
-      const token = await getData('token')
+      let response = await authService.validateToken()
 
-      setIsLoggedIn(userId !== null) // Actualiza el estado según el valor recuperado
-      if (userId !== null) {
-        await obtenerUsuario(userId, (token as string))
+      if (response.valid) {
+        let rol = response.payload?.rol
+        let condition = rol === 'WORKER' || rol === 'ADMIN'
+
+        if (condition) {
+          await obtenerFincaById(response.payload?.fincaId as string)
+        }
       }
-
       setLoading(false)
     }
 
-    checkLoginStatus() // Llama a la función para verificar el estado de inicio de sesión
-  }, [])
+    isRestored && checkLoginStatus()
+  }, [isRestored])
+
+  if (loading) {
+    return (
+      //@ts-ignore
+      <TailwindProvider utilities={utilities as any}>
+        <LoadingScreen />
+      </TailwindProvider>
+    );
+  }
 
   return (
     //@ts-ignore
     <TailwindProvider utilities={utilities as any}>
       <NavigationContainer>
         <Stack.Navigator>
-          {loading ? ( // Mientras se está verificando el estado, puedes mostrar un cargando o similar
-            <Stack.Screen
-              name="Loading"
-              component={LoadingScreen} // Crea un componente de carga si lo deseas
-              options={{ headerShown: false }}
-            />
-          ) : isLoggedIn ? (
+          {isAuthenticated ? (
             <>
               <Stack.Screen
                 name="Navegacion"
                 component={Navegacion}
-                options={({ navigation }) => ({
-                  headerShown: false,
-                })}
+                options={{ headerShown: false }}
               />
               <Stack.Screen
                 name="InfoBovino"
                 component={InfoBovino}
-                options={({ navigation }) => ({
-                  headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
-                  headerTintColor: '#1B4725', // Color del texto en el header
-                  headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
-                })}
-                
+                options={{
+                  headerStyle: { backgroundColor: 'red' },
+                  headerTintColor: '#1B4725',
+                  headerTitleStyle: { fontWeight: 'bold' },
+                }}
               />
             </>
           ) : (
@@ -84,39 +76,17 @@ export default function App() {
               <Stack.Screen
                 name="Inicio"
                 component={Inicio}
-                options={({ navigation }) => ({
-                  headerShown: false,
-                })}
+                options={{ headerShown: false }}
               />
               <Stack.Screen
                 name="Login"
                 component={Login}
-                options={({ navigation }) => ({
-                  headerShown: false,
-                })}
+                options={{ headerShown: false }}
               />
               <Stack.Screen
                 name="Signup"
                 component={Signup}
-                options={({ navigation }) => ({
-                  headerShown: false,
-                })}
-              />
-              <Stack.Screen
-                name="Navegacion"
-                component={Navegacion}
-                options={({ navigation }) => ({
-                  headerShown: false,
-                })}
-              />
-              <Stack.Screen
-                name="InfoBovino"
-                component={InfoBovino}
-                options={({ navigation }) => ({
-                  headerStyle: { backgroundColor: 'red' }, // Color de fondo del header
-                  headerTintColor: '#1B4725', // Color del texto en el header
-                  headerTitleStyle: { fontWeight: 'bold' }, // Estilo del título
-                })}
+                options={{ headerShown: false }}
               />
             </>
           )}

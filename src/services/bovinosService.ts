@@ -1,10 +1,10 @@
-import { useUserStore } from "../store/userStore";
 import { createAxiosInstance, PATH_LIST } from "../helpers/axiosIntance";
 import { BovinoModel } from "../interfaces/IBovino";
+import { useAuthStore } from "../store/authStore";
 
 export const obtenerGanadoPorUsuarioServices = async () => {
   try {
-    const user = useUserStore.getState().user;
+    const user = useAuthStore.getState().user;
     const axiosInstance = createAxiosInstance(PATH_LIST.BovinoByUser);
     const response = await axiosInstance.get(`/${user._id}`);
     

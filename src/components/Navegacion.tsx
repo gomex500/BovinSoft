@@ -15,7 +15,8 @@ import FormBovino from '../views/FormBovino';
 import InfoFinca from '../views/InfoFinca';
 import RecommendedActivities from '../views/RecommendedActivities';
 import PostDetail from '../views/PostDetail';
-import { useUserStore } from '../store/userStore';
+import { useAuthStore } from '../store/authStore';
+import { LoadingScreen } from './LoadingStream';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -23,8 +24,10 @@ const Stack = createStackNavigator()
 
 // Crear el stack para Fincas y FormFinca
 const FincasStack = () => {
+  const { user } = useAuthStore();
+  let viewALl = user.rol === "ROOT" || user.rol === "OWNER"
   return (
-    <Stack.Navigator initialRouteName="FincasHome" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName={viewALl ? "FincasHome" : "InfoFinca"} screenOptions={{ headerShown: false }}>
       <Stack.Screen name="FincasHome" component={Fincas} />
       <Stack.Screen name="FormFinca" component={FormFinca} />
       <Stack.Screen name="InfoFinca" component={InfoFinca} />
@@ -147,7 +150,12 @@ const MyStackNavigation = () => {
 };
 
 const Navegacion = () => {
-  const { user } = useUserStore();
+  const { user } = useAuthStore();
+
+  if (user === null) {
+    return <LoadingScreen />
+  }
+
   return (
       <Drawer.Navigator
       screenOptions={({ navigation }) => ({
@@ -164,7 +172,7 @@ const Navegacion = () => {
         drawerActiveTintColor: '#f2f2f2',
         drawerInactiveTintColor: '#f2f2f2',
         headerTintColor:'#f2f2f2',
-        headerTitle: () => null,
+        headerTitle: () => <Text style={styles.title}>Bovinsoft</Text>,
         // headerLeft: () => (
         //   <Icon.Button
         //     name="hat-cowboy" // Nombre del icono de FontAwesome
@@ -209,6 +217,11 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.5)', // Color de sombra
     textShadowOffset: { width: 0, height: 2 }, // Desplazamiento de la sombra
     textShadowRadius: 1, // Radio de sombra
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#f2f2f2',
   },
 });
 

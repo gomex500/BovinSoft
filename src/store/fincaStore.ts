@@ -1,12 +1,6 @@
 import { create } from 'zustand';
-import axios from 'axios';
 import { FincaModel } from '../interfaces/IFinca';
-import { API_URL } from '@env';
-import { useUserStore } from './userStore';
-import { createFincaServices } from '../services/fincaServices';
-
-// Define el tipo del estado de finca
-// Crear el store de finca
+import { createFincaServices, obtenerFincaByIdService, obtenerFincaPorUsuarioService } from '../services/fincaServices';
 
 
 interface FincaState {
@@ -15,11 +9,7 @@ interface FincaState {
   createFinca: (finca:FincaModel) => Promise<boolean>
   fincaSelected: FincaModel | null;
   setFincaId: (finca: FincaModel | null) => void;
-}
-
-interface ICreateFinca {
-  token: string;
-  finca: FincaModel;
+  obtenerFincaById: (id: string) => Promise<any>
 }
 
 export const useFincaStore = create<FincaState>((set, get) => ({
@@ -27,17 +17,8 @@ export const useFincaStore = create<FincaState>((set, get) => ({
   fincaSelected: null,
   obtenerFincaPorUsuario: async () => {
 
-    const stateUser = useUserStore.getState();
-
-    const userId = stateUser.user._id;
-    const token = stateUser.token;
-
     try {
-      const { data } = await axios.get(`${API_URL}/fincas/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const data = await obtenerFincaPorUsuarioService()
 
       set({ fincas: data });
 
@@ -47,8 +28,8 @@ export const useFincaStore = create<FincaState>((set, get) => ({
     }
   },
   createFinca: async (finca:FincaModel) => {
+    
     try {
-
       const data = await createFincaServices(finca);
       set({ fincas: [...(get().fincas as FincaModel[]), {...data, _id: data.id}]});
 
@@ -59,4 +40,16 @@ export const useFincaStore = create<FincaState>((set, get) => ({
     }
   },
   setFincaId: (finca) => set({ fincaSelected: finca }),
+  obtenerFincaById: async (id:string) => {
+    try {
+      const data = await obtenerFincaByIdService(id)
+
+      set({ fincaSelected: data });
+
+      return data;
+    } catch (error) {
+      console.error('Error fetching finca:', error);
+      return false;
+    }
+  },
 }));

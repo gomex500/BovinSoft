@@ -1,9 +1,9 @@
 import { act } from '@testing-library/react'
 import { useBovinosStore } from '../store/useBovinoStore'
 import { BovinoModel } from '../interfaces/IBovino'
-import { useUserStore } from '../store/userStore'
 import { agregarBovinoService, obtenerGanadoPorFincaServices, obtenerGanadoPorUsuarioServices } from '../services/bovinosService'
 import { TOKEN_TEST } from '@env'
+import { useAuthStore } from '../store/authStore'
 
 // Simular los servicios
 jest.mock('../services/bovinosService', () => ({
@@ -13,7 +13,7 @@ jest.mock('../services/bovinosService', () => ({
 }))
 
 jest.mock('../store/userStore', () => ({
-  useUserStore: {
+  useAuthStore: {
     getState: jest.fn()
   }
 }))
@@ -23,7 +23,7 @@ describe('useBovinosStore', () => {
   beforeEach(() => {
     // Limpiar el store antes de cada prueba
     useBovinosStore.setState({ bovinos: [] });
-    (useUserStore.getState as jest.Mock).mockImplementation(() => ({
+    (useAuthStore.getState as jest.Mock).mockImplementation(() => ({
       user: { _id: '67129238732d53dfe8e112e1' },
       token: TOKEN_TEST
     }))

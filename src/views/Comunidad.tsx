@@ -10,10 +10,10 @@ import {
 import { useEffect, useState } from 'react'
 import { useForoStore } from '../store/useForoStore'
 import { PostView } from '../components/PostView'
-import { useUserStore } from '../store/userStore'
 import { agregarPublicacionService } from '../services/foroServices'
 import { IPublicacion } from '../interfaces/IForo'
 import { LoadingScreen } from '../components/LoadingStream'
+import { useAuthStore } from '../store/authStore'
 
 interface IRenderItem {
   item: IPublicacion;
@@ -25,6 +25,7 @@ export default function Feed() {
   const [nuevoTitulo, setNuevoTitulo] = useState('')
   const [nuevoContenido, setNuevoContenido] = useState('')
   const [loading, setLoading] = useState(true);
+  const { user } = useAuthStore()
 
   const { agregarPublicacion, publicaciones, obtenerPublicaciones } = useForoStore()
 
@@ -39,11 +40,12 @@ export default function Feed() {
 
   const agregarPublicacionView = async () => {
     if (nuevoTitulo.trim() && nuevoContenido.trim()) {
+      const { nombre, image, _id } = user
 
       let publicacion:IPublicacion = {
-        usuario: useUserStore.getState().user.nombre,
-        idUsuario: useUserStore.getState().user._id,
-        avatar: useUserStore.getState().user.image || 'https://via.placeholder.com/50',
+        usuario: nombre,
+        idUsuario: _id,
+        avatar: image || 'https://via.placeholder.com/50',
         titulo: nuevoTitulo,
         contenido: nuevoContenido,
         interacciones: { likes: 0, dislikes: 0, reports: 0 },

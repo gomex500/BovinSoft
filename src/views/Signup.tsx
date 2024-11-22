@@ -20,10 +20,11 @@ import IConEntypo from 'react-native-vector-icons/Entypo';
 import IConFontisto from 'react-native-vector-icons/Fontisto';
 import * as ImagePicker from 'expo-image-picker';
 import Alerta from '../components/Alerta';
-import axios from "axios";
 import DatePickerExample from '../components/DataPicker';
-import { useUserStore } from '../store/userStore';
-import { API_URL } from '@env';
+import { crearUsuarioServices } from '../services/userServices';
+import { UserModel } from '../interfaces/IUser';
+import { authService } from '../services/authService';
+// import { useAuthService } from '../services/authService';
 
 const Signup = ({navigation}) => {
     const [animationValue] = useState(new Animated.Value(0));
@@ -40,8 +41,7 @@ const Signup = ({navigation}) => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [date, setDate] = useState(new Date());
-
-    const { obtenerUsuario, setToken } = useUserStore();
+    // const { login } = useAuthService()
 
 
     // Alternar la visibilidad de la contraseña
@@ -84,33 +84,27 @@ const Signup = ({navigation}) => {
         setLoading(true);
         setMessage('');
         try {
-            const response = await axios.post(`${API_URL}/signin`, {
-              nombre,
-              apellido,
-              fecha_nacimiento:date.toString(),
-              telefono:telefono,
-              tipoSuscripcion,
-              direccion,
-              rol,
-              email,
-              password,
-              image: image
-          });
+          let newUser:UserModel = {
+            nombre,
+            apellido,
+            fecha_nacimiento:date.toString(),
+            telefono:telefono,
+            tipoSuscripcion: "básica",
+            direccion,
+            rol: "OWNER",
+            email,
+            password,
+            image
+        }
+
+            const response = await crearUsuarioServices(newUser);
 
             // Si la respuesta es exitosa, guarda los datos en AsyncStorage
-            if (response.status === 200) {
-                let  id = response.data.id;
-                let token = response.data.token
+            if (response != false) {
+                let token = response.token
 
-                await AsyncStorage.setItem('id', id);
-                await AsyncStorage.setItem('token', token); // Asumiendo que el token viene en la respuesta
+                await authService.login(token);
 
-                await obtenerUsuario(id, token);
-                setToken(token)
-
-                setMessage('Bienvenido');
-                showAlert();
-                setLoading(false);
                 navigation.navigate('Navegacion');
             }
         } catch (error) {

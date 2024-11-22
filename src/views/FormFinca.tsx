@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { ICordenadas } from '../interfaces/IFinca'
 import { useFincaStore } from '../store/fincaStore'
-import { useUserStore } from '../store/userStore'
+import { useAuthStore } from '../store/authStore'
 
 interface handle {
   text: string;
@@ -20,7 +20,7 @@ interface handle {
 
 const FormFinca = () => {
   const { createFinca } = useFincaStore()
-  const { user, token } = useUserStore()
+  const { user } = useAuthStore()
   const [nombre, setNombre] = useState('')
   const [descripcion, setDescripcion] = useState('')
   const [image, setImage] = useState('')

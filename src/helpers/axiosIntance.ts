@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import { API_URL } from '@env';
-import { useUserStore } from '../store/userStore';
+import { useAuthStore } from '../store/authStore';
 
 export enum PATH_LIST {
   Publicacion = 'foro',
@@ -14,14 +14,14 @@ export enum PATH_LIST {
   Usuario = 'user',
   Usuarios = 'users',
   Login = 'login',
-  SigIn = 'sigin',
+  SignIn = 'signin',
   Bovino = 'bovino',
   BovinoByUser = 'bovino/byUsers',
   BovinoByFarm = 'bovino/byFarm',
 }
 
 export const createAxiosInstance = (PATH: string): AxiosInstance => {
-  const JWT = useUserStore.getState().token
+  const JWT = useAuthStore.getState().token
   
   const baseURL = `${API_URL}/${PATH}`;
 
