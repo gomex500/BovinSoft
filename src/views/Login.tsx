@@ -48,22 +48,10 @@ const Login = ({navigation}) => {
         setLoading(true);
         setMessage('');
         try {
-            const response = await loginService(email, password)
+              await authService.login(email, password);
 
-            if (response.status === 200) {
-                let  id = response.data.id;
-                let token = response.data.token
-    
-                await authService.login(token);
-                
-                await AsyncStorage.setItem('id', id);
-                await AsyncStorage.setItem('token', token); // Asumiendo que el token viene en la respuesta
-
-                setMessage('Bienvenido');
-                showAlert();
-                setLoading(false);
-                navigation.navigate('Navegacion');
-            }
+              setLoading(false);
+              navigation.navigate('Navegacion');
         } catch (error) {
             console.error('Error en la autenticación:', error);
             setMessage('Error en el inicio de sesión. Verifica tus credenciales.');

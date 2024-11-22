@@ -8,6 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../interfaces/navigationTypes'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
+
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 const InfoFinca = () => {

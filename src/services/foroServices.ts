@@ -22,7 +22,7 @@ export const obtenerComentariosService = async (postId: string) => {
   try {
     const axiosInstance = createAxiosInstance(PATH_LIST.Comentarios);
     const response = await axiosInstance.get(`/${postId}`);
-    const data = response.data;
+    const data = response.data || [];
     
     return data;
   } catch (error) {

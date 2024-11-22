@@ -17,6 +17,8 @@ import RecommendedActivities from '../views/RecommendedActivities';
 import PostDetail from '../views/PostDetail';
 import { useAuthStore } from '../store/authStore';
 import { LoadingScreen } from './LoadingStream';
+import Inicio from '../views/Inicio';
+import Signup from '../views/Signup';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -192,6 +194,7 @@ const Navegacion = () => {
       >
         <Drawer.Screen name="Bovinsoft" component={MyStackNavigation} />
         <Drawer.Screen name="Perfil" component={Profile}/>
+        { user.rol !== "WORKER" && <Drawer.Screen name="Agregar trabajador" component={Signup} /> }
       </Drawer.Navigator>
   );
 }

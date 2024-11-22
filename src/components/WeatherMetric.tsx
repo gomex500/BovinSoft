@@ -15,6 +15,8 @@ import { useTailwind } from 'tailwind-rn'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../interfaces/navigationTypes'
+import { CustomInput } from './CustomInput'
+import { FontAwesome, Fontisto } from '@expo/vector-icons'
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
@@ -114,27 +116,30 @@ export const WeatherMetric = () => {
   return (
     <View style={[tw('flex flex-col w-full items-center')]}>
       <Text style={tw('text-lg')}>Gráfico de Clima</Text>
-      <View style={[tw('flex flex-row w-11/12 justify-between bg-black'), { width: '100%', height: '25%' }]}>
+      <View style={[tw('flex flex-row w-11/12 justify-between bg-black'), { width: '100%'}]}>
         <CustomSelect
           options={fincas.map((item) => ({
             label: item.nombre,
             value: item._id,
           }))}
+          placeholder='Selecciona una finca'
           selectedValue={fincaId}
-          onSelect={handleCoordenadasChange}
-          title="Fincas:"
-          customStyle={tw('w-2/4 h-full')}
+          onValueChange={handleCoordenadasChange}
         />
-        <View style={[tw('flex flex-col w-11/12 bg-black'), { width: '40%', marginTop: 24 }]}>
-          <Text style={styles.info}>Días previstos:</Text>
-            <TextInput
-              style={styles.input}
+        <View style={{ width: '30%'}}>
+        <CustomInput
+              placeholder="Días :"
               value={forecastDays}
-              onBlur={handleForecastDaysBlur}
               onChangeText={handleForecastDaysChange}
-              placeholder={'Días previstos:'}
-              keyboardType="numeric"
-              maxLength={2}
+              onBlur={handleForecastDaysBlur}
+              icon={
+                <Fontisto
+                  name="day-cloudy"
+                  size={20}
+                  color="#1B4725"
+                  style={styles.icon}
+                />
+              }
             />
         </View>
       </View>
@@ -174,5 +179,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1B4725',
+  },
+  icon: {
+    marginRight: 8,
   },
 })

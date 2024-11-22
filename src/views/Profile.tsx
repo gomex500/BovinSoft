@@ -20,7 +20,7 @@ interface IProfile {
 
 const Profile = ({ navigation }: IProfile) => {
   const { user } = useAuthStore()
-  const [image, setImage] = useState(null)
+  const [image, setImage] = useState(user.image)
 
   const cerrarSesion = async () => {
     await authService.logout()

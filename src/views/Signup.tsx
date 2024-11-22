@@ -17,13 +17,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IConMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import IConEntypo from 'react-native-vector-icons/Entypo';
-import IConFontisto from 'react-native-vector-icons/Fontisto';
 import * as ImagePicker from 'expo-image-picker';
 import Alerta from '../components/Alerta';
 import DatePickerExample from '../components/DataPicker';
 import { crearUsuarioServices } from '../services/userServices';
 import { UserModel } from '../interfaces/IUser';
 import { authService } from '../services/authService';
+import { useAuthStore } from '../store/authStore';
 // import { useAuthService } from '../services/authService';
 
 const Signup = ({navigation}) => {
@@ -42,6 +42,7 @@ const Signup = ({navigation}) => {
     const [message, setMessage] = useState('');
     const [date, setDate] = useState(new Date());
     // const { login } = useAuthService()
+    const { isAuthenticated, user } = useAuthStore()
 
 
     // Alternar la visibilidad de la contraseña
@@ -89,7 +90,7 @@ const Signup = ({navigation}) => {
             apellido,
             fecha_nacimiento:date.toString(),
             telefono:telefono,
-            tipoSuscripcion: "básica",
+            tipoSuscripcion: isAuthenticated ? user.tipoSuscripcion : "básica",
             direccion,
             rol: "OWNER",
             email,
@@ -171,8 +172,7 @@ const Signup = ({navigation}) => {
                                 onChangeText={setApellido}
                             />
                         </View>
-                        <View style={styles.inputContainer}>
-                            <IConFontisto name="date" size={25} style={styles.icon} />
+                        <View style={[styles.inputContainer, {marginTop: 0}]}>
                             <DatePickerExample date={date} setDate={setDate} />
                         </View>
                         <View style={styles.inputContainer}>
@@ -194,35 +194,41 @@ const Signup = ({navigation}) => {
                                 onChangeText={setDireccion}
                             />
                         </View>
-                      
-                        <View style={styles.inputContainer}>
-                            <Icon name="user" size={25} style={styles.icon} />
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Rol"
-                                placeholderTextColor="#c2c2c2"
-                                onChangeText={setRol}
-                            />
-                        </View>
+                        {
+                            isAuthenticated && (
+                                <View style={styles.inputContainer}>
+                                    <Icon name="user" size={25} style={styles.icon} />
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder="Rol"
+                                        placeholderTextColor="#c2c2c2"
+                                        onChangeText={setRol}
+                                    />
+                                </View>
+                            )
+                        }
 
                         <View style={styles.inputContainer}>
-                            <Icon name="user" size={25} style={styles.icon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Tipo de Suscripcion"
+                                placeholder="Password"
+                                secureTextEntry={ver}
                                 placeholderTextColor="#c2c2c2"
-                                onChangeText={setTipoSuscripcion}
-                            />
-                        </View>
-                       
-                        <View style={styles.inputContainer}>
-                            <Icon name="lock" size={25} style={styles.icon} />
-                            <TextInput
-                                style={styles.input}
-                                placeholder="password"
-                                placeholderTextColor="#c2c2c2"
+                                value={password}
                                 onChangeText={setPassword}
                             />
+                            <Icon
+                                name="lock"
+                                size={25}
+                                style={styles.icon}
+                            />
+                            <TouchableOpacity onPress={verPassword} style={styles.eyeIcon}>
+                                <Icon
+                                    name={ver ? 'eye-slash' : 'eye'}
+                                    size={25}
+                                    color="#1B4725"
+                                />
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.inputContainer}>
                             <IConMaterial name="email" size={25} style={styles.icon} />
@@ -274,6 +280,12 @@ const styles = StyleSheet.create({
         height: 95,
         marginTop: 50
     },
+    eyeIcon: {
+      position: 'absolute',
+      right: 10,
+      top: 10,
+      zIndex: 1,
+  },
     title:{
         fontSize: 32,
         fontWeight: '900',

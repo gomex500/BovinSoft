@@ -66,7 +66,7 @@ const Metricas = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.conttainerCHair}>
+      <View>
         <Text style={styles.title}>Dashboard</Text>
         { user?.rol !== "WORKER" && <WeatherMetric />}
         <View style={styles.contChart}>
@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   contChart: {
+    alignItems: 'center',
     marginVertical: 20,
   },
   conttainerCHair: {

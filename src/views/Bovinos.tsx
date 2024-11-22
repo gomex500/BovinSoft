@@ -70,7 +70,7 @@ const Bovinos = () => {
             <CardBovinos item={item} />
           )}
           keyExtractor={(item) => item._id as string}
-          numColumns={3} // Cambia este valor para ajustar el número de columnas
+          numColumns={2} // Cambia este valor para ajustar el número de columnas
         />
       </View>
     </View>
@@ -157,8 +157,9 @@ const styles = StyleSheet.create({
   conBvi: {
     alignContent: 'center',
     alignItems: 'center',
-    width: '98%',
+    width: '100%',
     marginTop: 20,
+    height: 580,
   },
 })
 
