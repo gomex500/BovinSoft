@@ -22,6 +22,7 @@ import Signup from '../views/Signup';
 import { SelectedType } from '../views/SelectedType';
 import { InfoBovino } from '../views/InfoBovino';
 import { UpgradeSubscription } from './UpgradeSubscription';
+import BovineCareCalendar from '../views/BovineCareCalendar';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -42,11 +43,11 @@ const FincasStack = () => {
 
 const BovinosStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Bovinos" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="BovineCareCalendar" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Bovinos" component={Bovinos} />
       <Stack.Screen name="FormBovino" component={FormBovino} />
       <Stack.Screen name="InfoBovino" component={InfoBovino} />
-      <Stack.Screen name="SelectedType" component={SelectedType} />
+      <Stack.Screen name="BovineCareCalendar" component={BovineCareCalendar} />
     </Stack.Navigator>
   );
 };

@@ -32,13 +32,11 @@ const newsItem = route.params?.newsItem
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{newsItem.nombre}</Text>
-      {/* <Header onBackPress={handleBackPress} onProfilePress={handleProfilePress} /> */}
       <ScrollView style={styles.content}>
         <InfoSection bovino={newsItem} />
         <DataGrid />
         <ActionButtons onReportPress={handleReportPress} onInformePress={handleInformePress} />
       </ScrollView>
-      {/* <BottomNav /> */}
     </SafeAreaView>
   );
 }
