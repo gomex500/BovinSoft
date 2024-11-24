@@ -23,6 +23,7 @@ import { SelectedType } from '../views/SelectedType';
 import { InfoBovino } from '../views/InfoBovino';
 import { UpgradeSubscription } from './UpgradeSubscription';
 import BovineCareCalendar from '../views/BovineCareCalendar';
+import CareHistory from '../views/CareHistory';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -37,17 +38,19 @@ const FincasStack = () => {
       <Stack.Screen name="FincasHome" component={Fincas} />
       <Stack.Screen name="FormFinca" component={FormFinca} />
       <Stack.Screen name="InfoFinca" component={InfoFinca} />
+      <Stack.Screen name="CareHistoryFinca" component={CareHistory} />
     </Stack.Navigator>
   );
 };
 
 const BovinosStack = () => {
   return (
-    <Stack.Navigator initialRouteName="BovineCareCalendar" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="CareHistoryBovino" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Bovinos" component={Bovinos} />
       <Stack.Screen name="FormBovino" component={FormBovino} />
       <Stack.Screen name="InfoBovino" component={InfoBovino} />
       <Stack.Screen name="BovineCareCalendar" component={BovineCareCalendar} />
+      <Stack.Screen name="CareHistoryBovino" component={CareHistory} />
     </Stack.Navigator>
   );
 };
@@ -192,7 +195,7 @@ const Navegacion = () => {
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <Image
               source={{uri: user.image} || require('../../assets/img/usuario.png')} // Reemplaza con la ruta de tu imagen
-              style={{ width: 40, height: 40, borderRadius: 15, marginRight: 10 }}
+              style={{ width: 40, height: 40, borderRadius: 40, marginRight: 10 }}
             />
           </TouchableOpacity>
         ),

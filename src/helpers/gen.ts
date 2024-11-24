@@ -61,3 +61,8 @@ export function calcularDiferenciaDeTiempo(fecha: string | Date) {
 
     return fechaTexto;
 }
+
+export const formatDate = (fecha: string | Date) => {
+  if(fecha === "" || fecha === " ") return "";
+  return moment(fecha).format('YYYY-MM-DD') || '';
+}

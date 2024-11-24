@@ -8,14 +8,16 @@ interface CustomInputProps {
   onChangeText: (text: string) => void;
   icon?: React.ReactNode;
   onBlur?: () => void;
+  onPress?: () => void;
 }
 
-export function CustomInput({ placeholder = 'Nombre', value, onChangeText, icon, onBlur }: CustomInputProps) {
+export function CustomInput({ placeholder = 'Nombre', value, onChangeText, icon, onBlur, onPress }: CustomInputProps) {
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         {icon && icon}
         <TextInput
+          onPress={onPress}
           style={styles.input}
           placeholder={placeholder}
           placeholderTextColor="#9E9E9E"

@@ -4,7 +4,6 @@ import {
     View, 
     Text, 
     Image, 
-    TextInput, 
     Animated, 
     TouchableOpacity, 
     SafeAreaView, 
@@ -13,17 +12,19 @@ import {
     ScrollView ,
     ActivityIndicator
 } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IConMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import IConEntypo from 'react-native-vector-icons/Entypo';
 import * as ImagePicker from 'expo-image-picker';
 import Alerta from '../components/Alerta';
-import DatePickerExample from '../components/DataPicker';
+import DatePickerInput from '../components/DataPicker';
 import { crearUsuarioServices } from '../services/userServices';
 import { UserModel } from '../interfaces/IUser';
 import { authService } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
+import { formatDate } from '../helpers/gen';
 // import { useAuthService } from '../services/authService';
 
 const Signup = ({navigation}) => {
@@ -173,7 +174,18 @@ const Signup = ({navigation}) => {
                             />
                         </View>
                         <View style={[styles.inputContainer, {marginTop: 0}]}>
-                            <DatePickerExample date={date} setDate={setDate} />
+                            <DatePickerInput date={date} setDate={setDate}>
+                                {(setShow) => (
+                                  <TextInput
+                                  label="Fecha"
+                                  value={formatDate(date)}
+                                  onPress={() => setShow(true)}
+                                  onChangeText={() => setShow(true)}
+                                  left={<TextInput.Icon icon="calendar" />}
+                                  multiline
+                                />
+                                )}
+                            </DatePickerInput>
                         </View>
                         <View style={styles.inputContainer}>
                             <Icon name="phone" size={25} style={styles.icon} />

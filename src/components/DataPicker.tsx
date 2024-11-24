@@ -1,24 +1,22 @@
-import React, { useState } from 'react';
+import React, { Children, useState } from 'react';
 import { View, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import IConFontisto from 'react-native-vector-icons/Fontisto';
 import { useTailwind } from 'tailwind-rn';
 import moment from 'moment';
+import { TextInput } from 'react-native-paper';
+import { formatDate } from '../helpers/gen';
 
 
 interface IDataPicker {
-  date: Date;
-  setDate: React.Dispatch<React.SetStateAction<Date>>;
+  date: Date | string;
+  setDate: React.Dispatch<React.SetStateAction<Date | string>>;
+  children: (setShow: (value: boolean) => void) => React.ReactNode;
 }
 
-const DatePickerExample = ({ date, setDate }: IDataPicker) => {
+const DatePickerInput = ({ date, setDate, children }: IDataPicker) => {
   const [show, setShow] = useState(false);
   const tw = useTailwind();
-
-  const formatDate = (fecha: string | Date) => {
-    return moment(fecha).format('DD MMMM').toUpperCase();
-  }
-
 
   const onChange = (event: any, selectedDate: Date | null) => {
     const currentDate = selectedDate || date;
@@ -28,27 +26,23 @@ const DatePickerExample = ({ date, setDate }: IDataPicker) => {
 
   return (
     <View style={tw('flex flex-col w-full')}>
-      <TouchableOpacity style={styles.btn} onPress={() => setShow(true)}>
-        <Text style={styles.btnText}>Seleccionar fecha</Text>
-      </TouchableOpacity>
+      {
+        children(setShow)
+      }
       {show && (
         <DateTimePicker
           testID="dateTimePicker"
-          value={date}
+          value={date as Date}
           mode="date"
           display="default"
           onChange={onChange}
         />
       )}
-      <View style={tw('flex flex-row items-center justify-center w-full')}>
-        <IConFontisto name="date" size={25} style={styles.icon} />
-        <Text style={tw('text-lg')}>Fecha: {formatDate(date)}</Text>
-      </View>
     </View>
   );
 };
 
-export default DatePickerExample;
+export default DatePickerInput;
 
 const styles = StyleSheet.create({
   icon: {

@@ -24,10 +24,10 @@ import { CustomInput } from '../components/CustomInput'
 import { Feather, FontAwesome6, Entypo } from '@expo/vector-icons'
 import { useAuthStore } from '../store/authStore'
 import { BollGroup } from '../components/BollGroup'
-import DatePickerExample from '../components/DataPicker'
+import DatePickerInput from '../components/DataPicker'
 import moment from 'moment'
 import { BovinoModel } from '../interfaces/IBovino'
-import { calcularDiferenciaDeTiempo } from '../helpers/gen'
+import { calcularDiferenciaDeTiempo, formatDate } from '../helpers/gen'
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>
 
@@ -49,7 +49,7 @@ const FormBovino = () => {
   const { obtenerFincaPorUsuario, fincas, fincaSelected } = useFincaStore()
   const { crearGanado } = useBovinosStore()
   const { user } = useAuthStore()
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date())
 
   useEffect(() => {
     const fetchData = async () => {
@@ -116,7 +116,7 @@ const FormBovino = () => {
 
   const handleSubmit = async () => {
     setLoading(true)
-    const data:BovinoModel = {
+    const data: BovinoModel = {
       nombre,
       image,
       raza: (razasDeGanado.find((item) => item.value === raza) as IOptions)
@@ -184,8 +184,25 @@ const FormBovino = () => {
         <View>
           {boll.colo1 === '#1B4725' ? (
             <>
-            <View style={[styles.inputContainer, {marginTop: 0}]}>
-                <DatePickerExample date={date} setDate={setDate} />
+              <View style={[styles.inputContainer, { marginTop: 0 }]}>
+                <DatePickerInput date={date} setDate={setDate}>
+                  {(setShow) => (
+                    <CustomInput
+                      placeholder="Fecha :"
+                      value={formatDate(date)}
+                      onChangeText={() => setShow(true)}
+                      onPress={() => setShow(true)}
+                      icon={
+                        <FontAwesome6
+                          name="calendar-days"
+                          size={20}
+                          color="#1B4725"
+                          style={styles.icon}
+                        />
+                      }
+                    />
+                  )}
+                </DatePickerInput>
               </View>
               <CustomInput
                 placeholder="Nombre :"
@@ -337,7 +354,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 20,
     position: 'relative',
-},
+  },
   icon: {
     marginRight: 8,
   },
