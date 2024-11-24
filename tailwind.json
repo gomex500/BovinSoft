@@ -19,6 +19,11 @@
 			"display": "flex"
 		}
 	},
+	"grid": {
+		"style": {
+			"display": "grid"
+		}
+	},
 	"contents": {
 		"style": {
 			"display": "contents"
@@ -34,16 +39,6 @@
 			"height": "60%"
 		}
 	},
-	"h-96": {
-		"style": {
-			"height": 384
-		}
-	},
-	"h-full": {
-		"style": {
-			"height": "100%"
-		}
-	},
 	"h-lvh": {
 		"style": {
 			"height": "100lvh"
@@ -57,11 +52,6 @@
 	"w-11/12": {
 		"style": {
 			"width": "91.666667%"
-		}
-	},
-	"w-2/4": {
-		"style": {
-			"width": "50%"
 		}
 	},
 	"w-3/4": {
@@ -89,6 +79,11 @@
 	"flex-col": {
 		"style": {
 			"flexDirection": "column"
+		}
+	},
+	"items-start": {
+		"style": {
+			"alignItems": "flex-start"
 		}
 	},
 	"items-center": {
@@ -121,6 +116,11 @@
 		"style": {
 			"--tw-bg-opacity": 1,
 			"backgroundColor": "rgb(249 250 251 / var(--tw-bg-opacity, 1))"
+		}
+	},
+	"pl-2": {
+		"style": {
+			"paddingLeft": 8
 		}
 	},
 	"text-lg": {

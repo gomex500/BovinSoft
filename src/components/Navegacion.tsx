@@ -19,6 +19,9 @@ import { useAuthStore } from '../store/authStore';
 import { LoadingScreen } from './LoadingStream';
 import Inicio from '../views/Inicio';
 import Signup from '../views/Signup';
+import { SelectedType } from '../views/SelectedType';
+import { InfoBovino } from '../views/InfoBovino';
+import { UpgradeSubscription } from './UpgradeSubscription';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -42,6 +45,8 @@ const BovinosStack = () => {
     <Stack.Navigator initialRouteName="Bovinos" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Bovinos" component={Bovinos} />
       <Stack.Screen name="FormBovino" component={FormBovino} />
+      <Stack.Screen name="InfoBovino" component={InfoBovino} />
+      <Stack.Screen name="SelectedType" component={SelectedType} />
     </Stack.Navigator>
   );
 };
@@ -195,6 +200,8 @@ const Navegacion = () => {
         <Drawer.Screen name="Bovinsoft" component={MyStackNavigation} />
         <Drawer.Screen name="Perfil" component={Profile}/>
         { user.rol !== "WORKER" && <Drawer.Screen name="Agregar trabajador" component={Signup} /> }
+        <Drawer.Screen name="Upgrade subscription" component={UpgradeSubscription} />
+        
       </Drawer.Navigator>
   );
 }

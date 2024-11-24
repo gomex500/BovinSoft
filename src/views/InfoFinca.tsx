@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native'
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
 import { FincaModel } from '../interfaces/IFinca'
@@ -7,6 +7,7 @@ import { useFincaStore } from '../store/fincaStore'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../interfaces/navigationTypes'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { CustomPieChart, PieData } from '../components/CustomPieChart'
 
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -15,20 +16,37 @@ const InfoFinca = () => {
 
   const fincaSelected  = useFincaStore().fincaSelected as FincaModel;
   const navigation = useNavigation<NavigationProps>();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!fincaSelected) {
+        navigation.navigate('FincasHome', {});
+      }
+    }, [fincaSelected])
+  )
   
   const tw = useTailwind()
 
-
   const [origin, setOrigin] = useState({
-    latitude: parseFloat(fincaSelected.coordenadas.latitud as string),
-    longitude: parseFloat(fincaSelected.coordenadas.longitud as string),
+    latitude: parseFloat((fincaSelected?.coordenadas?.latitud as string) || "0"),
+    longitude: parseFloat((fincaSelected?.coordenadas?.longitud as string) || "0"),
   })
-
+  
   const gestionarGanado = async () => {
     navigation.navigate('Bovinos', {});
   };
 
-  const [recursosN, setRecursosN] = useState(fincaSelected.recursosN)
+  const [recursosN, setRecursosN] = useState(fincaSelected?.recursosN || [])
+
+  const data: PieData[] = [
+    { key: 'Ternero', value: fincaSelected?.cantidadClasificacionGanado?.ternero, color: '#1E2923' },
+    { key: 'Novillo', value: fincaSelected?.cantidadClasificacionGanado?.novillo, color: '#375746' },
+    { key: 'Vaquilla', value: fincaSelected?.cantidadClasificacionGanado?.vaquilla, color: '#4B7B62' },
+    { key: 'Toro', value: fincaSelected?.cantidadClasificacionGanado?.toro, color: '#5B9778' },
+    { key: 'Vaca', value: fincaSelected?.cantidadClasificacionGanado?.vaca, color: '#75c199' },
+  ];
+
+  if (!fincaSelected) return <></>;
 
   return (
     <ScrollView
@@ -51,12 +69,6 @@ const InfoFinca = () => {
         <View style={styles.contData}>
           <Text>
             {fincaSelected.descripcion}
-          </Text>
-        </View>
-        <Text style={styles.info}>Dirección:</Text>
-        <View style={styles.contData}>
-          <Text>
-            {fincaSelected.direccion}
           </Text>
         </View>
         <Text style={styles.info}>Tamaño:</Text>
@@ -88,6 +100,10 @@ const InfoFinca = () => {
           
           </MapView>
         </View>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.title}>Clasificación del Ganado</Text>
+          <CustomPieChart data={data} />
+        </ScrollView>
       </View>
     </ScrollView>
   )
@@ -157,6 +173,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginLeft: 5,
     color: '#f9f9f9',
+  },
+  iconRow: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  chartContainer: {
+    padding: 8,
+    backgroundColor: '#E8F5E9',
+    borderRadius: 8,
   },
 })
 

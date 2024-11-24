@@ -3,24 +3,8 @@ import { SafeAreaView, ScrollView, StyleSheet, Text } from 'react-native';
 import { InfoSection } from '../components/InfoBovino/InfoSection';
 import { DataGrid } from '../components/InfoBovino/DataGrid';
 import { ActionButtons } from '../components/InfoBovino/ActionButtons';
-import { BovinoModel } from '../interfaces/IBovino';
-import { RouteProp, useRoute } from '@react-navigation/native';
 
-interface InfoBovinoRouteParams {
-  newsItem: BovinoModel
-}
-
-export const InfoBovino = () => {
-
-  const route =
-  useRoute<
-    RouteProp<
-      Record<string, InfoBovinoRouteParams>,
-      'InfoBovino'
-    >
-  >()
-const newsItem = route.params?.newsItem
-
+export const SelectedType = () => {
   const handleReportPress = () => {
     console.log('Report pressed');
   };
@@ -31,14 +15,7 @@ const newsItem = route.params?.newsItem
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{newsItem.nombre}</Text>
-      {/* <Header onBackPress={handleBackPress} onProfilePress={handleProfilePress} /> */}
-      <ScrollView style={styles.content}>
-        <InfoSection bovino={newsItem} />
-        <DataGrid />
-        <ActionButtons onReportPress={handleReportPress} onInformePress={handleInformePress} />
-      </ScrollView>
-      {/* <BottomNav /> */}
+      
     </SafeAreaView>
   );
 }

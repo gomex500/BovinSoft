@@ -1,5 +1,6 @@
 import { fetchWeatherApi } from 'openmeteo';
 import moment from 'moment';
+import "../polyfills/TextEncoding";
 
 const formatDate = (dateString) => {
   return moment(dateString).format('DD MMM').toUpperCase();
@@ -62,6 +63,7 @@ export const openMeteoIntance = async ({ latitude, longitude, forecast_days }: I
     timezone: "auto",
     forecast_days,
   };
+  
   const url = 'https://api.open-meteo.com/v1/forecast';
   const responses = await fetchWeatherApi(url, params);
 
@@ -91,6 +93,9 @@ export const openMeteoIntance = async ({ latitude, longitude, forecast_days }: I
       weatherCode: daily.variables(0)!.valuesArray()!, // Convert codes to names
     },
   };
+
+  console.log(weatherData + "weatherData");
+  
 
   return weatherData;
 };

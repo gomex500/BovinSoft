@@ -24,6 +24,10 @@ import { CustomInput } from '../components/CustomInput'
 import { Feather, FontAwesome6, Entypo } from '@expo/vector-icons'
 import { useAuthStore } from '../store/authStore'
 import { BollGroup } from '../components/BollGroup'
+import DatePickerExample from '../components/DataPicker'
+import moment from 'moment'
+import { BovinoModel } from '../interfaces/IBovino'
+import { calcularDiferenciaDeTiempo } from '../helpers/gen'
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>
 
@@ -45,6 +49,7 @@ const FormBovino = () => {
   const { obtenerFincaPorUsuario, fincas, fincaSelected } = useFincaStore()
   const { crearGanado } = useBovinosStore()
   const { user } = useAuthStore()
+  const [date, setDate] = useState(new Date());
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,7 +63,6 @@ const FormBovino = () => {
     nombre === '' ||
     image === '' ||
     raza === '' ||
-    edad === '' ||
     peso === '' ||
     genero === '' ||
     tipo === '' ||
@@ -106,14 +110,19 @@ const FormBovino = () => {
     { label: 'Chianina', value: '37' },
   ]
 
+  const tiempoTranscurrido = (fecha) => {
+    return moment(fecha).fromNow()
+  }
+
   const handleSubmit = async () => {
     setLoading(true)
-    const data = {
+    const data:BovinoModel = {
       nombre,
       image,
       raza: (razasDeGanado.find((item) => item.value === raza) as IOptions)
         .label,
-      edad,
+      edad: calcularDiferenciaDeTiempo(date),
+      fechaNacimiento: date,
       peso,
       genero: (generosGanado.find((item) => item.value === genero) as IOptions)
         .label,
@@ -175,6 +184,9 @@ const FormBovino = () => {
         <View>
           {boll.colo1 === '#1B4725' ? (
             <>
+            <View style={[styles.inputContainer, {marginTop: 0}]}>
+                <DatePickerExample date={date} setDate={setDate} />
+              </View>
               <CustomInput
                 placeholder="Nombre :"
                 value={nombre}
@@ -195,19 +207,6 @@ const FormBovino = () => {
                 icon={
                   <FontAwesome6
                     name="image"
-                    size={20}
-                    color="#1B4725"
-                    style={styles.icon}
-                  />
-                }
-              />
-              <CustomInput
-                placeholder="Edad :"
-                value={edad}
-                onChangeText={setEdad}
-                icon={
-                  <Entypo
-                    name="time-slot"
                     size={20}
                     color="#1B4725"
                     style={styles.icon}
@@ -334,6 +333,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
+  inputContainer: {
+    width: '100%',
+    marginTop: 20,
+    position: 'relative',
+},
   icon: {
     marginRight: 8,
   },

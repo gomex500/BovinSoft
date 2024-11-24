@@ -79,9 +79,9 @@ const Fincas = () => {
                             </View>
                             <View style={[tw('flex flex-row items-center justify-between w-1/5')]}>
                             <Text>
-                                25
-                              </Text>
-                              <FontAwesome6 name="cow" size={25} style={styles.icon} />
+                              {item.cantidadBovinos}
+                            </Text>
+                            <FontAwesome6 name="cow" size={25} style={styles.icon} />
                               
                             </View>
                           </View>

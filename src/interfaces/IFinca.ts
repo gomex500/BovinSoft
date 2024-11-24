@@ -10,9 +10,19 @@ export interface FincaModel {
   idUsuario: string; // ID del usuario asociado a la finca
   create_at?: string | Date; // Fecha de creación (string o Date)
   update_at?: string | Date; // Fecha de última actualización (string o Date)
+  cantidadBovinos?: number; // Cantidad de bovinos en la finca
+  cantidadClasificacionGanado?: ICantidadClasificacionGanado; // Cantidad de bovinos clasificados por género
 }
 
 export interface ICordenadas {
   latitud: number | string;
   longitud: number | string;
+}
+
+export interface ICantidadClasificacionGanado {
+  ternero: number;
+  novillo: number;
+  vaquilla: number;
+  toro: number;
+  vaca: number;
 }

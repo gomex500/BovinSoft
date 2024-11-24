@@ -5,7 +5,7 @@ export interface BovinoModel {
   nombre: string; // Nombre del bovino
   image: string; // URL de la imagen del bovino
   raza: string; // Raza del bovino
-  edad: string; // Edad en formato string (podría ser un número si es más apropiado)
+  edad?: string; // Edad en formato string (podría ser un número si es más apropiado)
   peso: string; // Peso en formato string (podría ser un número si es más apropiado)
   consecutivo?: number | null; // Número consecutivo (opcional)
   codigo?: string; // Código único del bovino

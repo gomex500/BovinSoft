@@ -1,15 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   View,
   Text,
   StyleSheet,
   Image,
-  Alert,
   TouchableOpacity,
   ScrollView,
 } from 'react-native'
-import * as ImagePicker from 'expo-image-picker'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 import { NavigationProp } from '@react-navigation/native'
 import { useAuthStore } from '../store/authStore'
 import { authService } from '../services/authService'
@@ -20,71 +17,10 @@ interface IProfile {
 
 const Profile = ({ navigation }: IProfile) => {
   const { user } = useAuthStore()
-  const [image, setImage] = useState(user.image)
 
   const cerrarSesion = async () => {
     await authService.logout()
     navigation.navigate('Inicio')
-  }
-
-  const pickImage = async () => {
-    // Solicitar permisos de cámara y galería
-    const { status: cameraStatus } =
-      await ImagePicker.requestCameraPermissionsAsync()
-    const { status: libraryStatus } =
-      await ImagePicker.requestMediaLibraryPermissionsAsync()
-
-    if (cameraStatus !== 'granted') {
-      Alert.alert('Error', 'Se necesita permiso para acceder a la cámara.')
-      return
-    }
-
-    if (libraryStatus !== 'granted') {
-      Alert.alert('Error', 'Se necesita permiso para acceder a la galería.')
-      return
-    }
-
-    // Mostrar un alert para que el usuario elija entre cámara o galería
-    Alert.alert(
-      'Selecciona una fuente',
-      '¿Quieres tomar una foto o elegir una de la galería?',
-      [
-        {
-          text: 'Galería',
-          onPress: async () => {
-            const result = await ImagePicker.launchImageLibraryAsync({
-              mediaTypes: ImagePicker.MediaTypeOptions.All,
-              allowsEditing: true,
-              aspect: [4, 3],
-              quality: 1,
-            })
-
-            if (!result.canceled) {
-              setImage(result.assets[0].uri)
-            }
-          },
-        },
-        {
-          text: 'Cámara',
-          onPress: async () => {
-            const result = await ImagePicker.launchCameraAsync({
-              allowsEditing: true,
-              aspect: [4, 3],
-              quality: 1,
-            })
-
-            if (!result.canceled) {
-              setImage(result.assets[0].uri)
-            }
-          },
-        },
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
-      ],
-      { cancelable: true }
-    )
   }
 
   return (
@@ -94,15 +30,9 @@ const Profile = ({ navigation }: IProfile) => {
         <View style={styles.contImgProfile}>
           <Image
             source={
-              image ? { uri: image } : require('../../assets/img/usuario.png')
+              user.image ? { uri: user.image } : require('../../assets/img/usuario.png')
             }
             style={styles.imgProfile}
-          />
-          <Icon
-            name="plus"
-            size={25}
-            style={styles.iconProfile}
-            onPress={pickImage}
           />
         </View>
         <View style={styles.datos}>

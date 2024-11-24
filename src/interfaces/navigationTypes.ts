@@ -22,4 +22,6 @@ export type RootStackParamList = {
   };
   Login: {};
   Signup: {};
+  FincasHome: {};
+  SelectedType: {};
 };

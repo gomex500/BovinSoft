@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View, Text, Image, TextInput, Animated, KeyboardAvoidingView, ScrollView, TouchableOpacity, Platform } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { FontAwesome, Fontisto } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Alerta from '../components/Alerta';
 // import { useAuthService } from '../services/authService';
@@ -48,14 +48,13 @@ const Login = ({navigation}) => {
         setLoading(true);
         setMessage('');
         try {
-              await authService.login(email, password);
+            await authService.login(email, password);
 
-              setLoading(false);
-              navigation.navigate('Navegacion');
+            setLoading(false);
+            navigation.navigate('Navegacion');
         } catch (error) {
             console.error('Error en la autenticación:', error);
             setMessage('Error en el inicio de sesión. Verifica tus credenciales.');
-            showAlert();
             setLoading(false);
         } finally {
             setLoading(false);
@@ -94,7 +93,7 @@ const Login = ({navigation}) => {
                                 value={email}
                                 onChangeText={setEmail}
                             />
-                            <Icon name="user" size={25} style={styles.icon} />
+                            <FontAwesome name="user" size={25} style={styles.icon} />
                         </View>
                         <View style={styles.inputContainer}>
                             <TextInput
@@ -105,13 +104,13 @@ const Login = ({navigation}) => {
                                 value={password}
                                 onChangeText={setPassword}
                             />
-                            <Icon
+                            <FontAwesome
                                 name="lock"
                                 size={25}
                                 style={styles.icon}
                             />
                             <TouchableOpacity onPress={verPassword} style={styles.eyeIcon}>
-                                <Icon
+                                <FontAwesome
                                     name={ver ? 'eye-slash' : 'eye'}
                                     size={25}
                                     color="#1B4725"

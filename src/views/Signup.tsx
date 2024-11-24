@@ -104,7 +104,7 @@ const Signup = ({navigation}) => {
             if (response != false) {
                 let token = response.token
 
-                await authService.login(token);
+                await authService.login(email, password);
 
                 navigation.navigate('Navegacion');
             }

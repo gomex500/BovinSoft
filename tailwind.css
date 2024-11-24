@@ -14,6 +14,10 @@
   display: flex
 }
 
+.grid {
+  display: grid
+}
+
 .contents {
   display: contents
 }
@@ -26,14 +30,6 @@
   height: 60%
 }
 
-.h-96 {
-  height: 24rem
-}
-
-.h-full {
-  height: 100%
-}
-
 .h-lvh {
   height: 100lvh
 }
@@ -44,10 +40,6 @@
 
 .w-11\/12 {
   width: 91.666667%
-}
-
-.w-2\/4 {
-  width: 50%
 }
 
 .w-3\/4 {
@@ -68,6 +60,10 @@
 
 .flex-col {
   flex-direction: column
+}
+
+.items-start {
+  align-items: flex-start
 }
 
 .items-center {
@@ -94,6 +90,10 @@
 .bg-gray-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1))
+}
+
+.pl-2 {
+  padding-left: 0.5rem
 }
 
 .text-lg {

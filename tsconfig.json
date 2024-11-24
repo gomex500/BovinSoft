@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
+    "lib": ["esnext", "dom"],
     "module": "commonjs",
     "jsx": "react-native",
     "esModuleInterop": true,
