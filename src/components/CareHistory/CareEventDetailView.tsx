@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, Divider, IconButton } from 'react-native-paper';
 import { CareEvent } from '../../interfaces/CareEvent';
-import { Header } from './Header';
+import { Header } from '../CattleReproduction/Header';
 
 interface CareEventDetailViewProps {
   event: CareEvent;

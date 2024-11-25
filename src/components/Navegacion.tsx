@@ -24,6 +24,7 @@ import { InfoBovino } from '../views/InfoBovino';
 import { UpgradeSubscription } from './UpgradeSubscription';
 import BovineCareCalendar from '../views/BovineCareCalendar';
 import CareHistory from '../views/CareHistory';
+import CattleReproductionView from '../views/CattleReproductionView';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -45,12 +46,13 @@ const FincasStack = () => {
 
 const BovinosStack = () => {
   return (
-    <Stack.Navigator initialRouteName="CareHistoryBovino" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="CattleReproduction" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Bovinos" component={Bovinos} />
       <Stack.Screen name="FormBovino" component={FormBovino} />
       <Stack.Screen name="InfoBovino" component={InfoBovino} />
       <Stack.Screen name="BovineCareCalendar" component={BovineCareCalendar} />
       <Stack.Screen name="CareHistoryBovino" component={CareHistory} />
+      <Stack.Screen name="CattleReproduction" component={CattleReproductionView} />
     </Stack.Navigator>
   );
 };
