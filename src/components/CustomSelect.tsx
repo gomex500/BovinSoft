@@ -1,63 +1,78 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
-import { Style, useTailwind } from 'tailwind-rn';
-import { IOptions } from '../interfaces/IGen';
+import { Feather } from '@expo/vector-icons';
 
-interface ICustomSelect {
-  options: IOptions[];
-  onSelect: (value: string) => void;
-  selectedValue: string;
-  title: string;
-  customStyle?: Style;
-  placeholder?: string;
+interface Option {
+  label: string;
+  value: string;
 }
 
-export const CustomSelect = ({ options, onSelect, selectedValue, title, customStyle, placeholder='Seleccione una opcion' }: ICustomSelect) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const tailwind = useTailwind();
+interface CustomSelectProps {
+  options: Option[];
+  selectedValue: string;
+  onValueChange: (value: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
+  children?: (toggleModal: () => void) => React.ReactNode;
+}
 
-  const renderItem = ({ item }: { item: IOptions }) => (
-    <TouchableOpacity
-      style={tailwind('p-4 border-b border-gray-300')}
-      onPress={() => {
-        onSelect(item.value);
-        setModalVisible(false);
-      }}
-    >
-      <Text style={tailwind('text-lg')}>{item.label}</Text>
-    </TouchableOpacity>
-  );
+export const CustomSelect: React.FC<CustomSelectProps> = ({
+  options,
+  selectedValue,
+  onValueChange,
+  placeholder = 'Select an option',
+  disabled = false,
+  children,
+}) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const selectedOption = options.find(option => option.value === selectedValue);
+
+  const toggleModal = () => setModalVisible(!modalVisible);
+
+  const handleSelect = (value: string) => {
+    onValueChange(value);
+    toggleModal();
+  };
 
   return (
-    <View style={[tailwind('mt-4'), customStyle]}>
-      <Text style={tailwind('text-lg')}> {title}</Text>
-      {/* Botón para abrir el modal */}
-      <TouchableOpacity
-        style={tailwind('p-4 border border-gray-400 rounded')}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={tailwind('text-lg')}>
-          {selectedValue
-            ? options.find((opt) => opt.value === selectedValue)?.label
-            : placeholder}
+    <View style={styles.container}>
+      {children ? children(toggleModal) : (
+        <TouchableOpacity onPress={toggleModal} disabled={disabled} style={styles.selectContainer}>
+        <Text style={[styles.selectText, !selectedValue && styles.placeholder]}>
+          {selectedOption ? selectedOption.label : placeholder}
         </Text>
+        <Feather name="chevron-down" size={20} color="#1B4725" />
       </TouchableOpacity>
+      )}
+      
 
-      {/* Modal */}
       <Modal
-        transparent
+        animationType="slide"
+        transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-        animationType="fade"
+        onRequestClose={toggleModal}
       >
-        <View style={[tailwind('flex-1 justify-center items-center'), styles.modalBackground]}>
-          {/* Contenedor de las opciones */}
-          <View style={[tailwind('w-80 min-h-32 max-h-96 rounded-lg'), styles.optionsContainer]}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
             <FlatList
               data={options}
-              renderItem={renderItem}
               keyExtractor={(item) => item.value}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.option}
+                  onPress={() => handleSelect(item.value)}
+                >
+                  <Text style={styles.optionText}>{item.label}</Text>
+                  {item.value === selectedValue && (
+                    <Feather name="check" size={20} color="#1B4725" />
+                  )}
+                </TouchableOpacity>
+              )}
             />
+            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -66,15 +81,69 @@ export const CustomSelect = ({ options, onSelect, selectedValue, title, customSt
 };
 
 const styles = StyleSheet.create({
-  modalBackground: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo negro semi-transparente
+  container: {
+    padding: 10,
   },
-  optionsContainer: {
-    backgroundColor: 'white', // Fondo blanco sólido
+  selectContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5, // Sombra para Android
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  selectText: {
+    fontSize: 16,
+    color: '#000000',
+  },
+  placeholder: {
+    color: '#9E9E9E',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 20,
+    width: '80%',
+    maxHeight: '80%',
+  },
+  option: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+  },
+  optionText: {
+    fontSize: 16,
+    color: '#000000',
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#1B4725',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
+

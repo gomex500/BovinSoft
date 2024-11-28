@@ -17,6 +17,17 @@ import RecommendedActivities from '../views/RecommendedActivities';
 import PostDetail from '../views/PostDetail';
 import { useAuthStore } from '../store/authStore';
 import { LoadingScreen } from './LoadingStream';
+import Inicio from '../views/Inicio';
+import Signup from '../views/Signup';
+import { SelectedType } from '../views/SelectedType';
+import { InfoBovino } from '../views/InfoBovino';
+import { UpgradeSubscription } from './UpgradeSubscription';
+import BovineCareCalendar from '../views/BovineCareCalendar';
+import CareHistory from '../views/CareHistory';
+import CattleReproductionView from '../views/CattleReproductionView';
+import FarmActivitiesView from '../views/FarmActivitiesView';
+import LivestockView from '../views/LivestockView';
+import CattleDetailScreen from './Bovine/CattleDetailScreen';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -31,15 +42,24 @@ const FincasStack = () => {
       <Stack.Screen name="FincasHome" component={Fincas} />
       <Stack.Screen name="FormFinca" component={FormFinca} />
       <Stack.Screen name="InfoFinca" component={InfoFinca} />
+      <Stack.Screen name="CareHistoryFinca" component={CareHistory} />
+      <Stack.Screen name="CattleReproductionByFarm" component={CattleReproductionView} />
     </Stack.Navigator>
   );
 };
 
 const BovinosStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Bovinos" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Bovinos" component={Bovinos} />
+    <Stack.Navigator initialRouteName="Livestock" screenOptions={{ headerShown: false }}>
+      {/* <Stack.Screen name="Bovinos" component={Bovinos} /> */}
       <Stack.Screen name="FormBovino" component={FormBovino} />
+      {/* <Stack.Screen name="InfoBovino" component={InfoBovino} /> */}
+      <Stack.Screen name="BovineCareCalendar" component={BovineCareCalendar} />
+      <Stack.Screen name="CareHistoryBovino" component={CareHistory} />
+      <Stack.Screen name="CattleReproduction" component={CattleReproductionView} />
+      <Stack.Screen name="FarmActivities" component={FarmActivitiesView} />
+      <Stack.Screen name="Livestock" component={LivestockView} />
+      <Stack.Screen name="CattleDetailBovine" component={CattleDetailScreen} />
     </Stack.Navigator>
   );
 };
@@ -184,7 +204,7 @@ const Navegacion = () => {
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <Image
               source={{uri: user.image} || require('../../assets/img/usuario.png')} // Reemplaza con la ruta de tu imagen
-              style={{ width: 40, height: 40, borderRadius: 15, marginRight: 10 }}
+              style={{ width: 40, height: 40, borderRadius: 40, marginRight: 10 }}
             />
           </TouchableOpacity>
         ),
@@ -192,6 +212,9 @@ const Navegacion = () => {
       >
         <Drawer.Screen name="Bovinsoft" component={MyStackNavigation} />
         <Drawer.Screen name="Perfil" component={Profile}/>
+        { user.rol !== "WORKER" && <Drawer.Screen name="Agregar trabajador" component={Signup} /> }
+        <Drawer.Screen name="Upgrade subscription" component={UpgradeSubscription} />
+        
       </Drawer.Navigator>
   );
 }

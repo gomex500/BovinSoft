@@ -15,31 +15,32 @@ import { useTailwind } from 'tailwind-rn'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../interfaces/navigationTypes'
+import { CustomInput } from './CustomInput'
+import { FontAwesome, Fontisto } from '@expo/vector-icons'
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
-export const WeatherMetric = () => {
+interface WeatherMetricProps {
+  fincas: FincaModel[]
+}
+
+export const WeatherMetric = ({ fincas }: WeatherMetricProps) => {
   const [clima, setClima] = useState(null)
-  const [forecastDays, setForecastDays] = useState('16')
-  const { obtenerFincaPorUsuario } = useFincaStore()
+  const [forecastDays, setForecastDays] = useState('7')
   const [fincaId, setFincaId] = useState('')
-  const [fincas, setFincas] = useState<FincaModel[]>([])
   const [coordenadas, setCoordenadas] = useState<ICordenadas>({
     latitud: '',
     longitud: '',
   })
   const tw = useTailwind()
-  const [forecastDaysBlur, setForecastDaysBlur] = useState('16')
+  const [forecastDaysBlur, setForecastDaysBlur] = useState('7')
   const navigation = useNavigation<NavigationProps>();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data: FincaModel[] = await obtenerFincaPorUsuario()
-      setFincas(data)
-    }
+  const [watherCodeShow, setWatherCodeShow] = useState([])
 
-    fetchData()
-  }, [])
+  function removeDuplicates(arr) {
+    return [...new Set(arr)];
+}
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,9 +50,9 @@ export const WeatherMetric = () => {
         forecast_days: parseInt(forecastDaysBlur),
       }
 
-      const weatherData = await openMeteoIntance(dataMeteo)
-      const { labels, weatherCode } = formatOpenMeteoForMetric(weatherData)
-
+      const { labels, weatherCode } = await openMeteoIntance(dataMeteo)
+      
+      setWatherCodeShow(removeDuplicates(weatherCode))
       let data = {
         labels: labels,
         datasets: [
@@ -64,7 +65,7 @@ export const WeatherMetric = () => {
       }
       setClima(data)
     }
-    if (coordenadas.latitud && coordenadas.longitud && forecastDays) {
+    if (coordenadas.latitud && coordenadas.longitud && forecastDays && fincas.length > 0) {
       fetchData()
     }
   }, [coordenadas, forecastDaysBlur])
@@ -104,7 +105,6 @@ export const WeatherMetric = () => {
     // data incluye información como el índice y valor del punto
     const { index, value } = data
     const farm = fincas.find((item) => item._id === fincaId).nombre
-
     let day = clima.labels[index]
     let weather = getWeatherCondition(value)
     
@@ -113,28 +113,31 @@ export const WeatherMetric = () => {
 
   return (
     <View style={[tw('flex flex-col w-full items-center')]}>
-      <Text style={tw('text-lg')}>Gráfico de Clima</Text>
-      <View style={[tw('flex flex-row w-11/12 justify-between bg-black'), { width: '100%', height: '25%' }]}>
+      <Text style={styles.title}>Gráfico de Clima</Text>
+      <View style={[tw('flex flex-row w-11/12 justify-between bg-black'), { width: '100%'}]}>
         <CustomSelect
           options={fincas.map((item) => ({
             label: item.nombre,
             value: item._id,
           }))}
+          placeholder='Selecciona una finca'
           selectedValue={fincaId}
-          onSelect={handleCoordenadasChange}
-          title="Fincas:"
-          customStyle={tw('w-2/4 h-full')}
+          onValueChange={handleCoordenadasChange}
         />
-        <View style={[tw('flex flex-col w-11/12 bg-black'), { width: '40%', marginTop: 24 }]}>
-          <Text style={styles.info}>Días previstos:</Text>
-            <TextInput
-              style={styles.input}
+        <View style={{ width: '30%'}}>
+        <CustomInput
+              placeholder="Días :"
               value={forecastDays}
-              onBlur={handleForecastDaysBlur}
               onChangeText={handleForecastDaysChange}
-              placeholder={'Días previstos:'}
-              keyboardType="numeric"
-              maxLength={2}
+              onBlur={handleForecastDaysBlur}
+              icon={
+                <Fontisto
+                  name="day-cloudy"
+                  size={20}
+                  color="#1B4725"
+                  style={styles.icon}
+                />
+              }
             />
         </View>
       </View>
@@ -144,12 +147,28 @@ export const WeatherMetric = () => {
           handleDataPointClick={handleDataPointClick}
         />
       )}
+      <Text style={styles.title}>Datos de Clima</Text>
+      <View style={tw('flex-col w-full items-start pl-2')}>
+      {
+        watherCodeShow.map((item, index) => (
+          <Text key={index} style={styles.info}> {item} - {getWeatherCondition(item)}</Text>
+        ))
+      }
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  
+  title: {
+    fontSize: 21,
+    marginTop: 5,
+    marginLeft: 5,
+    marginBottom: 10,
+    color: '#1B4725',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   input: {
     width: '100%',
     height: 60,
@@ -171,8 +190,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   info: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#1B4725',
+  },
+  icon: {
+    marginRight: 8,
   },
 })

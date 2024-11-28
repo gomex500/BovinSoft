@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/img/splashLogo.png",
-      "resizeMode": "center",
+      "resizeMode": "contain",
       "backgroundColor": "#1B4725"
     },
     "ios": {
@@ -18,26 +18,28 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "icon": "./assets/img/logoNotificacion.png",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.odiseoj676.bovinsoft"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "70ae5bbb-90d1-4e60-b23d-36193f3422de"
+        "projectId": "780e3c6b-7d6d-49fc-ba8a-73680ad2eb53"
+      },
+      "router": {
+        "origin": false
       }
     },
-    "owner": "gomex5",
+    "owner": "odiseoj676",
     "plugins": [
-      "expo-font",
-      "expo-router",
-      [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-        }
-      ]
+      "expo-font"
     ]
   }
 }

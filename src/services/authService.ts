@@ -2,11 +2,17 @@ import { jwtDecode } from 'jwt-decode';
 import { Alert } from 'react-native';
 import { UserModel } from '../interfaces/IUser';
 import { useAuthStore } from '../store/authStore';
+import { loginService } from './userServices';
 
 
 export const authService = {
-    async login(token: string) {
+    async login(email: string, password: string) {
         try {
+
+            const response = await loginService(email, password)
+
+            let token = response.data.token
+
             const decoded = jwtDecode(token) as UserModel;
             Alert.alert('Sesión iniciada', 'Iniciaste sesión con éxito');
             useAuthStore.getState().setSession(decoded, token);

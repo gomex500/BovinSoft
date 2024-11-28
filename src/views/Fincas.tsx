@@ -7,6 +7,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../interfaces/navigationTypes';
 import { useNavigation } from '@react-navigation/native';
 import { FincaModel } from '../interfaces/IFinca';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 const Fincas = () => {
@@ -70,9 +72,18 @@ const Fincas = () => {
                               source={require('../../assets/Finca.jpg')}
                               style={{ width: '100%', height: 200 }}
                           />
-                          <View style={styles.contTexto}>
+                          <View style={[styles.contTexto, tw('flex flex-row items-center justify-between w-full')]}>
+                            <View style={[tw('flex flex-row items-center justify-start w-3/4')]}>
+                              <Ionicons name="leaf" size={25} style={styles.icon} />
                               <Text style={styles.titulo}>{item.nombre}</Text>
-                              <Text style={styles.descripcion}>{item.descripcion}</Text>
+                            </View>
+                            <View style={[tw('flex flex-row items-center justify-between w-1/5')]}>
+                            <Text>
+                              {item.cantidadBovinos}
+                            </Text>
+                            <FontAwesome6 name="cow" size={25} style={styles.icon} />
+                              
+                            </View>
                           </View>
                       </View>
                   </TouchableOpacity>
@@ -114,6 +125,9 @@ const styles = StyleSheet.create({
         padding: 10,
         marginRight: 10,
     },
+    icon: {
+      color: '#1B4725'
+   },
     boton: {
         display: 'flex',
         alignItems: 'center',
@@ -127,7 +141,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     card: {
-        width: 300,
+        width: 370,
         backgroundColor: '#f2f2f2',
         borderRadius: 10,
         shadowColor: '#000',
@@ -161,7 +175,8 @@ const styles = StyleSheet.create({
     },
     contTexto:{
         paddingHorizontal:10,
-        paddingVertical:5
+        paddingVertical:5,
+        backgroundColor: '#f2f2f2',
     }
 });
 

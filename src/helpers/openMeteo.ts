@@ -1,5 +1,7 @@
 import { fetchWeatherApi } from 'openmeteo';
 import moment from 'moment';
+import "../polyfills/TextEncoding";
+import axios from 'axios';
 
 const formatDate = (dateString) => {
   return moment(dateString).format('DD MMM').toUpperCase();
@@ -62,37 +64,14 @@ export const openMeteoIntance = async ({ latitude, longitude, forecast_days }: I
     timezone: "auto",
     forecast_days,
   };
-  const url = 'https://api.open-meteo.com/v1/forecast';
-  const responses = await fetchWeatherApi(url, params);
 
-  // Helper function to form time ranges
-  const range = (start: number, stop: number, step: number) =>
-    Array.from({ length: (stop - start) / step }, (_, i) => start + i * step);
+  let url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code&timezone=auto&forecast_days=${forecast_days}`;
+  const responses = await axios.get(url);
 
-  // Process the first location
-  const response = responses[0];
+  const labels = responses.data.daily.time;
+  const weatherCode = responses.data.daily.weather_code;
 
-  const utcOffsetSeconds = response.utcOffsetSeconds();
-  const timezone = response.timezone();
-  const timezoneAbbreviation = response.timezoneAbbreviation();
-  const latitudeResult = response.latitude();
-  const longitudeResult = response.longitude();
-
-  const daily = response.daily()!;
-
-  // Prepare weather data with readable weather conditions
-  const weatherData:WeatherData = {
-    daily: {
-      time: range(
-        Number(daily.time()),
-        Number(daily.timeEnd()),
-        daily.interval()
-      ).map((t) => new Date((t + utcOffsetSeconds) * 1000)),
-      weatherCode: daily.variables(0)!.valuesArray()!, // Convert codes to names
-    },
-  };
-
-  return weatherData;
+  return { labels, weatherCode };
 };
 
 export const formatOpenMeteoForMetric = (data:WeatherData) => {

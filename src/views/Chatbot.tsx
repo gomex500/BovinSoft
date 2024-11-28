@@ -1,6 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import Esquema from '../components/Esquema';
+// import Esquema from '../components/Esquema';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import { SECRET_GEMINI } from '@env';
@@ -87,7 +87,7 @@ const Chatbot = () => {
 
     return (
         <View style={styles.container}>
-            <Esquema />
+            {/* <Esquema /> */}
             <View style={styles.chatContainer}>
                 <ScrollView
                     ref={chatboxRef}

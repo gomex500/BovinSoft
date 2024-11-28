@@ -1,12 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
 import { BarChart, PieChart } from 'react-native-chart-kit'
 import { WeatherMetric } from '../components/WeatherMetric'
 import { useAuthStore } from '../store/authStore'
 import { LoadingScreen } from '../components/LoadingStream'
+import { useFincaStore } from '../store/fincaStore'
+import { LivestockClassificationMetric } from '../components/LivestockClassificationMetric'
 
 const Metricas = () => {
   const { user } = useAuthStore()
+  const { obtenerFincaPorUsuario, fincas } = useFincaStore()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await obtenerFincaPorUsuario()
+    }
+
+    fetchData()
+  }, [])
+
   const data2 = [
     {
       name: 'Comida',
@@ -60,15 +72,16 @@ const Metricas = () => {
     ],
   }
 
-  if (user === null) {
+  if (user === null || !fincas) {
     return <LoadingScreen />
   }
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.conttainerCHair}>
-        <Text style={styles.title}>Dashboard</Text>
-        { user?.rol !== "WORKER" && <WeatherMetric />}
+      <View>
+        <Text style={styles.title}>Gráficos</Text>
+        { user?.rol !== "WORKER" && <WeatherMetric fincas={fincas} />}
+        <LivestockClassificationMetric fincas={fincas} />
         <View style={styles.contChart}>
           <Text style={{ textAlign: 'center', fontSize: 20 }}>
             Gráfico de Pastel
@@ -130,7 +143,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexGrow: 1,
   },
+  containerClasificacion: {
+    flexGrow: 1,
+    padding: 16,
+    paddingBottom: 24,
+    backgroundColor: '#fff',
+  },
+  titleClasificacion: {
+    fontSize: 21,
+    marginTop: 5,
+    marginLeft: 5,
+    marginBottom: 10,
+    color: '#1B4725',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   contChart: {
+    alignItems: 'center',
     marginVertical: 20,
   },
   conttainerCHair: {
