@@ -8,6 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../interfaces/navigationTypes'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { CustomPieChart, PieData } from '../components/CustomPieChart'
+import { Button } from 'react-native-paper'
 
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -65,6 +66,9 @@ const InfoFinca = () => {
           >
               <Text style={styles.btnText}>Gestionar Ganado</Text>
           </TouchableOpacity>
+          <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CattleReproductionByFarm', { animal: fincaSelected, type: 'farm' })}>
+            Reproduccion
+          </Button>
         <Text style={[ tw('mt-4') ,styles.info]}>Descripción:</Text>
         <View style={styles.contData}>
           <Text>

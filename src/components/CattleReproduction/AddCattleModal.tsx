@@ -1,36 +1,77 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Modal, Portal, Text, TextInput, Button } from 'react-native-paper';
+import { View, StyleSheet, Alert } from 'react-native';
+import { Modal, Portal, Text, TextInput, Button, ActivityIndicator } from 'react-native-paper';
+import { IBovine } from '../../interfaces/Livestock';
+import { CustomSelect } from '../CustomSelect';
 
 interface AddCattleModalProps {
   visible: boolean;
   onClose: () => void;
-  onAdd: (name: string) => void;
+  onAdd: (name: string, bovinoId: string) => Promise<void>
+  animal: IBovine
+  type: "cattle" | "farm"
+  bovinos: IBovine[]
 }
 
-export function AddCattleModal({ visible, onClose, onAdd }: AddCattleModalProps) {
-  const [name, setName] = useState('');
+export function AddCattleModal({ visible, onClose, onAdd, animal, type, bovinos }: AddCattleModalProps) {
+  const [name, setName] = useState(type === "cattle" ? animal.name : '');
+  const [loading, setLoading] = useState(false);
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
+    setLoading(true);
+    name === "" && Alert.alert("Campo obligatorio", "El nombre del bovino es obligatorio");
+
     if (name.trim()) {
-      onAdd(name.trim());
+      if (type === "cattle") {
+        await onAdd(name.trim(), animal.id);
+      } else if (type === "farm") {
+        await onAdd(name.trim(), bovinos.find((item) => item.name === name.trim())?.id);
+      }
+
       setName('');
     }
+    setLoading(false);
   };
 
   return (
     <Portal>
       <Modal visible={visible} onDismiss={onClose} contentContainerStyle={styles.modalContainer}>
-        <Text style={styles.title}>Add New Cattle</Text>
-        <TextInput
-          label="Cattle Name"
-          value={name}
-          onChangeText={setName}
-          style={styles.input}
-        />
+        <Text style={styles.title}>Nuevo ciclo reproductivo</Text>
+        {type === "cattle" && (
+          <TextInput
+            label="Bovino *"
+            value={name}
+            onChangeText={setName}
+            style={styles.input}
+            disabled={true}
+          />
+        )}
+        {type === "farm" && (
+          <CustomSelect
+          placeholder="Seleccione un tipo de ganado"
+          options={
+            bovinos.map((item) => ({
+              label: item.name,
+              value: item.id,
+            }))
+          }
+          selectedValue={name}
+          onValueChange={(value) => setName(bovinos.find((item) => item.id === value)?.name)}
+        >
+          {(toggleModal) => (
+            <Button textColor='#0D0D0D' onPress={() => toggleModal()} mode="outlined" style={styles.input}>
+              Bovino: {name || 'Seleccionar'}
+            </Button>
+          )}
+        </CustomSelect>
+        )}
         <View style={styles.buttonContainer}>
-          <Button onPress={onClose} style={styles.button} buttonColor="#FF6B6B">Cancel</Button>
-          <Button onPress={handleAdd} style={styles.button} mode="contained" buttonColor="#1B5E20">Add</Button>
+          <Button onPress={onClose} textColor='#fff' style={styles.button} buttonColor='#db3030'>Cancelar</Button>
+          <Button onPress={handleAdd} style={styles.button} mode="contained" buttonColor="#1B5E20">
+            {
+              loading ? <ActivityIndicator size={20} color="#fff" /> : 'Crear'
+            }
+          </Button>
         </View>
       </Modal>
     </Portal>

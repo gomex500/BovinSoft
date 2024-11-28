@@ -26,6 +26,8 @@ import BovineCareCalendar from '../views/BovineCareCalendar';
 import CareHistory from '../views/CareHistory';
 import CattleReproductionView from '../views/CattleReproductionView';
 import FarmActivitiesView from '../views/FarmActivitiesView';
+import LivestockView from '../views/LivestockView';
+import CattleDetailScreen from './Bovine/CattleDetailScreen';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -41,20 +43,23 @@ const FincasStack = () => {
       <Stack.Screen name="FormFinca" component={FormFinca} />
       <Stack.Screen name="InfoFinca" component={InfoFinca} />
       <Stack.Screen name="CareHistoryFinca" component={CareHistory} />
+      <Stack.Screen name="CattleReproductionByFarm" component={CattleReproductionView} />
     </Stack.Navigator>
   );
 };
 
 const BovinosStack = () => {
   return (
-    <Stack.Navigator initialRouteName="FarmActivities" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Bovinos" component={Bovinos} />
+    <Stack.Navigator initialRouteName="Livestock" screenOptions={{ headerShown: false }}>
+      {/* <Stack.Screen name="Bovinos" component={Bovinos} /> */}
       <Stack.Screen name="FormBovino" component={FormBovino} />
-      <Stack.Screen name="InfoBovino" component={InfoBovino} />
+      {/* <Stack.Screen name="InfoBovino" component={InfoBovino} /> */}
       <Stack.Screen name="BovineCareCalendar" component={BovineCareCalendar} />
       <Stack.Screen name="CareHistoryBovino" component={CareHistory} />
       <Stack.Screen name="CattleReproduction" component={CattleReproductionView} />
       <Stack.Screen name="FarmActivities" component={FarmActivitiesView} />
+      <Stack.Screen name="Livestock" component={LivestockView} />
+      <Stack.Screen name="CattleDetailBovine" component={CattleDetailScreen} />
     </Stack.Navigator>
   );
 };

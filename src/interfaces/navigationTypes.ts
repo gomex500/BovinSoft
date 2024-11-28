@@ -1,4 +1,6 @@
 import { BovinoModel } from "./IBovino";
+import { FincaModel } from "./IFinca";
+import { IBovine } from "./Livestock";
 
 // navigationTypes.ts
 export type RootStackParamList = {
@@ -24,4 +26,15 @@ export type RootStackParamList = {
   Signup: {};
   FincasHome: {};
   SelectedType: {};
+  CattleDetailBovine: {
+    animal: IBovine;
+  };
+  CattleReproduction: {
+    animal: IBovine | FincaModel;
+    type: "cattle" | "farm"
+  }
+  CattleReproductionByFarm: {
+    animal: IBovine | FincaModel;
+    type: "cattle" | "farm"
+  }
 };

@@ -2,7 +2,6 @@ import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Modal, Portal, Text, Button, Card, Avatar, Divider } from 'react-native-paper';
 import { ReproductiveEvent } from '../../interfaces/ReproductiveEvent';
-import { Calendar, Clipboard, FlaskRoundIcon as Flask, CrossIcon as MedicalCross } from 'lucide-react';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 interface EventDetailsModalProps {

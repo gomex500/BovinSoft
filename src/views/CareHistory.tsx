@@ -47,10 +47,8 @@ const initialCareHistory: CareEvent[] = [
 ]
 
 export default function CareHistoryCRUD() {
-  const [careHistory, setCareHistory] =
-    useState<CareEvent[]>(initialCareHistory)
-  const [filteredHistory, setFilteredHistory] =
-    useState<CareEvent[]>(initialCareHistory)
+  const [careHistory, setCareHistory] = useState<CareEvent[]>(initialCareHistory)
+  const [filteredHistory, setFilteredHistory] = useState<CareEvent[]>(initialCareHistory)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [currentEvent, setCurrentEvent] = useState<CareEvent | null>(null)
   const [isDetailViewVisible, setIsDetailViewVisible] = useState(false)

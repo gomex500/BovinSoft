@@ -50,9 +50,7 @@ export const WeatherMetric = ({ fincas }: WeatherMetricProps) => {
         forecast_days: parseInt(forecastDaysBlur),
       }
 
-      const weatherData = await openMeteoIntance(dataMeteo)
-      const { labels, weatherCode } = formatOpenMeteoForMetric(weatherData)
-      console.log(weatherCode)
+      const { labels, weatherCode } = await openMeteoIntance(dataMeteo)
       
       setWatherCodeShow(removeDuplicates(weatherCode))
       let data = {

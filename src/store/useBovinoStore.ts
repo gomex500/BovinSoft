@@ -1,12 +1,15 @@
 import { create } from 'zustand';
 import { BovinoModel } from '../interfaces/IBovino';
-import { agregarBovinoService, obtenerGanadoPorFincaServices, obtenerGanadoPorUsuarioServices } from '../services/bovinosService';
+import { agregarBovinoService, deleteBovinoServices, obtenerGanadoPorFincaServices, obtenerGanadoPorUsuarioServices, updateBovinoServices } from '../services/bovinosService';
+import { IBovine } from '../interfaces/Livestock';
 
 interface BovinoState {
-  bovinos: BovinoModel[];
+  bovinos: IBovine[];
   obtenerGanadoPorUsuario: () => Promise<void>;
-  crearGanado: (vaca: BovinoModel) => Promise<boolean>;
+  crearGanado: (vaca: IBovine) => Promise<boolean>;
   obtenerGanadoPorFinca: (fincaId: string) => Promise<void>
+  updateGanado: (bovino: IBovine) => Promise<void>
+  deleteGanado: (id: string) => Promise<void>
 }
 
 // Crear el store de vacas
@@ -22,7 +25,7 @@ export const useBovinosStore = create<BovinoState>((set, get) => ({
     }
   },
 
-  crearGanado: async (bovino:BovinoModel) => {
+  crearGanado: async (bovino:IBovine) => {
     try {
       const data = await agregarBovinoService(bovino);
 
@@ -32,6 +35,15 @@ export const useBovinosStore = create<BovinoState>((set, get) => ({
       console.error('Error create bovino:', error);
       return false
     }
+  },
+  updateGanado: async (bovino: IBovine) => {
+    await updateBovinoServices(bovino)
+    set({ bovinos: get().bovinos.map(item => item.id === bovino.id ? bovino : item) });
+  },
+
+  deleteGanado: async (id: string) => {
+    await deleteBovinoServices(id)
+    set({ bovinos: get().bovinos.filter(item => item.id !== id) });
   },
 
   obtenerGanadoPorFinca: async (fincaId: string) => {

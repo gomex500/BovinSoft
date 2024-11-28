@@ -14,6 +14,7 @@ import { useFincaStore } from './src/store/fincaStore'
 import { authService } from './src/services/authService'
 import { Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
+import 'whatwg-fetch';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

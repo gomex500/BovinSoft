@@ -18,6 +18,10 @@ export enum PATH_LIST {
   Bovino = 'bovino',
   BovinoByUser = 'bovino/byUsers',
   BovinoByFarm = 'bovino/byFarm',
+  ReproductiveEvents = 'reproductive_events',
+  ReproductiveByBovino = 'reproductive_events/bovino',
+  ReproductiveByFinca = 'reproductive_events/finca',
+  Reproductive = 'reproduccion'
 }
 
 export const createAxiosInstance = (PATH: string): AxiosInstance => {

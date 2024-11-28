@@ -2,18 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Modal, Portal, Text, Button, TextInput, List, IconButton, RadioButton } from 'react-native-paper';
 import { ReproductiveEvent, ReproductiveEventType } from '../../interfaces/ReproductiveEvent';
+import moment from 'moment';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface AddEventModalProps {
   visible: boolean;
   onClose: () => void;
-  onAdd: (event: ReproductiveEvent) => void;
+  onAdd: (newEvent: ReproductiveEvent) => Promise<void>
   existingEvents: ReproductiveEvent[];
+  cattleId:string
+  openAddRecentBirthModal: () => void;
 }
 
 const eventOrder: ReproductiveEventType[] = ['proestrus', 'insemination', 'gestation', 'parturition'];
 
-export function AddEventModal({ visible, onClose, onAdd, existingEvents }: AddEventModalProps) {
-  const [date, setDate] = useState('');
+export function AddEventModal({ visible, onClose, onAdd, existingEvents, cattleId, openAddRecentBirthModal }: AddEventModalProps) {
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [notes, setNotes] = useState('');
   const [treatments, setTreatments] = useState<string[]>([]);
   const [testResults, setTestResults] = useState<{ name: string; value: string; unit?: string }[]>([]);
@@ -23,6 +27,7 @@ export function AddEventModal({ visible, onClose, onAdd, existingEvents }: AddEv
   const [newTestUnit, setNewTestUnit] = useState('');
   const [inseminationMethod, setInseminationMethod] = useState<'artificial' | 'natural'>('artificial');
   const [fatherName, setFatherName] = useState('');
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const determineNextEventType = (): ReproductiveEventType | null => {
     if (existingEvents.length === 0) return 'proestrus';
@@ -60,6 +65,7 @@ export function AddEventModal({ visible, onClose, onAdd, existingEvents }: AddEv
         notes: notes.trim() || undefined,
         treatments: treatments.length > 0 ? treatments : undefined,
         testResults: testResults.length > 0 ? testResults : undefined,
+        reproductiveId: cattleId
       };
   
       if (nextEventType === 'insemination') {
@@ -71,13 +77,14 @@ export function AddEventModal({ visible, onClose, onAdd, existingEvents }: AddEv
   
       onAdd(newEvent);
       resetForm();
+      nextEventType === 'parturition' && openAddRecentBirthModal()
     } else {
       Alert.alert('Invalid event type.', 'Please fill in the date and ensure an event type is selected.' );
     }
   };
 
   const resetForm = () => {
-    setDate('');
+    setDate(new Date().toISOString().split('T')[0]);
     setNotes('');
     setTreatments([]);
     setTestResults([]);
@@ -126,12 +133,28 @@ export function AddEventModal({ visible, onClose, onAdd, existingEvents }: AddEv
       <Modal visible={visible} onDismiss={onClose} contentContainerStyle={styles.modalContainer}>
         <ScrollView>
           <Text style={styles.title}>Add {nextEventType.charAt(0).toUpperCase() + nextEventType.slice(1)} Event</Text>
-          <TextInput
+          {/* <TextInput
             label="Date (YYYY-MM-DD)"
             value={date}
             onChangeText={setDate}
             style={styles.input}
-          />
+          /> */}
+          <Button onPress={() => setShowDatePicker(true)} textColor='#0D0D0D' mode="outlined" style={styles.input}>
+            Fecha: {date || 'Seleccionar fecha'}
+          </Button>
+          {showDatePicker && (
+            <DateTimePicker
+              value={moment(date).toDate()}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowDatePicker(false);
+                if (selectedDate) {
+                  setDate(moment(selectedDate).format('YYYY-MM-DD'));
+                }
+              }}
+            />
+          )}
           {nextEventType === 'insemination' && (
             <View>
               <Text style={styles.sectionTitle}>Insemination Method</Text>

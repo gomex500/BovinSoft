@@ -1,5 +1,4 @@
-import { Entypo } from '@expo/vector-icons'
-import React from 'react'
+import React, { useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -7,21 +6,22 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native'
-import { useBovinosStore } from '../store/useBovinoStore'
+import { Entypo } from '@expo/vector-icons'
 import { useTailwind } from 'tailwind-rn'
 import { useFincaStore } from '../store/fincaStore'
 import { useFocusEffect } from '@react-navigation/native'
-import { CardBovinos } from '../components/CardBovinos'
-import { GoForm } from '../components/GoForm'
 import { useAuthStore } from '../store/authStore'
+import { useBovinosStore } from '../store/useBovinoStore'
 import { LoadingScreen } from '../components/LoadingStream'
-
+import { GoForm } from '../components/GoForm'
+import { CardBovinos } from '../components/CardBovinos'
 
 const Bovinos = () => {
   const tw = useTailwind()
   const { bovinos, obtenerGanadoPorUsuario, obtenerGanadoPorFinca } = useBovinosStore()
   const { fincaSelected, setFincaId } = useFincaStore()
   const { user } = useAuthStore()
+  const [searchQuery, setSearchQuery] = useState('')
 
   if (user === null) {
     return <LoadingScreen />
@@ -49,11 +49,20 @@ const Bovinos = () => {
     }, [fincaSelected])
   )
 
+  const filteredBovinos = bovinos.filter(bovino =>
+    bovino.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
   return (
     <View style={styles.container}>
       <View style={styles.contenedorFiltro}>
         <View style={styles.contenedorInpunt}>
-          <TextInput placeholder="Buscar Ganado..." style={styles.input} />
+          <TextInput 
+            placeholder="Buscar Ganado..." 
+            style={styles.input} 
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
           <TouchableOpacity style={styles.boton}>
             <Entypo name="magnifying-glass" size={24} color="white" />
           </TouchableOpacity>
@@ -61,16 +70,15 @@ const Bovinos = () => {
         </View>
       </View>
 
-      {/* tarjetas de los animales */}
       <View style={styles.conBvi}>
         <FlatList
-          data={bovinos}
+          data={filteredBovinos}
           style={[tw('h-3/5'), { padding: 5 }]}
           renderItem={({ item }) => (
             <CardBovinos item={item} />
           )}
-          keyExtractor={(item) => item._id as string}
-          numColumns={2} // Cambia este valor para ajustar el número de columnas
+          keyExtractor={(item) => item.id as string}
+          numColumns={2}
         />
       </View>
     </View>
@@ -91,10 +99,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-  },
-  contTexto: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
   },
   input: {
     flex: 1,
@@ -117,43 +121,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1B4725',
     padding: 10,
   },
-  flatListContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 20,
-  },
-  card: {
-    backgroundColor: '#f2f2f2',
-    borderRadius: 8,
-    width: 100,
-    height: 140,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 5,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-    overflow: 'hidden',
-  },
-  contenedorCard: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 10,
-  },
-  imagen: {
-    width: 80,
-    height: 80,
-    resizeMode: 'cover',
-    borderRadius: 5,
-  },
-  codigo: {
-    marginTop: 10,
-    color: '#1B4725',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
   conBvi: {
     alignContent: 'center',
     alignItems: 'center',
@@ -164,3 +131,4 @@ const styles = StyleSheet.create({
 })
 
 export default Bovinos
+

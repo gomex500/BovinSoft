@@ -13,6 +13,7 @@ interface CustomSelectProps {
   onValueChange: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
+  children?: (toggleModal: () => void) => React.ReactNode;
 }
 
 export const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -21,6 +22,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   onValueChange,
   placeholder = 'Select an option',
   disabled = false,
+  children,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -35,12 +37,15 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={toggleModal} disabled={disabled} style={styles.selectContainer}>
+      {children ? children(toggleModal) : (
+        <TouchableOpacity onPress={toggleModal} disabled={disabled} style={styles.selectContainer}>
         <Text style={[styles.selectText, !selectedValue && styles.placeholder]}>
           {selectedOption ? selectedOption.label : placeholder}
         </Text>
         <Feather name="chevron-down" size={20} color="#1B4725" />
       </TouchableOpacity>
+      )}
+      
 
       <Modal
         animationType="slide"
