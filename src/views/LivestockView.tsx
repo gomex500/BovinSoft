@@ -13,6 +13,7 @@ import {
   Menu,
   Icon,
   Divider,
+  DefaultTheme
 } from 'react-native-paper'
 import { IBovine, LivestockActivity } from '../interfaces/Livestock'
 import { CattleDetailsModal } from '../components/Bovine/CattleDetailsModal'
@@ -186,7 +187,7 @@ export default function LivestockView() {
     >
       <Card.Title
         title={`${animal.identifier} (${animal.breed})`}
-        subtitle={`Born: ${moment(animal.dateOfBirth).format('DD/MM/YYYY')}`}
+        subtitle={`Nacido: ${moment(animal.dateOfBirth).format('DD/MM/YYYY')}`}
         left={(props) => (
           <Image
             source={{
@@ -220,6 +221,7 @@ export default function LivestockView() {
             theme={{ colors: { primary: 'green' } }}
             visible={menuVisible === animal.id}
             onDismiss={() => setMenuVisible(null)}
+            style={{ backgroundColor: '#fff' }}
             anchor={
               <Button
                 textColor="#1B4725"
@@ -228,8 +230,10 @@ export default function LivestockView() {
                 Opciones
               </Button>
             }
+            contentStyle={{ backgroundColor: '#fff' }}
           >
             <Menu.Item
+            // style={{ backgroundColor: '#f0f0f0' }}
               onPress={() => {
                 setSelectedAnimal(animal)
                 setIsDetailsModalVisible(true)
@@ -279,7 +283,7 @@ export default function LivestockView() {
   )
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={DefaultTheme}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <View style={styles.searchContainer}>
@@ -288,6 +292,8 @@ export default function LivestockView() {
               onChangeText={setSearchQuery}
               value={searchQuery}
               style={styles.searchBar}
+              iconColor='#000'
+              placeholderTextColor={'#000'}
             />
           </View>
           <ScrollView style={styles.content}>
@@ -351,6 +357,7 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 16,
     elevation: 4,
+    backgroundColor: '#fff',
   },
   fab: {
     position: 'absolute',

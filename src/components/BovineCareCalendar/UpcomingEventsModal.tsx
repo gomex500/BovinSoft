@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 16,
+    backgroundColor: '#fff',
   },
   chip: {
     marginTop: 8,

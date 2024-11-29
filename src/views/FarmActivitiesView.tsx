@@ -330,6 +330,7 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 16,
     elevation: 4,
+    backgroundColor: '#fff',
   },
   timeline: {
     height: 60,
