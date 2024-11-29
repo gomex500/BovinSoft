@@ -15,6 +15,7 @@ import { authService } from './src/services/authService'
 import { Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import 'whatwg-fetch';
+import { registerForPushNotificationsAsync, sendTokenToServer } from './src/helpers/notification'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -24,39 +25,44 @@ Notifications.setNotificationHandler({
   }),
 });
 
-// Función para programar la notificación diaria
-const scheduleDailyWeatherNotification = async (city) => {
-  // const weatherMessage = await fetchWeatherData(city);
-
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: 'Actualización del clima 🌦️',
-      body: "Nublado",
-      sound: true,
-    },
-    trigger: { seconds: 5 }, // Para pruebas, notifica después de 5 segundos
-    // trigger: {
-    //   hour: 15,
-    //   minute: 50,
-    //   repeats: true, // Se repite todos los días
-    // },
-    
-  });
-
-  Alert.alert('Notificación programada', `Se enviará a las 9 PM diariamente`);
-};
-
 const Stack = createStackNavigator()
 
 export default function App() {
   const { obtenerFincaById } = useFincaStore()
-  const { isAuthenticated, isRestored } = useAuthStore()
+  const { isAuthenticated, isRestored, user } = useAuthStore()
   // const { validateToken } = useAuthService()
   const [loading, setLoading] = useState(true)
 
+  const [expoPushToken, setExpoPushToken] = useState('');
+
   useEffect(() => {
-    scheduleDailyWeatherNotification('London')
+    if (user) {
+      registerForPushNotificationsAsync().then(token => {
+        setExpoPushToken(token as string);
+        sendTokenToServer(token as string, user._id as string);
+      });
+    }
+
+    // Escucha de notificaciones
+    const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+      console.log(notification);
+    });
+
+    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener);
+      Notifications.removeNotificationSubscription(responseListener);
+    };
+  }, [user]);
+
+  useEffect(() => {
+    // scheduleDailyWeatherNotification('London')
     const checkLoginStatus = async () => {
+      console.log("restore");
+      
       let response = await authService.validateToken()
 
       if (response.valid) {
@@ -138,3 +144,4 @@ export default function App() {
   // </View>
   )
 }
+

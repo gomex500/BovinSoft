@@ -18,7 +18,6 @@ type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 export default function CattleDetailScreen({ route }: CattleDetailScreenProps) {
   const { animal } = route.params;
-  const navigation = useNavigation<NavigationProps>();
 
   const getStatusColor = (status: IBovine['status']) => {
     switch (status) {
@@ -65,19 +64,6 @@ export default function CattleDetailScreen({ route }: CattleDetailScreenProps) {
             <Text>{animal.type}</Text>
           </View>
         </Card.Content>
-        <Card.Actions>
-          {
-            animal.gender === "hembra" && (
-              <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CattleReproduction', { animal, type: 'cattle' })}>
-                Proceso reproduccion
-              </Button>
-            )
-          }
-          <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CattleDetailBovine', { animal })}>Historico sanitario</Button> 
-        </Card.Actions>
-        <Card.Actions style={styles.buttonContainer}>
-          <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CattleReproduction', { animal, type: 'cattle' })}>Calendario</Button>
-        </Card.Actions>
       </Card>
     </ScrollView>
   );

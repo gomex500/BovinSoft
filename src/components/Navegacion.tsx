@@ -44,6 +44,7 @@ const FincasStack = () => {
       <Stack.Screen name="InfoFinca" component={InfoFinca} />
       <Stack.Screen name="CareHistoryFinca" component={CareHistory} />
       <Stack.Screen name="CattleReproductionByFarm" component={CattleReproductionView} />
+      <Stack.Screen name="CareHistoryByFarm" component={CareHistory} />
     </Stack.Navigator>
   );
 };
@@ -55,7 +56,7 @@ const BovinosStack = () => {
       <Stack.Screen name="FormBovino" component={FormBovino} />
       {/* <Stack.Screen name="InfoBovino" component={InfoBovino} /> */}
       <Stack.Screen name="BovineCareCalendar" component={BovineCareCalendar} />
-      <Stack.Screen name="CareHistoryBovino" component={CareHistory} />
+      <Stack.Screen name="CareHistoryBovine" component={CareHistory} />
       <Stack.Screen name="CattleReproduction" component={CattleReproductionView} />
       <Stack.Screen name="FarmActivities" component={FarmActivitiesView} />
       <Stack.Screen name="Livestock" component={LivestockView} />

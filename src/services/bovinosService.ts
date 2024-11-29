@@ -5,6 +5,24 @@ import { BovinoModel } from "../interfaces/IBovino";
 import { IBovine } from "../interfaces/Livestock";
 import { useAuthStore } from "../store/authStore";
 
+export const toCastBovino = (bovino): IBovine => {
+  return {
+    id: bovino._id,
+    identifier: bovino.codigo,
+    breed: bovino.raza,
+    dateOfBirth: bovino.fechaNacimiento,
+    status: bovino.estadoSalud,
+    farmId: bovino.fincaId,
+    weight: bovino.peso,
+    gender: bovino.genero,
+    name: bovino.nombre,
+    image: bovino.image,
+    type: bovino.tipo,
+    age: bovino.edad,
+    farmStr: bovino?.fincaNombre || "",
+  };
+};
+
 export const obtenerGanadoPorUsuarioServices = async () => {
   try {
     const user = useAuthStore.getState().user;
