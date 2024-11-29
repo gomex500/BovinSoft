@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { View, StyleSheet, FlatList, Alert } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
-import { FAB, List, PaperProvider, Text } from 'react-native-paper'
+import { DefaultTheme, FAB, List, PaperProvider, Text } from 'react-native-paper'
 import { CareEventDetailView } from '../components/CareHistory/CareEventDetailView'
 import { FilterBar } from '../components/CareHistory/FilterBar'
 import { CareHistoryCard } from '../components/CareHistory/CareHistoryCard'
@@ -90,7 +90,7 @@ export default function CareHistoryCRUD({ route }: CareHistoryProps) {
 
   if (isDetailViewVisible && currentEvent) {
     return (
-      <PaperProvider>
+      <PaperProvider theme={DefaultTheme}>
         <SafeAreaProvider>
           <CareEventDetailView
             event={currentEvent}
@@ -113,7 +113,7 @@ export default function CareHistoryCRUD({ route }: CareHistoryProps) {
   }
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={DefaultTheme}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           {

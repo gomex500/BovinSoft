@@ -6,6 +6,7 @@ import {
   FAB,
   useTheme,
   PaperProvider,
+  DefaultTheme,
 } from 'react-native-paper'
 import { Calendar } from 'react-native-calendars'
 import { EventList } from '../components/BovineCareCalendar/EventList'
@@ -111,7 +112,7 @@ export default function BovineCareCalendar({ route }: CareCalendarProps) {
   }, {} as { [key: string]: { marked: boolean; dotColor: string; activeOpacity: number } })
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={DefaultTheme}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <Appbar.Header>

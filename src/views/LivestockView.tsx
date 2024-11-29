@@ -221,7 +221,6 @@ export default function LivestockView() {
             theme={{ colors: { primary: 'green' } }}
             visible={menuVisible === animal.id}
             onDismiss={() => setMenuVisible(null)}
-            style={{ backgroundColor: '#fff' }}
             anchor={
               <Button
                 textColor="#1B4725"
@@ -230,10 +229,8 @@ export default function LivestockView() {
                 Opciones
               </Button>
             }
-            contentStyle={{ backgroundColor: '#fff' }}
           >
             <Menu.Item
-            // style={{ backgroundColor: '#f0f0f0' }}
               onPress={() => {
                 setSelectedAnimal(animal)
                 setIsDetailsModalVisible(true)
