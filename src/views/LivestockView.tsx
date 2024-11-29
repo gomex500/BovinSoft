@@ -170,6 +170,10 @@ export default function LivestockView() {
     navigation.navigate('CareHistoryBovine', { animal, type: 'cattle' })
   }
 
+  const toCareCalendarView = (animal: IBovine) => {
+    navigation.navigate('CareCalendarBovine', { animal, type: 'cattle' })
+  }
+
   if (loading) {
     return <LoadingScreen />
   }
@@ -263,6 +267,11 @@ export default function LivestockView() {
               onPress={() => toCareHistoryView(animal)}
               title="Historico sanitario"
             />
+            <Divider />
+            <Menu.Item
+              onPress={() => toCareCalendarView(animal)}
+              title="Calendario de cuidados"
+              />
           </Menu>
         </View>
       </Card.Actions>

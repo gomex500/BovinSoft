@@ -7,7 +7,6 @@ import Chatbot from '../views/Chatbot';
 import Fincas from '../views/Fincas';
 import Metricas from '../views/Metricas';
 import Feed from '../views/Comunidad';
-import Bovinos from '../views/Bovinos';
 import Profile from '../views/Profile';
 import FormFinca from '../views/FormFinca';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -17,10 +16,7 @@ import RecommendedActivities from '../views/RecommendedActivities';
 import PostDetail from '../views/PostDetail';
 import { useAuthStore } from '../store/authStore';
 import { LoadingScreen } from './LoadingStream';
-import Inicio from '../views/Inicio';
 import Signup from '../views/Signup';
-import { SelectedType } from '../views/SelectedType';
-import { InfoBovino } from '../views/InfoBovino';
 import { UpgradeSubscription } from './UpgradeSubscription';
 import BovineCareCalendar from '../views/BovineCareCalendar';
 import CareHistory from '../views/CareHistory';
@@ -28,6 +24,8 @@ import CattleReproductionView from '../views/CattleReproductionView';
 import FarmActivitiesView from '../views/FarmActivitiesView';
 import LivestockView from '../views/LivestockView';
 import CattleDetailScreen from './Bovine/CattleDetailScreen';
+import { Snackbar } from 'react-native-paper';
+import { useSnackbarStore } from '../store/snackbarStore';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -37,6 +35,7 @@ const Stack = createStackNavigator()
 const FincasStack = () => {
   const { user } = useAuthStore();
   let viewALl = user.rol === "ROOT" || user.rol === "OWNER"
+  
   return (
     <Stack.Navigator initialRouteName={viewALl ? "FincasHome" : "InfoFinca"} screenOptions={{ headerShown: false }}>
       <Stack.Screen name="FincasHome" component={Fincas} />
@@ -45,6 +44,7 @@ const FincasStack = () => {
       <Stack.Screen name="CareHistoryFinca" component={CareHistory} />
       <Stack.Screen name="CattleReproductionByFarm" component={CattleReproductionView} />
       <Stack.Screen name="CareHistoryByFarm" component={CareHistory} />
+      <Stack.Screen name="CareCalendarByFarm" component={BovineCareCalendar} />
     </Stack.Navigator>
   );
 };
@@ -52,10 +52,8 @@ const FincasStack = () => {
 const BovinosStack = () => {
   return (
     <Stack.Navigator initialRouteName="Livestock" screenOptions={{ headerShown: false }}>
-      {/* <Stack.Screen name="Bovinos" component={Bovinos} /> */}
       <Stack.Screen name="FormBovino" component={FormBovino} />
-      {/* <Stack.Screen name="InfoBovino" component={InfoBovino} /> */}
-      <Stack.Screen name="BovineCareCalendar" component={BovineCareCalendar} />
+      <Stack.Screen name="CareCalendarBovine" component={BovineCareCalendar} />
       <Stack.Screen name="CareHistoryBovine" component={CareHistory} />
       <Stack.Screen name="CattleReproduction" component={CattleReproductionView} />
       <Stack.Screen name="FarmActivities" component={FarmActivitiesView} />
@@ -85,6 +83,8 @@ const FeedStack = () => {
 
 const MyStackNavigation = () => {
   const [animationValues] = useState({});
+
+  const { hiddenSnackbar, snackbarMessage, snackbarVisible } = useSnackbarStore();
  
   const handleTabPress = (navigation, label) => {
     // Inicia la animación
@@ -166,6 +166,17 @@ const MyStackNavigation = () => {
           <Tab.Screen name="Bovinos" component={BovinosStack} options={{ tabBarLabel: () => null }} />
           <Tab.Screen name="Chatbot" component={Chatbot} options={{ tabBarLabel: () => null }} />
         </Tab.Navigator>
+        <Snackbar
+          visible={snackbarVisible}
+          onDismiss={hiddenSnackbar}
+          duration={3000}
+          action={{
+            label: 'OK',
+            onPress: hiddenSnackbar,
+          }}
+        >
+        {snackbarMessage}
+      </Snackbar>
       </View>
   );
 };

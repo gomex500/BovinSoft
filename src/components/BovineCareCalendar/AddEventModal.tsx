@@ -1,113 +1,134 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
+import { Modal, Portal, Button, TextInput, Title, SegmentedButtons } from 'react-native-paper';
 import { CareEvent } from '../../views/BovineCareCalendar';
+import { IBovine } from '../../interfaces/Livestock';
+import { CustomSelect } from '../CustomSelect';
 
 interface AddEventModalProps {
-  isVisible: boolean;
+  visible: boolean;
   onClose: () => void;
-  onAdd: (event: CareEvent) => void;
+  onAdd: (event: CareEvent) => Promise<void>;
   selectedDate: string;
+  animal: IBovine
+  typeView: "cattle" | "farm"
+  bovinosChoose: IBovine[]
 }
 
-export function AddEventModal({ isVisible, onClose, onAdd, selectedDate }: AddEventModalProps) {
+export function AddEventModal({ visible, onClose, onAdd, selectedDate, animal, typeView, bovinosChoose }: AddEventModalProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [type, setType] = useState<CareEvent['type']>('other');
+  const [bovinoId, setBovinoId] = useState(typeView === "cattle" ? animal.name : '');
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (title.trim() && description.trim()) {
-      onAdd({
+      const today = new Date();
+      const eventDate = new Date(selectedDate);
+      
+      if (eventDate <= today) {
+        alert('Solo se pueden crear eventos para fechas futuras.');
+        return;
+      }
+
+      await onAdd({
         id: Date.now().toString(),
         date: selectedDate,
         title: title.trim(),
         description: description.trim(),
+        type,
+        bovinoId: typeView === 'cattle' ? animal.id : bovinoId,
       });
+      
       setTitle('');
       setDescription('');
+      setType('other');
+    } else {
+      Alert.alert('Algunos campos no han sido completados', 'Por favor, rellena todos los campos antes de guardar el evento.');
     }
   };
 
+  let name = bovinosChoose.find((item) => item.id === bovinoId)?.name
+
   return (
-    <Modal visible={isVisible} animationType="slide" transparent>
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Añadir evento de cuidado</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Título del evento"
-            value={title}
-            onChangeText={setTitle}
-          />
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Descripción del evento"
-            value={description}
-            onChangeText={setDescription}
-            multiline
-          />
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onClose}>
-              <Text style={styles.buttonText}>Cancelar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.addButton]} onPress={handleAdd}>
-              <Text style={styles.buttonText}>Añadir evento</Text>
-            </TouchableOpacity>
-          </View>
+    <Portal>
+      <Modal visible={visible} onDismiss={onClose} contentContainerStyle={styles.modalContainer}>
+        <Title style={styles.title}>Nuevo cuidado {typeView === "cattle" && `a ${animal.identifier}`}</Title>
+        {typeView === "farm" && (
+          <CustomSelect
+          placeholder="Seleccione un bovino"
+          options={
+            bovinosChoose.map((item) => ({
+              label: item.name,
+              value: item.id,
+            }))
+          }
+          selectedValue={bovinoId}
+          onValueChange={(value) => setBovinoId(value)}
+        >
+          {(toggleModal) => (
+            <Button textColor='#0D0D0D' onPress={() => toggleModal()} mode="outlined" style={styles.input}>
+              Bovino: {name || 'Seleccionar'}
+            </Button>
+          )}
+        </CustomSelect>
+        )}
+        <TextInput
+          label="Título"
+          value={title}
+          onChangeText={setTitle}
+          style={styles.input}
+        />
+        <TextInput
+          label="Descripción"
+          value={description}
+          onChangeText={setDescription}
+          multiline
+          numberOfLines={3}
+          style={styles.input}
+        />
+        <SegmentedButtons
+          value={type}
+          onValueChange={(value) => setType(value as CareEvent['type'])}
+          buttons={[
+            { value: 'health', label: 'Salud' },
+            { value: 'feeding', label: 'Alimentación' },
+            { value: 'breeding', label: 'Reproducción' },
+            { value: 'other', label: 'Otro' },
+          ]}
+          style={styles.segmentedButtons}
+        />
+        <View style={styles.buttonContainer}>
+          <Button onPress={onClose} style={styles.button}>Cancelar</Button>
+          <Button mode="contained" onPress={handleAdd} style={styles.button}>Añadir</Button>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </Portal>
   );
 }
 
 const styles = StyleSheet.create({
   modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
     backgroundColor: 'white',
     padding: 20,
+    margin: 20,
     borderRadius: 8,
-    width: '80%',
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
+  title: {
+    marginBottom: 20,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 4,
+    marginBottom: 15,
   },
-  textArea: {
-    height: 100,
-    textAlignVertical: 'top',
+  segmentedButtons: {
+    marginBottom: 15,
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
+    justifyContent: 'flex-end',
   },
   button: {
-    padding: 10,
-    borderRadius: 4,
-    width: '48%',
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#FF6B6B',
-  },
-  addButton: {
-    backgroundColor: '#1B5E20',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    marginLeft: 10,
   },
 });
 

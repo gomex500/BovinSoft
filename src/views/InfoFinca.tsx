@@ -80,7 +80,8 @@ const InfoFinca = () => {
           <Button buttonColor='#1B4725' onPress={habilitarNotifications}>
             Recibir Notificaciones del clima de su finca
           </Button>
-          <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CareHistoryByFarm', { animal: fincaSelected, type: 'farm' })}>Historico sanitario</Button> 
+          <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CareHistoryByFarm', { animal: fincaSelected, type: 'farm' })}>Historico sanitario</Button>
+          <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CareCalendarByFarm', { animal: fincaSelected, type: 'farm' })}>Calendario cuidado</Button>  
         <Text style={[ tw('mt-4') ,styles.info]}>Descripción:</Text>
         <View style={styles.contData}>
           <Text>

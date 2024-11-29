@@ -6,6 +6,7 @@ import DatePickerInput from '../DataPicker'
 import { formatDate } from '../../helpers/gen'
 import { CustomSelect } from '../CustomSelect'
 import { IBovine } from '../../interfaces/Livestock'
+import { useSnackbarStore } from '../../store/snackbarStore'
 
 interface AddEditEventModalProps {
   visible: boolean
@@ -69,6 +70,7 @@ export function AddEditEventModal({
     }
 
     onSave(newHistory)
+    useSnackbarStore.getState().dispatchSnackbar(`Se ${event ? "edito" : "agrego"} el evento correctamente.`)
     onClose()
   }
 

@@ -25,6 +25,9 @@ export enum PATH_LIST {
   HistorialSanitario = 'historial_sanitario',
   HistorialSanitarioByFinca = 'historial_sanitario/finca',
   HistorialSanitarioByBovino = 'historial_sanitario/bovino',
+  ScheduledCare= 'calendario_cuidado',
+  ScheduledCareByFinca = 'calendario_cuidado/finca',
+  ScheduledCareByBovino = 'calendario_cuidado/bovino',
 }
 
 export const createAxiosInstance = (PATH: string): AxiosInstance => {

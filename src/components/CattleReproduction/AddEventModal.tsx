@@ -4,6 +4,7 @@ import { Modal, Portal, Text, Button, TextInput, List, IconButton, RadioButton }
 import { ReproductiveEvent, ReproductiveEventType } from '../../interfaces/ReproductiveEvent';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useSnackbarStore } from '../../store/snackbarStore';
 
 interface AddEventModalProps {
   visible: boolean;
@@ -76,6 +77,7 @@ export function AddEventModal({ visible, onClose, onAdd, existingEvents, cattleI
       }
   
       onAdd(newEvent);
+      useSnackbarStore.getState().dispatchSnackbar("Se agrego el evento correctamente.")
       resetForm();
       nextEventType === 'parturition' && openAddRecentBirthModal()
     } else {
