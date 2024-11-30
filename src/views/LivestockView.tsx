@@ -229,8 +229,10 @@ export default function LivestockView() {
                 Opciones
               </Button>
             }
+            contentStyle={{ backgroundColor: '#fff' }}
           >
             <Menu.Item
+            // style={{ backgroundColor: '#f0f0f0' }}
               onPress={() => {
                 setSelectedAnimal(animal)
                 setIsDetailsModalVisible(true)
