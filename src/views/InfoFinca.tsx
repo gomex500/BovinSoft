@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert } from 'react-native'
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
 import { FincaModel } from '../interfaces/IFinca'
 import { useTailwind } from 'tailwind-rn'
@@ -9,6 +9,8 @@ import { RootStackParamList } from '../interfaces/navigationTypes'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { CustomPieChart, PieData } from '../components/CustomPieChart'
 import { Button } from 'react-native-paper'
+import { createWeatherNotification } from '../helpers/notification'
+import { useAuthStore } from '../store/authStore'
 
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -17,6 +19,7 @@ const InfoFinca = () => {
 
   const fincaSelected  = useFincaStore().fincaSelected as FincaModel;
   const navigation = useNavigation<NavigationProps>();
+  const { user } = useAuthStore();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -47,6 +50,11 @@ const InfoFinca = () => {
     { key: 'Vaca', value: fincaSelected?.cantidadClasificacionGanado?.vaca, color: '#75c199' },
   ];
 
+  const habilitarNotifications = async () => {
+    const response = await createWeatherNotification(user._id as string, fincaSelected._id as string);
+    Alert.alert('Notificación enviada', response);
+  };
+
   if (!fincaSelected) return <></>;
 
   return (
@@ -69,6 +77,11 @@ const InfoFinca = () => {
           <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CattleReproductionByFarm', { animal: fincaSelected, type: 'farm' })}>
             Reproduccion
           </Button>
+          <Button buttonColor='#1B4725' onPress={habilitarNotifications}>
+            Recibir Notificaciones del clima de su finca
+          </Button>
+          <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CareHistoryByFarm', { animal: fincaSelected, type: 'farm' })}>Historico sanitario</Button>
+          <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CareCalendarByFarm', { animal: fincaSelected, type: 'farm' })}>Calendario cuidado</Button>  
         <Text style={[ tw('mt-4') ,styles.info]}>Descripción:</Text>
         <View style={styles.contData}>
           <Text>

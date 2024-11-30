@@ -5,6 +5,7 @@ import {
   FAB,
   Searchbar,
   PaperProvider,
+  DefaultTheme,
 } from 'react-native-paper'
 import {
   ReproductiveEvent,
@@ -100,7 +101,7 @@ export default function CattleReproductionView({route}:CattleDetailScreenProps) 
   }
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={DefaultTheme}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <Header title="Cattle Reproduction" />

@@ -12,9 +12,14 @@ import { LoadingScreen } from './src/components/LoadingStream'
 import { useAuthStore } from './src/store/authStore'
 import { useFincaStore } from './src/store/fincaStore'
 import { authService } from './src/services/authService'
-import { Alert } from 'react-native';
-import * as Notifications from 'expo-notifications';
-import 'whatwg-fetch';
+import { Alert } from 'react-native'
+import * as Notifications from 'expo-notifications'
+import 'whatwg-fetch'
+import {
+  registerForPushNotificationsAsync,
+  sendTokenToServer,
+} from './src/helpers/notification'
+
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -22,40 +27,42 @@ Notifications.setNotificationHandler({
     shouldPlaySound: true,
     shouldSetBadge: false,
   }),
-});
-
-// Función para programar la notificación diaria
-const scheduleDailyWeatherNotification = async (city) => {
-  // const weatherMessage = await fetchWeatherData(city);
-
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: 'Actualización del clima 🌦️',
-      body: "Nublado",
-      sound: true,
-    },
-    trigger: { seconds: 5 }, // Para pruebas, notifica después de 5 segundos
-    // trigger: {
-    //   hour: 15,
-    //   minute: 50,
-    //   repeats: true, // Se repite todos los días
-    // },
-    
-  });
-
-  Alert.alert('Notificación programada', `Se enviará a las 9 PM diariamente`);
-};
+})
 
 const Stack = createStackNavigator()
 
 export default function App() {
   const { obtenerFincaById } = useFincaStore()
-  const { isAuthenticated, isRestored } = useAuthStore()
+  const { isAuthenticated, isRestored, user } = useAuthStore()
   // const { validateToken } = useAuthService()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    scheduleDailyWeatherNotification('London')
+    if (user) {
+      registerForPushNotificationsAsync().then((token) => {
+        sendTokenToServer(token as string, user._id as string);
+      })
+    }
+
+    // Escucha de notificaciones
+    const notificationListener = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log(notification)
+      }
+    )
+
+    const responseListener =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response)
+      })
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener)
+      Notifications.removeNotificationSubscription(responseListener)
+    }
+  }, [user])
+
+  useEffect(() => {
     const checkLoginStatus = async () => {
       let response = await authService.validateToken()
 
@@ -67,6 +74,7 @@ export default function App() {
           await obtenerFincaById(response.payload?.fincaId as string)
         }
       }
+      console.log('restore')
       setLoading(false)
     }
 
@@ -75,14 +83,14 @@ export default function App() {
 
   useEffect(() => {
     const getPermissions = async () => {
-      const { status } = await Notifications.requestPermissionsAsync();
+      const { status } = await Notifications.requestPermissionsAsync()
       if (status !== 'granted') {
-        alert('Se necesitan permisos para enviar notificaciones');
+        alert('Se necesitan permisos para enviar notificaciones')
       }
-    };
+    }
 
-    getPermissions();
-  }, []);
+    getPermissions()
+  }, [])
 
   if (loading) {
     return (
@@ -90,7 +98,7 @@ export default function App() {
       <TailwindProvider utilities={utilities as any}>
         <LoadingScreen />
       </TailwindProvider>
-    );
+    )
   }
 
   return (
@@ -129,12 +137,12 @@ export default function App() {
       </NavigationContainer>
     </TailwindProvider>
 
-  //   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  //     <Text style={{ fontSize: 18, marginBottom: 20 }}>Notificaciones del Clima</Text>
-  //       <Button
-  //         title="Programar Notificación"
-  //         onPress={() => scheduleDailyWeatherNotification('London')}
-  //       />
-  // </View>
+    //   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    //     <Text style={{ fontSize: 18, marginBottom: 20 }}>Notificaciones del Clima</Text>
+    //       <Button
+    //         title="Programar Notificación"
+    //         onPress={() => scheduleDailyWeatherNotification('London')}
+    //       />
+    // </View>
   )
 }

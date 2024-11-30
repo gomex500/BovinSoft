@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 16,
+    backgroundColor: '#fff',
   },
   section: {
     marginBottom: 16,

@@ -37,4 +37,20 @@ export type RootStackParamList = {
     animal: IBovine | FincaModel;
     type: "cattle" | "farm"
   }
+  CareHistoryBovine: {
+    animal: IBovine | FincaModel;
+    type: "cattle" | "farm"
+  }
+  CareHistoryByFarm: {
+    animal: IBovine | FincaModel;
+    type: "cattle" | "farm"
+  },
+  CareCalendarBovine: {
+    animal: IBovine | FincaModel;
+    type: "cattle" | "farm"
+  },
+  CareCalendarByFarm: {
+    animal: IBovine | FincaModel;
+    type: "cattle" | "farm"
+  },
 };

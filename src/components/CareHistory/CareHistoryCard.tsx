@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 16,
     elevation: 4,
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',

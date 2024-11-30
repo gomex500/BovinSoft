@@ -1,125 +1,111 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, FlatList } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { View, StyleSheet, FlatList, Alert } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
-import { FAB, PaperProvider } from 'react-native-paper'
-import { CareEvent } from '../interfaces/CareEvent'
+import { DefaultTheme, FAB, List, PaperProvider, Text } from 'react-native-paper'
 import { CareEventDetailView } from '../components/CareHistory/CareEventDetailView'
 import { FilterBar } from '../components/CareHistory/FilterBar'
 import { CareHistoryCard } from '../components/CareHistory/CareHistoryCard'
 import { AddEditEventModal } from '../components/CareHistory/AddEditEventModal'
+import { useCareHistoryStore } from '../store/careHistoryStore'
+import { IBovine } from '../interfaces/Livestock'
+import { FincaModel } from '../interfaces/IFinca'
+import { LoadingScreen } from '../components/LoadingStream'
+import { obtenerGanadoPorFincaServices } from '../services/bovinosService'
+import { CareEvent } from '../interfaces/CareEvent'
 
-const initialCareHistory: CareEvent[] = [
-  {
-    id: '1',
-    date: '2024-11-15',
-    type: 'Vacunación',
-    description: 'Vacunación anual contra la gripe',
-    performedBy: 'Dr. Smith',
-  },
-  {
-    id: '2',
-    date: '2024-11-10',
-    type: 'Revisión',
-    description: 'Reconocimiento médico rutinario',
-    performedBy: 'Dr. Johnson',
-  },
-  {
-    id: '3',
-    date: '2024-11-05',
-    type: 'Desparasitación',
-    description: 'Tratamiento antiparasitario trimestral',
-    performedBy: 'Technician Brown',
-  },
-  {
-    id: '4',
-    date: '2024-10-28',
-    type: 'Recorte de pezuñas',
-    description: 'Mantenimiento regular de los cascos',
-    performedBy: 'Technician Davis',
-  },
-  {
-    id: '5',
-    date: '2024-10-20',
-    type: 'Evaluación nutricional',
-    description: 'Evaluación y ajuste de la dieta',
-    performedBy: 'Nutritionist Wilson',
-  },
-]
-
-export default function CareHistoryCRUD() {
-  const [careHistory, setCareHistory] = useState<CareEvent[]>(initialCareHistory)
-  const [filteredHistory, setFilteredHistory] = useState<CareEvent[]>(initialCareHistory)
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [currentEvent, setCurrentEvent] = useState<CareEvent | null>(null)
-  const [isDetailViewVisible, setIsDetailViewVisible] = useState(false)
-
-  const handleFilter = (filterType: string) => {
-    if (filterType === 'Todos') {
-      setFilteredHistory(careHistory)
-    } else {
-      setFilteredHistory(
-        careHistory.filter((event) => event.type === filterType)
-      )
+interface CareHistoryProps {
+  route: {
+    params: {
+      animal: IBovine | FincaModel
+      type: 'cattle' | 'farm'
     }
   }
+}
 
-  const handleAddEvent = (newEvent: CareEvent) => {
-    const updatedHistory = [
-      ...careHistory,
-      { ...newEvent, id: Date.now().toString() },
-    ]
-    setCareHistory(updatedHistory)
-    setFilteredHistory(updatedHistory)
-    setIsModalVisible(false)
-  }
+export default function CareHistoryCRUD({ route }: CareHistoryProps) {
+  const { animal, type } = route.params
+  const [loading, setLoading] = useState(true)
 
-  const handleUpdateEvent = (updatedEvent: CareEvent) => {
-    const updatedHistory = careHistory.map((event) =>
-      event.id === updatedEvent.id ? updatedEvent : event
-    )
-    setCareHistory(updatedHistory)
-    setFilteredHistory(updatedHistory)
-    setIsModalVisible(false)
-    setIsDetailViewVisible(false)
-  }
+  const {
+    bovinos,
+    currentEvent,
+    isDetailViewVisible,
+    isModalVisible,
+    typeHistory,
+    handleFilter,
+    handleAddEvent,
+    handleUpdateEvent,
+    handleDeleteEvent,
+    openAddModal,
+    openEditModal,
+    openDetailView,
+    closeModal,
+    closeDetailView,
+    handleExpandedAccordion,
+    getCareHistoryByBovino,
+    getCareHistoryByFinca,
+  } = useCareHistoryStore()
 
-  const handleDeleteEvent = (id: string) => {
-    const updatedHistory = careHistory.filter((event) => event.id !== id)
-    setCareHistory(updatedHistory)
-    setFilteredHistory(updatedHistory)
-    setIsDetailViewVisible(false)
-  }
+  const [bovinosChoose, setBovinosChoose] = useState<IBovine[]>([])
 
-  const openAddModal = () => {
-    setCurrentEvent(null)
-    setIsModalVisible(true)
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      if (type === 'cattle') {
+        await getCareHistoryByBovino((animal as IBovine).id)
+      } else if (type === 'farm') {
+        await getCareHistoryByFinca((animal as FincaModel)._id)
+        const bovinos = await obtenerGanadoPorFincaServices(
+          (animal as FincaModel)._id
+        )
+        setBovinosChoose(bovinos)
+      }
 
-  const openEditModal = (event: CareEvent) => {
-    setCurrentEvent(event)
-    setIsModalVisible(true)
-  }
+      setLoading(false)
+    }
 
-  const openDetailView = (event: CareEvent) => {
-    setCurrentEvent(event)
-    setIsDetailViewVisible(true)
+    fetchData()
+  }, [])
+
+  const confirmDelete = useCallback(
+    async (id: string) => {
+      Alert.alert(
+        'Eliminar evento',
+        '¿Estás seguro de que quieres eliminar este evento? Esta acción no se puede deshacer.',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          {
+            text: 'Eliminar',
+            onPress: () => handleDeleteEvent(id),
+            style: 'destructive',
+          },
+        ]
+      )
+    },
+    [handleDeleteEvent]
+  )
+
+  if (loading) {
+    return <LoadingScreen /> // Muestra un mensaje de carga
   }
 
   if (isDetailViewVisible && currentEvent) {
     return (
-      <PaperProvider>
+      <PaperProvider theme={DefaultTheme}>
         <SafeAreaProvider>
           <CareEventDetailView
             event={currentEvent}
             onEdit={() => openEditModal(currentEvent)}
             onDelete={() => handleDeleteEvent(currentEvent.id)}
-            onBack={() => setIsDetailViewVisible(false)}
+            onBack={closeDetailView}
           />
           <AddEditEventModal
             visible={isModalVisible}
-            onClose={() => setIsModalVisible(false)}
+            onClose={closeModal}
             onSave={currentEvent ? handleUpdateEvent : handleAddEvent}
             event={currentEvent}
+            bovino={animal as IBovine}
+            bovinosChoose={bovinosChoose}
+            typeView={type}
           />
         </SafeAreaProvider>
       </PaperProvider>
@@ -127,23 +113,51 @@ export default function CareHistoryCRUD() {
   }
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={DefaultTheme}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
+          {
+            type === "farm" && <Text style={styles.title}>Historial de salud de {(animal as FincaModel).nombre}</Text>
+          }
           <FilterBar onFilter={handleFilter} />
-          <FlatList
-            data={filteredHistory}
-            renderItem={({ item }) => (
-              <CareHistoryCard
-                event={item}
-                onPress={() => openDetailView(item)}
-                onEdit={() => openEditModal(item)}
-                onDelete={() => handleDeleteEvent(item.id)}
-              />
-            )}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.listContent}
-          />
+          <List.AccordionGroup>
+            {bovinos.map((item) => {
+              const dataAccordion =
+                typeHistory === 'Todos'
+                  ? item.careHistory
+                  : item.careHistory.filter(
+                      (item: CareEvent) => item.type === typeHistory
+                    )
+              return (
+                <List.Accordion
+                  title={item.identifier}
+                  left={(props) => <List.Icon {...props} icon="cow" />}
+                  expanded={item.expanded}
+                  onPress={() => handleExpandedAccordion(item.id)}
+                  id={item.id}
+                  key={item.id}
+                >
+                  <FlatList
+                    style={{ paddingBottom: 30 }}
+                    data={dataAccordion}
+                    renderItem={({ item }) => (
+                      <CareHistoryCard
+                        event={item}
+                        onPress={() => openDetailView(item)}
+                        onEdit={() => openEditModal(item)}
+                        onDelete={() => confirmDelete(item.id)}
+                      />
+                    )}
+                    keyExtractor={(item) => item.id}
+                    contentContainerStyle={[
+                      styles.listContent,
+                      { paddingBottom: dataAccordion.length > 3 ? 120 : 0 },
+                    ]}
+                  />
+                </List.Accordion>
+              )
+            })}
+          </List.AccordionGroup>
           <FAB
             style={styles.fab}
             icon="plus"
@@ -152,9 +166,12 @@ export default function CareHistoryCRUD() {
           />
           <AddEditEventModal
             visible={isModalVisible}
-            onClose={() => setIsModalVisible(false)}
+            onClose={closeModal}
             onSave={currentEvent ? handleUpdateEvent : handleAddEvent}
             event={currentEvent}
+            bovino={animal as IBovine}
+            bovinosChoose={bovinosChoose}
+            typeView={type}
           />
         </SafeAreaView>
       </SafeAreaProvider>
@@ -169,6 +186,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 16,
+    paddingBottom: 120,
   },
   fab: {
     position: 'absolute',
@@ -176,5 +194,11 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 60,
     backgroundColor: '#1B5E20',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1B5E20',
+    padding: 16,
   },
 })

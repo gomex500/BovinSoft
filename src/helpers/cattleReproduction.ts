@@ -105,9 +105,11 @@ export const calculateEstrusProgress = (cattle: CattleReproduction) => {
 
 export const getReproductiveStatus = (cattle: CattleReproduction) => {
   const today = new Date();
+
+  if (!cattle.events) return 'Open'
   
   // Filtrar eventos de parturición
-  const parturitionEvents = cattle.events.filter(event => event.type === 'parturition');
+  const parturitionEvents = cattle?.events?.filter(event => event.type === 'parturition');
   
   if (parturitionEvents.length > 0) {
     // Obtener la fecha del último evento de parturición

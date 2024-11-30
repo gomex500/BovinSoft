@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Text, Card, Button, FAB, Avatar, Searchbar, Chip, ProgressBar, PaperProvider } from 'react-native-paper';
+import { Text, Card, Button, FAB, Avatar, Searchbar, Chip, ProgressBar, PaperProvider, DefaultTheme } from 'react-native-paper';
 import { FontAwesome5, Feather } from '@expo/vector-icons';
 import { Header } from '../components/CattleReproduction/Header';
 import { AddActivityModal } from '../components/FarmActivities/AddActivityModal';
@@ -156,7 +156,7 @@ export default function FarmActivitiesView() {
   );
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={DefaultTheme}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <Header title="Farm Activities" />
@@ -330,6 +330,7 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 16,
     elevation: 4,
+    backgroundColor: '#fff',
   },
   timeline: {
     height: 60,

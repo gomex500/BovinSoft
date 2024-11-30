@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Modal, Portal, Text, Button, TextInput, SegmentedButtons } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useSnackbarStore } from '../../store/snackbarStore';
 
 interface AddActivityModalProps {
   visible: boolean;
@@ -25,6 +26,7 @@ export function AddActivityModal({ visible, onClose, onAdd, existingActivities }
       status: 'pending',
       progress: 0,
     };
+    useSnackbarStore.getState().dispatchSnackbar("Se agrego la actividad correctamente.")
     onAdd(newActivity);
     onClose();
   };
@@ -50,8 +52,7 @@ export function AddActivityModal({ visible, onClose, onAdd, existingActivities }
           onChangeText={setDescription}
           style={styles.input}
         />
-        <Button onPress={() => setShowDatePicker(true)} mode
-="outlined" style={styles.dateButton}>
+        <Button onPress={() => setShowDatePicker(true)} mode="outlined" style={styles.dateButton}>
           {date.toDateString()}
         </Button>
         {showDatePicker && (

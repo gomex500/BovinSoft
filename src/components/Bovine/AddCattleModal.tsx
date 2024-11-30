@@ -7,6 +7,7 @@ import { CustomSelect } from '../CustomSelect';
 import { useAuthStore } from '../../store/authStore';
 import { useFincaStore } from '../../store/fincaStore';
 import moment from 'moment';
+import { useSnackbarStore } from '../../store/snackbarStore';
 
 interface AddCattleModalProps {
   visible: boolean;
@@ -59,6 +60,7 @@ export function AddCattleModal({ visible, onClose, onAdd }: AddCattleModalProps)
     setLoading(true);
     if (validateForm()) {
       await onAdd(newAnimal as IBovine);
+      useSnackbarStore.getState().dispatchSnackbar('Ganado añadido con éxito');
       onClose();
     }
     setLoading(false);
