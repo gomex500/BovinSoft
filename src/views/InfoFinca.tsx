@@ -69,7 +69,7 @@ const InfoFinca = () => {
           style={{ width: '100%', height: 200, borderRadius: 8 }}
         />
 
-        <Button buttonColor='#1B4725' onPress={habilitarNotifications}>
+        <Button buttonColor='#1B4725' textColor='#fff' onPress={habilitarNotifications}>
           Recibir Notificaciones del clima de su finca
          </Button>
           
