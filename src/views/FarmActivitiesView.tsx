@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Text, Card, Button, FAB, Avatar, Searchbar, Chip, ProgressBar, PaperProvider, DefaultTheme } from 'react-native-paper';
+import { Text, Card, Button, FAB, Avatar, Searchbar, Chip, ProgressBar, PaperProvider, DefaultTheme, useTheme } from 'react-native-paper';
 import { FontAwesome5, Feather } from '@expo/vector-icons';
 import { Header } from '../components/CattleReproduction/Header';
 import { AddActivityModal } from '../components/FarmActivities/AddActivityModal';
@@ -42,6 +42,9 @@ export default function FarmActivitiesView() {
   const [groupedActivities, setGroupedActivities] = useState<FarmActivity[]>([]);
   const [isGroupedActivitiesModalVisible, setIsGroupedActivitiesModalVisible] = useState(false);
   const [isCalendarViewVisible, setIsCalendarViewVisible] = useState(false);
+
+  const theme = useTheme()
+  theme.colors.primary = '#1B5E20';
 
   const handleAddActivity = (newActivity: FarmActivity) => {
     if (selectedField) {
@@ -156,7 +159,7 @@ export default function FarmActivitiesView() {
   );
 
   return (
-    <PaperProvider theme={DefaultTheme}>
+    <PaperProvider theme={theme}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <Header title="Farm Activities" />

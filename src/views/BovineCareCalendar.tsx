@@ -98,6 +98,9 @@ export default function BovineCareCalendar({ route }: CareCalendarProps) {
     }
   }
 
+
+  theme.colors.primary = '#1B5E20';
+
   if (loading) {
     return <LoadingScreen />
   }
@@ -112,7 +115,7 @@ export default function BovineCareCalendar({ route }: CareCalendarProps) {
   }, {} as { [key: string]: { marked: boolean; dotColor: string; activeOpacity: number } })
 
   return (
-    <PaperProvider theme={DefaultTheme}>
+    <PaperProvider theme={theme}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <Appbar.Header>

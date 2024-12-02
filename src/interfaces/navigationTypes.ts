@@ -53,4 +53,8 @@ export type RootStackParamList = {
     animal: IBovine | FincaModel;
     type: "cattle" | "farm"
   },
+  LivestockViewFarm: {
+    farm: FincaModel;
+    type: "farm"
+  }
 };

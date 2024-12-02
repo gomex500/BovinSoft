@@ -13,7 +13,8 @@ import {
   Menu,
   Icon,
   Divider,
-  DefaultTheme
+  DefaultTheme,
+  useTheme
 } from 'react-native-paper'
 import { IBovine, LivestockActivity } from '../interfaces/Livestock'
 import { CattleDetailsModal } from '../components/Bovine/CattleDetailsModal'
@@ -24,6 +25,9 @@ import { RootStackParamList } from '../interfaces/navigationTypes'
 import { useBovinosStore } from '../store/useBovinoStore'
 import { LoadingScreen } from '../components/LoadingStream'
 import moment from 'moment'
+import { CardActionBovine } from '../components/Bovine/CardActionBovine'
+import { useAuthStore } from '../store/authStore'
+import { FincaModel } from '../interfaces/IFinca'
 
 // Mock data for demonstration
 const mockAnimals: IBovine[] = [
@@ -78,9 +82,19 @@ const mockActivities: LivestockActivity[] = [
   },
 ]
 
+interface LivestockViewProps {
+  route: {
+    params: {
+      farm: FincaModel
+      type:'farm'
+    }
+  }
+}
+
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>
 
-export default function LivestockView() {
+export default function LivestockView({route}:LivestockViewProps) {
+  const { farm } = route.params;
   const [searchQuery, setSearchQuery] = useState('')
   const {
     bovinos,
@@ -96,10 +110,18 @@ export default function LivestockView() {
   const navigation = useNavigation<NavigationProps>()
   const [loading, setLoading] = useState(true)
   const [menuVisible, setMenuVisible] = useState<string | null>(null)
+  const { user } = useAuthStore()
+
+  const theme = useTheme()
+  theme.colors.primary = '#1B5E20';
 
   useEffect(() => {
     const fetchData = async () => {
-      await obtenerGanadoPorUsuario()
+      if (farm !== null) {
+        await obtenerGanadoPorFinca(farm._id)
+      } else {
+        await obtenerGanadoPorUsuario()
+      }
       setLoading(false)
     }
     fetchData()
@@ -125,7 +147,8 @@ export default function LivestockView() {
     bovinos.filter(
       (animal) =>
         animal.identifier.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        animal.breed.toLowerCase().includes(searchQuery.toLowerCase())
+        animal.breed.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        animal.name.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
   const handleAddCattle = useCallback(async (newCattle: IBovine) => {
@@ -210,79 +233,28 @@ export default function LivestockView() {
         <Text>Peso: {animal.weight} kg</Text>
         <Text>Género: {animal.gender}</Text>
       </Card.Content>
-      <Card.Actions>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}
-        >
-          <Menu
-            theme={{ colors: { primary: 'green' } }}
-            visible={menuVisible === animal.id}
-            onDismiss={() => setMenuVisible(null)}
-            anchor={
-              <Button
-                textColor="#1B4725"
-                onPress={() => setMenuVisible(animal.id)}
-              >
-                Opciones
-              </Button>
-            }
-            contentStyle={{ backgroundColor: '#fff' }}
-          >
-            <Menu.Item
-            // style={{ backgroundColor: '#f0f0f0' }}
-              onPress={() => {
-                setSelectedAnimal(animal)
-                setIsDetailsModalVisible(true)
-                setMenuVisible(null)
-              }}
-              title="Editar"
-            />
-            <Divider />
-            <Menu.Item
-              onPress={() => {
-                navigation.navigate('CattleDetailBovine', { animal })
-                setMenuVisible(null)
-              }}
-              title="Detalles"
-            />
-            <Divider />
-            <Menu.Item
-              onPress={() => {
-                confirmDelete(animal.id)
-                setMenuVisible(null)
-              }}
-              title="Eliminar"
-            />
-            <Divider />
-            {animal.gender === 'hembra' && (
-              <>
-                <Menu.Item
-                  onPress={() => toReproductiveView(animal)}
-                  title="Proceso reproductivo"
-                />
-                <Divider />
-              </>
-            )}
-            <Menu.Item
-              onPress={() => toCareHistoryView(animal)}
-              title="Historico sanitario"
-            />
-            <Divider />
-            <Menu.Item
-              onPress={() => toCareCalendarView(animal)}
-              title="Calendario de cuidados"
-              />
-          </Menu>
-        </View>
-      </Card.Actions>
+
+      {
+        user.tipoSuscripcion !== 'básica' && (
+          <CardActionBovine
+            animal={animal}
+            confirmDelete={confirmDelete}
+            menuVisible={menuVisible}
+            navigation={navigation}
+            setIsDetailsModalVisible={setIsDetailsModalVisible}
+            setMenuVisible={setMenuVisible}
+            setSelectedAnimal={setSelectedAnimal}
+            toCareCalendarView={toCareCalendarView}
+            toCareHistoryView={toCareHistoryView}
+            toReproductiveView={toReproductiveView}
+          />
+        )
+      }
     </Card>
   )
 
   return (
-    <PaperProvider theme={DefaultTheme}>
+    <PaperProvider theme={theme}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <View style={styles.searchContainer}>
@@ -366,4 +338,4 @@ const styles = StyleSheet.create({
     backgroundColor: '#1B5E20',
     color: '#fff',
   },
-})
+})   
