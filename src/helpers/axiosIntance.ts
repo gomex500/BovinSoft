@@ -28,13 +28,14 @@ export enum PATH_LIST {
   ScheduledCare= 'calendario_cuidado',
   ScheduledCareByFinca = 'calendario_cuidado/finca',
   ScheduledCareByBovino = 'calendario_cuidado/bovino',
+  PremiumRequest = 'premium_request',
 }
 
 export const createAxiosInstance = (PATH: string): AxiosInstance => {
   const JWT = useAuthStore.getState().token
   
   const baseURL = `${API_URL}/${PATH}`;
-
+  
   const headers = {
     Authorization: `Bearer ${JWT}`,
     'Content-Type': 'application/json',

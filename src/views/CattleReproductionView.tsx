@@ -6,6 +6,7 @@ import {
   Searchbar,
   PaperProvider,
   DefaultTheme,
+  useTheme,
 } from 'react-native-paper'
 import {
   ReproductiveEvent,
@@ -85,6 +86,9 @@ export default function CattleReproductionView({route}:CattleDetailScreenProps) 
     setIsAddRecentBirthModalVisible(false);
   }, []);
 
+  const theme = useTheme()
+  theme.colors.primary = '#1B5E20';
+
     if (loading) {
       return <LoadingScreen />; // Muestra un mensaje de carga
     }
@@ -101,10 +105,9 @@ export default function CattleReproductionView({route}:CattleDetailScreenProps) 
   }
 
   return (
-    <PaperProvider theme={DefaultTheme}>
+    <PaperProvider theme={theme}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
-          <Header title="Cattle Reproduction" />
           <View style={styles.searchContainer}>
             <Searchbar
               placeholder="Search cattle"

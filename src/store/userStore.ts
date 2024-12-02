@@ -1,40 +1,38 @@
 import { create } from 'zustand';
-import { obtenerUsuarioServices } from '../services/userServices';
+import { crearUsuarioServices, getAllUsersService, updateUserService } from '../services/userServices';
 import { UserModel } from '../interfaces/IUser';
-import { useFincaStore } from './fincaStore';
 
 interface IUserState {
-  user: UserModel | null;
-  token: string | null;
-  isLoggedIn: boolean | null;
-  obtenerUsuario: (id: string, token: string) => Promise<void>;
-  setUser: (user: UserModel | null) => void;
-  setToken: (token: string) => void;
-  setIsLoggedIn: (isLoggedIn: boolean) => void;
+  users: UserModel[];
+  getAllUsers: () => Promise<void>;
+  onEditUser: (updatedUser: UserModel) => Promise<void>;
+  onAddUser: (newUser: UserModel) => Promise<void>;
 }
 
 
 // Crear el store de usuario
-export const useUserStore = create<IUserState>((set) => ({
-  user: null,
-  token: null,
-  isLoggedIn: null,
-  obtenerUsuario: async (id, token) => {
+export const useUserStore = create<IUserState>((set, get) => ({
+  users: [],
+  getAllUsers: async () => {
     try {
-      const user:UserModel = await obtenerUsuarioServices(id, token);
-
-      if (user.rol !== "ROOT") {
-        if (user.rol !== "OWNER") {
-          useFincaStore.getState().obtenerFincaById(user.fincaId)
-        }
-      }
-
-      set({ user, token });
+      let users = await getAllUsersService();
+      set({ users });  
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error('Error al obtener usuarios:', error);
     }
   },
-  setUser: (user) => set({ user }),
-  setToken: (token) => set({ token }),
-  setIsLoggedIn: (isLoggedIn) => set({ isLoggedIn }),
+  onEditUser: async (updatedUser: UserModel) => {
+    let user = get().users.find(user => user._id === updatedUser._id);
+    let newUpdatedUser = { ...user, ...updatedUser };
+
+    await updateUserService(newUpdatedUser);
+
+    set({ users: get().users.map(user => user._id === updatedUser._id ? newUpdatedUser : user) });
+  },
+  onAddUser: async (newUser: UserModel) => {
+    let { id } = await crearUsuarioServices(newUser);
+    newUser._id = id;
+    set({ users: get().users.concat(newUser) });
+  },
+  
 }));

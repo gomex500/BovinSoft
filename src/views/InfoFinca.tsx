@@ -68,20 +68,11 @@ const InfoFinca = () => {
           source={{ uri: fincaSelected.image }}
           style={{ width: '100%', height: 200, borderRadius: 8 }}
         />
-        <TouchableOpacity 
-              style={styles.btnGanado}
-              onPress={gestionarGanado}
-          >
-              <Text style={styles.btnText}>Gestionar Ganado</Text>
-          </TouchableOpacity>
-          <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CattleReproductionByFarm', { animal: fincaSelected, type: 'farm' })}>
-            Reproduccion
-          </Button>
-          <Button buttonColor='#1B4725' onPress={habilitarNotifications}>
-            Recibir Notificaciones del clima de su finca
-          </Button>
-          <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CareHistoryByFarm', { animal: fincaSelected, type: 'farm' })}>Historico sanitario</Button>
-          <Button buttonColor='#1B4725' textColor='#fff' onPress={() => navigation.navigate('CareCalendarByFarm', { animal: fincaSelected, type: 'farm' })}>Calendario cuidado</Button>  
+
+        <Button buttonColor='#1B4725' onPress={habilitarNotifications}>
+          Recibir Notificaciones del clima de su finca
+         </Button>
+          
         <Text style={[ tw('mt-4') ,styles.info]}>Descripción:</Text>
         <View style={styles.contData}>
           <Text>
