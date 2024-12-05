@@ -18,7 +18,7 @@ const Chatbot = () => {
 
     // Función que obtiene la respuesta de la IA
     const getMonicaResponse = async (userInput:string) => {
-        const apiKey = SECRET_GEMINI  // Asegúrate de reemplazar con tu clave de API real
+        const apiKey = SECRET_GEMINI
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
     
         try {
