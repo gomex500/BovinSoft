@@ -16,7 +16,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon_Bovinsoft.jpg",
+        "foregroundImage": "./assets/logo_512.png",
         "backgroundColor": "#ffffff"
       },
       "icon": "./assets/img/logoNotificacion.png",
