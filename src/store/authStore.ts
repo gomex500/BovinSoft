@@ -41,7 +41,7 @@ export const useAuthStore = create(
               },
           },
           onRehydrateStorage:() => (state) => {
-              state.setRestored(true);
+              (state as AuthState).setRestored(true);
           },
       }
   )

@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet } from 'react-native'
-import useCattleReproductionStore from '../../store/cattleReproductionStore'
+import { useCattleReproductionStore } from '../../store/cattleReproductionStore'
 import { Chip } from 'react-native-paper'
 
 const FilterBar = () => {

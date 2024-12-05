@@ -4,6 +4,19 @@ import { BovinoModel } from '../interfaces/IBovino'
 import { agregarBovinoService, obtenerGanadoPorFincaServices, obtenerGanadoPorUsuarioServices } from '../services/bovinosService'
 import { TOKEN_TEST } from '@env'
 import { useAuthStore } from '../store/authStore'
+import { IBovine } from '../interfaces/Livestock'
+
+jest.mock('@react-native-async-storage/async-storage', () => {
+  return {
+    __esModule: true,
+    default: {
+      setItem: jest.fn(() => Promise.resolve()),
+      getItem: jest.fn(() => Promise.resolve(null)),
+      removeItem: jest.fn(() => Promise.resolve()),
+      clear: jest.fn(() => Promise.resolve()),
+    },
+  };
+});
 
 // Simular los servicios
 jest.mock('../services/bovinosService', () => ({
@@ -12,7 +25,7 @@ jest.mock('../services/bovinosService', () => ({
   obtenerGanadoPorFincaServices: jest.fn(),
 }))
 
-jest.mock('../store/userStore', () => ({
+jest.mock('../store/authStore', () => ({
   useAuthStore: {
     getState: jest.fn()
   }
@@ -35,25 +48,22 @@ describe('useBovinosStore', () => {
   })
 
   it('debería agregar un bovino correctamente', async () => {
-    const nuevoBovino: BovinoModel = {
-      _id: '6713b86fbea1749bdedf934b',
-      fincaId: '6713b86fbea1749bdedf934b',
-      nombre: 'Vovino #101',
+    const nuevoBovino:IBovine =  {
+      id: '1',
+      name: 'Angus',
+      identifier: 'C001',
+      breed: 'Angus',
+      dateOfBirth: '2020-05-15',
+      status: 'saludable',
+      farmStr: 'North Pasture',
+      weight: 550,
+      gender: 'hembra',
       image:
         'https://enciclopediaiberoamericana.com/wp-content/uploads/2022/01/vaca.jpg',
-      raza: 'Brahman',
-      edad: '',
-      peso: '4567',
-      consecutivo: 101,
-      codigo: 'FSM-GND001',
-      fechaNacimiento: null,
-      genero: 'macho',
-      tipo: 'carne',
-      estadoSalud: '',
-      fechaRegistro: 'Sat, 19 Oct 2024 13:17:06 GMT',
-      create_at: '2024-10-19T07:47:27.030+00:00',
-      update_at: '2024-10-19T07:47:27.030+00:00',
-    }; // Asegúrate de que este modelo coincida con tu definición.
+      type: 'carne',
+      farmId: 'North Pasture',
+
+    };
 
     (agregarBovinoService as jest.Mock).mockResolvedValue(nuevoBovino)
 
@@ -67,24 +77,21 @@ describe('useBovinosStore', () => {
   })
 
   it('debería manejar el error al agregar un bovino', async () => {
-    const nuevoBovino: BovinoModel = {
-      _id: '6713b86fbea1749bdedf934b',
-      fincaId: '6713b86fbea1749bdedf934b',
-      nombre: 'Vovino #101',
+    const nuevoBovino:IBovine =  {
+      id: '1',
+      name: 'Angus',
+      identifier: 'C001',
+      breed: 'Angus',
+      dateOfBirth: '2020-05-15',
+      status: 'saludable',
+      farmStr: 'North Pasture',
+      weight: 550,
+      gender: 'hembra',
       image:
         'https://enciclopediaiberoamericana.com/wp-content/uploads/2022/01/vaca.jpg',
-      raza: 'Brahman',
-      edad: '',
-      peso: '4567',
-      consecutivo: 101,
-      codigo: 'FSM-GND001',
-      fechaNacimiento: null,
-      genero: 'macho',
-      tipo: 'carne',
-      estadoSalud: '',
-      fechaRegistro: 'Sat, 19 Oct 2024 13:17:06 GMT',
-      create_at: '2024-10-19T07:47:27.030+00:00',
-      update_at: '2024-10-19T07:47:27.030+00:00',
+      type: 'carne',
+      farmId: 'North Pasture',
+
     };
 
     (agregarBovinoService as jest.Mock).mockRejectedValue(
