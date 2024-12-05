@@ -1,163 +1,202 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import FormBovino from '../views/FormBovino'; // Asegúrate de que la ruta sea correcta
-import { NavigationContainer } from '@react-navigation/native';
-import { useBovinosStore } from '../store/useBovinoStore';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
+import { AddCattleModal } from '../components/Bovine/AddCattleModal';
 import { useFincaStore } from '../store/fincaStore';
-import { FincaModel } from '../interfaces/IFinca';
-import { BovinoModel } from '../interfaces/IBovino';
-import { TOKEN_TEST } from '@env';
 import { useAuthStore } from '../store/authStore';
+import { useSnackbarStore } from '../store/snackbarStore';
+import { TOKEN_TEST } from '@env';
+import { IBovine } from '../interfaces/Livestock';
+import { DefaultTheme, PaperProvider } from 'react-native-paper';
 
-// jest.mock('../store/useBovinoStore', () => ({
-//   useBovinosStore: {
-//     getState: jest.fn(() => ({
-//       crearGanado: jest.fn().mockResolvedValue(true)
-//     })),
-//     setState: jest.fn()
-//   }
-// }))
+jest.mock('@react-native-community/datetimepicker', () => {
+  const React = require('react');
+  const { Text } = require('react-native');
 
-jest.mock('../store/userStore', () => ({
+  // Mock del componente DateTimePicker
+  const MockedDateTimePicker = ({ value, onChange }: { value: Date; onChange: (event: any, date: Date) => void }) => {
+    const handlePress = () => {
+      onChange({ nativeEvent: {} }, new Date('2023-01-01')); // Simular selección de fecha
+    };
+
+    return (
+      <Text onPress={handlePress}>
+        DateTimePicker Mock: {value?.toISOString()}
+      </Text>
+    );
+  };
+
+  return {
+    __esModule: true, // Permite usar "default" correctamente
+    default: MockedDateTimePicker,
+  };
+});
+
+jest.mock('@react-native-async-storage/async-storage', () => {
+  return {
+    __esModule: true,
+    default: {
+      setItem: jest.fn(() => Promise.resolve()),
+      getItem: jest.fn(() => Promise.resolve(null)),
+      removeItem: jest.fn(() => Promise.resolve()),
+      clear: jest.fn(() => Promise.resolve()),
+    },
+  };
+});
+
+jest.mock('@expo/vector-icons', () => {
+  const React = require('react');
+  const { Text } = require('react-native');
+
+  // Mock de los íconos
+  const MockedIcon = ({ name }: { name:string }) => <Text>Mocked Icon: {name}</Text>;
+
+  return {
+    __esModule: true,
+    default: MockedIcon, // Mock para el ícono predeterminado
+    Ionicons: MockedIcon, // Puedes mockear más familias de íconos si es necesario
+    MaterialIcons: MockedIcon,
+    FontAwesome: MockedIcon,
+  };
+});
+
+jest.mock('../store/authStore', () => ({
   useAuthStore: {
-    getState: jest.fn()
+    getState: jest.fn(() => ({
+      user: { _id: '67129238732d53dfe8e112e1', rol: 'USER' },
+      token: TOKEN_TEST,
+    }))
   }
 }))
 
-describe('FormBovino', () => {
-
-  const nuevoBovino: BovinoModel = {
-    _id: '6713b86fbea1749bdedf934b',
-    fincaId: '6713b86fbea1749bdedf934b',
-    nombre: 'Vovino #101',
-    image:
-      'https://enciclopediaiberoamericana.com/wp-content/uploads/2022/01/vaca.jpg',
-    raza: 'Brahman',
-    edad: '',
-    peso: '4567',
-    consecutivo: 101,
-    codigo: 'FSM-GND001',
-    fechaNacimiento: null,
-    genero: 'macho',
-    tipo: 'carne',
-    estadoSalud: '',
-    fechaRegistro: 'Sat, 19 Oct 2024 13:17:06 GMT',
-    create_at: '2024-10-19T07:47:27.030+00:00',
-    update_at: '2024-10-19T07:47:27.030+00:00',
-  };
-
-  const finca:FincaModel = {
-    _id: "6713a5aaffe35c5e70d86f89", // Extraído del $oid
-    nombre: "Rancho El juan",
-    image: "https://th.bing.com/th/id/R.36342a5c831f75bddb5ce06ee6af758a?rik=TaNL4yU9RXHXlw&pid=ImgRaw&r=0",
-    direccion: "km 150 carretera al rama",
-    coordenadas: {
-      latitud: "12.12345", // Manteniendo como cadena
-      longitud: "-86.12345" // Manteniendo como cadena
-    },
-    tamano: "3435", // Convertido a número
-    recursosN: ["lagunas", "acceso a reserva natural", "planicies"], // Array de recursos
-    descripcion: "Planicie ideal para el cultivo",
-    idUsuario: "66ff6c787a81ade5258dc6e6",
-    create_at: '2024-10-19T07:47:27.030+00:00',
-    update_at: '2024-10-19T07:47:27.030+00:00', // Convertido a objeto Date
-  };
-
-  beforeEach(() => {
-    useBovinosStore.setState({ bovinos: [] });
-    useFincaStore.setState({ fincas: [finca] });
-    // Limpiar el store antes de cada prueba
-    (useAuthStore.getState as jest.Mock).mockImplementation(() => ({
-      user: { _id: '67129238732d53dfe8e112e1' },
-      token: TOKEN_TEST
+jest.mock('../store/snackbarStore', () => ({
+  useSnackbarStore: {
+    getState: jest.fn(() => ({
+      dispatchSnackbar: jest.fn(),
     }))
-  })
+  }
+}))
 
-  it('should render correctly', async () => {
-    const { getByPlaceholderText, getByText } = render(
-      <NavigationContainer>
-        <FormBovino />
-      </NavigationContainer>
-    );
+jest.mock('../store/fincaStore', () => ({
+  useFincaStore: {
+    getState: jest.fn(() => ({
+      obtenerFincaPorUsuario: jest.fn(),
+      fincas: [{ _id: '1', nombre: 'Finca Uno' }],
+      fincaSelected: { _id: '1', nombre: 'Finca Uno' },
+    }))
+  }
+}))
 
-    // Verifica que los campos de entrada y el botón estén presentes
-    expect(getByPlaceholderText('Nombre ganado:')).toBeTruthy();
-    expect(getByPlaceholderText('Imagen URL:')).toBeTruthy();
-    expect(getByPlaceholderText('edad :')).toBeTruthy();
-    expect(getByPlaceholderText('peso (kg) :')).toBeTruthy();
-    expect(getByText('Ingresar Ganado')).toBeTruthy();
+describe('AddCattleModal', () => {
+  beforeEach(() => {
+    (useFincaStore.getState as jest.Mock).mockImplementation(() => ({
+      obtenerFincaPorUsuario: jest.fn(),
+      fincas: [{ _id: '1', nombre: 'Finca Uno' }],
+      fincaSelected: { _id: '1', nombre: 'Finca Uno' },
+    }));
+
+    // Mock de useAuthStore
+    (useAuthStore.getState as jest.Mock).mockImplementation(() => ({
+      user: { _id: '67129238732d53dfe8e112e1', rol: 'USER' },
+      token: TOKEN_TEST
+    }));
+
+    (useSnackbarStore.getState as jest.Mock).mockImplementation(() => ({
+      dispatchSnackbar: jest.fn(),
+    }));
   });
 
-  it('should enable the submit button when all fields are filled', async () => {
+  it('renders correctly when visible', () => {
     const { getByPlaceholderText, getByText, findByText } = render(
-      <NavigationContainer>
-        <FormBovino />
-      </NavigationContainer>
-    );
+      <PaperProvider theme={DefaultTheme}>
+        <AddCattleModal visible={true} onClose={jest.fn()} onAdd={jest.fn()} />
+      </PaperProvider>
+  );
 
-    // Completar todos los campos
-    fireEvent.changeText(getByPlaceholderText('Nombre ganado:'), 'Bovino 1');
-    fireEvent.changeText(getByPlaceholderText('Imagen URL:'), 'http://example.com/image.jpg');
-    fireEvent.changeText(getByPlaceholderText('edad :' ), '2');
-    fireEvent.changeText(getByPlaceholderText('peso (kg) :'), '300');
-
-    // Espera a que las fincas se carguen
-    await waitFor(() => expect(findByText('Rancho El juan')).toBeTruthy());
-
-    // Simula la selección de una finca
-    fireEvent.press(getByText('Seleccione una finca'));
-    fireEvent.press(getByText('Rancho El juan'));
-
-    // Completar los campos restantes
-    fireEvent.press(getByText('Selecciona una raza'));
-    fireEvent.press(getByText('Angus'));
-    fireEvent.press(getByText('Macho'));
-    fireEvent.press(getByText('Selecciona un tipo de ganado'));
-    fireEvent.press(getByText('Carne'));
-    fireEvent.press(getByText('Selecciona un estado de salud'));
-    fireEvent.press(getByText('Enfermo'));
-
-    // Verifica que el botón de enviar esté habilitado
+    expect(screen.getByText('Añadir nuevo ganado')).toBeTruthy();
+    expect(screen.getByTestId('Name')).toBeTruthy();
   });
 
-  it('should call crearGanado when the submit button is pressed', async () => {
+  it('validates form fields and shows errors', async () => {
+    const onAddMock = jest.fn();
     const { getByPlaceholderText, getByText, findByText } = render(
-      <NavigationContainer>
-        <FormBovino />
-      </NavigationContainer>
+      <PaperProvider theme={DefaultTheme}>
+        <AddCattleModal visible={true} onClose={jest.fn()} onAdd={onAddMock} />
+      </PaperProvider>
+  );
+
+    fireEvent.press(screen.getByText('Crear')); // Intentar enviar sin completar el formulario
+
+    // Espera a que aparezcan los mensajes de error
+    await waitFor(() => {
+      expect(screen.getByText('Name is required')).toBeTruthy();
+      expect(screen.getByText('Breed is required')).toBeTruthy();
+      expect(screen.getByText('Weight must be greater than 0')).toBeTruthy();
+      expect(screen.getByText('Image is required')).toBeTruthy();
+    });
+  });
+
+  it('submits the form when valid', async () => {
+    const onAddMock = jest.fn();
+    const { getByPlaceholderText, getByText, findByText } = render(
+      <PaperProvider theme={DefaultTheme}>
+        <AddCattleModal visible={true} onClose={jest.fn()} onAdd={onAddMock} />
+      </PaperProvider>
     );
 
-    // Completar todos los campos
-    fireEvent.changeText(getByPlaceholderText('Nombre ganado:'), 'Bovino 1');
-    fireEvent.changeText(getByPlaceholderText('Imagen URL:'), 'http://example.com/image.jpg');
-    fireEvent.changeText(getByPlaceholderText('edad :' ), '2');
-    fireEvent.changeText(getByPlaceholderText('peso (kg) :'), '300');
+    // Completar los campos del formulario
+    fireEvent.changeText(screen.getByTestId('Name'), 'Bessie');
+    fireEvent.changeText(screen.getByTestId('Image'), 'https://example.com/image.jpg');
+    fireEvent.changeText(screen.getByTestId('Breed'), 'Holstein');
+    fireEvent.changeText(screen.getByTestId('Weight'), '500');
 
-     // Espera a que las fincas se carguen
-     await waitFor(() => expect(findByText('Rancho El juan')).toBeTruthy());
+    // Enviar el formulario
+    fireEvent.press(screen.getByText('Crear'));
 
-     // Simula la selección de una finca
-     fireEvent.press(getByText('Seleccione una finca'));
-     fireEvent.press(getByText('Rancho El juan'));
- 
-     // Completar los campos restantes
-     fireEvent.press(getByText('Selecciona una raza'));
-     fireEvent.press(getByText('Angus'));
-     fireEvent.press(getByText('Macho'));
-     fireEvent.press(getByText('Selecciona un tipo de ganado'));
-     fireEvent.press(getByText('Carne'));
-     fireEvent.press(getByText('Selecciona un estado de salud'));
-     fireEvent.press(getByText('Enfermo'));
+    await waitFor(() => {
+      expect(onAddMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Bessie',
+          image: 'https://example.com/image.jpg',
+          breed: 'Holstein',
+          weight: 500,
+        })
+      );
+    });
+  });
 
-    // Simula el clic en el botón de enviar
-    fireEvent.press(getByText('Enviar'));
+  it('displays loading indicator while submitting', async () => {
+    const onAddMock: jest.Mock<Promise<void>, [IBovine]> = jest.fn(async (animal: IBovine) => {
+      return new Promise((resolve) => setTimeout(resolve, 1000)); // Simular retraso
+    });
+    
+    const { getByPlaceholderText, getByText, findByText } = render(
+      <PaperProvider theme={DefaultTheme}>
+        <AddCattleModal visible={true} onClose={jest.fn()} onAdd={onAddMock} />
+      </PaperProvider>
+    );
 
-    // (agregarBovinoService as jest.Mock).mockResolvedValue(nuevoBovino)
+     // Completar los campos del formulario
+     fireEvent.changeText(screen.getByTestId('Name'), 'Bessie');
+     fireEvent.changeText(screen.getByTestId('Image'), 'https://example.com/image.jpg');
+     fireEvent.changeText(screen.getByTestId('Breed'), 'Holstein');
+     fireEvent.changeText(screen.getByTestId('Weight'), '500');
+    fireEvent.press(screen.getByText('Crear'));
 
-    // const crearGanado = useBovinosStore.getState().crearGanado
+    expect(screen.getByTestId('activity-indicator')).toBeTruthy(); // Indicador de carga
 
-    // const resultado = await crearGanado(nuevoBovino)
+    await waitFor(() => {
+      expect(onAddMock).toHaveBeenCalled();
+    });
+  });
 
-    // expect(resultado).toBe(true)
+  it('calls onClose when cancel button is pressed', () => {
+    const onCloseMock = jest.fn();
+    
+    render(<PaperProvider theme={DefaultTheme}>
+      <AddCattleModal visible={true} onClose={onCloseMock} onAdd={jest.fn()} />
+    </PaperProvider>);
+
+    fireEvent.press(screen.getByText('Cancelar'));
+    expect(onCloseMock).toHaveBeenCalled();
   });
 });

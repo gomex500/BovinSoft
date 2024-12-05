@@ -1,21 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Modal, Portal, Text, Button, TextInput, SegmentedButtons, ActivityIndicator } from 'react-native-paper';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { IBovine } from '../../interfaces/Livestock';
-import { CustomSelect } from '../CustomSelect';
-import { useAuthStore } from '../../store/authStore';
-import { useFincaStore } from '../../store/fincaStore';
-import moment from 'moment';
-import { useSnackbarStore } from '../../store/snackbarStore';
+import React, { useEffect, useState } from 'react'
+import { View, StyleSheet, ScrollView } from 'react-native'
+import {
+  Modal,
+  Portal,
+  Text,
+  Button,
+  TextInput,
+  SegmentedButtons,
+  ActivityIndicator,
+} from 'react-native-paper'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import { IBovine } from '../../interfaces/Livestock'
+import { CustomSelect } from '../CustomSelect'
+import { useAuthStore } from '../../store/authStore'
+import { useFincaStore } from '../../store/fincaStore'
+import moment from 'moment'
+import { useSnackbarStore } from '../../store/snackbarStore'
+import { RolType } from '../../interfaces/IUser'
 
 interface AddCattleModalProps {
-  visible: boolean;
-  onClose: () => void;
+  visible: boolean
+  onClose: () => void
   onAdd: (animal: IBovine) => Promise<void>
 }
 
-export function AddCattleModal({ visible, onClose, onAdd }: AddCattleModalProps) {
+export function AddCattleModal({
+  visible,
+  onClose,
+  onAdd,
+}: AddCattleModalProps) {
   const [newAnimal, setNewAnimal] = useState<Omit<IBovine, 'id'>>({
     identifier: '',
     breed: '',
@@ -27,56 +40,67 @@ export function AddCattleModal({ visible, onClose, onAdd }: AddCattleModalProps)
     name: '',
     type: 'carne',
     image: '',
-  }); 
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [loading, setLoading] = useState(false);
+  })
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const [loading, setLoading] = useState(false)
 
-  const { obtenerFincaPorUsuario, fincas, fincaSelected } = useFincaStore()
-  const { user } = useAuthStore()
+  const { obtenerFincaPorUsuario, fincas, fincaSelected } = useFincaStore.getState()
+  const { user } = useAuthStore.getState()
+
+  let fincaId = (fincaSelected?._id as string)
+  let nombreFinca = (fincaSelected?.nombre as string)
+  let userRol = (user?.rol as RolType)
 
   useEffect(() => {
     const fetchData = async () => {
-      await obtenerFincaPorUsuario();
+      await obtenerFincaPorUsuario()
     }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-    if (!newAnimal.breed) newErrors.breed = "Breed is required";
-    if (!newAnimal.farmId) newErrors.location = "Location is required";
-    if (newAnimal.weight <= 0) newErrors.weight = "Weight must be greater than 0";
-    if (!newAnimal.name) newErrors.name = "Name is required";
-    if (!newAnimal.type) newErrors.type = "Type is required";
-    if (!newAnimal.image) newErrors.image = "Image is required";
+    const newErrors: { [key: string]: string } = {}
+    if (!newAnimal.breed) newErrors.breed = 'Breed is required'
+    if (!newAnimal.farmId) newErrors.location = 'Location is required'
+    if (newAnimal.weight <= 0)
+      newErrors.weight = 'Weight must be greater than 0'
+    if (!newAnimal.name) newErrors.name = 'Name is required'
+    if (!newAnimal.type) newErrors.type = 'Type is required'
+    if (!newAnimal.image) newErrors.image = 'Image is required'
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleAdd = async () => {
-    setLoading(true);
+    setLoading(true)
     if (validateForm()) {
-      await onAdd(newAnimal as IBovine);
-      useSnackbarStore.getState().dispatchSnackbar('Ganado añadido con éxito');
-      onClose();
+      await onAdd(newAnimal as IBovine)
+      useSnackbarStore.getState().dispatchSnackbar('Ganado añadido con éxito')
+      onClose()
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   return (
     <Portal>
-      <Modal visible={visible} onDismiss={onClose} contentContainerStyle={styles.modalContainer}>
+      <Modal
+        visible={visible}
+        onDismiss={onClose}
+        contentContainerStyle={styles.modalContainer}
+      >
         <ScrollView>
           <Text style={styles.title}>Añadir nuevo ganado</Text>
           <TextInput
             label="Name"
+            placeholder='Nombre'
             value={newAnimal.name}
             onChangeText={(text) => setNewAnimal({ ...newAnimal, name: text })}
             style={styles.input}
             error={!!errors.name}
+            testID='Name'
           />
           {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
           <TextInput
@@ -85,6 +109,7 @@ export function AddCattleModal({ visible, onClose, onAdd }: AddCattleModalProps)
             onChangeText={(text) => setNewAnimal({ ...newAnimal, image: text })}
             style={styles.input}
             error={!!errors.image}
+            testID='Image'
           />
           {errors.image && <Text style={styles.errorText}>{errors.image}</Text>}
           <TextInput
@@ -93,49 +118,80 @@ export function AddCattleModal({ visible, onClose, onAdd }: AddCattleModalProps)
             onChangeText={(text) => setNewAnimal({ ...newAnimal, breed: text })}
             style={styles.input}
             error={!!errors.breed}
+            testID='Breed'
           />
           {errors.breed && <Text style={styles.errorText}>{errors.breed}</Text>}
           <TextInput
             label="Weight (kg)"
             value={newAnimal.weight.toString()}
-            onChangeText={(text) => setNewAnimal({ ...newAnimal, weight: parseFloat(text) || 0 })}
+            onChangeText={(text) =>
+              setNewAnimal({ ...newAnimal, weight: parseFloat(text) || 0 })
+            }
             keyboardType="numeric"
             style={styles.input}
             error={!!errors.weight}
+            testID='Weight'
           />
-          {errors.weight && <Text style={styles.errorText}>{errors.weight}</Text>}
+          {errors.weight && (
+            <Text style={styles.errorText}>{errors.weight}</Text>
+          )}
           <CustomSelect
-            placeholder="Seleccione un tipo de ganado"
+            placeholder="Seleccione una finca"
             options={
-              user.rol === 'ADMIN'
+              user && user.rol === 'ADMIN'
                 ? [
                     {
-                      label: fincaSelected.nombre,
-                      value: fincaSelected._id,
+                      label: nombreFinca,
+                      value: fincaId,
                     },
                   ]
                 : fincas && fincas.length > 0
                 ? fincas.map((finca) => ({
                     label: finca.nombre,
-                    value: finca._id as string,
+                    value: (finca._id as string) || '',
                   }))
-                : []}
+                : []
+            }
             selectedValue={
-              user.rol === 'ADMIN'
-                ? (fincaSelected._id as string)
+              user && user.rol === 'ADMIN'
+                ? fincaId
                 : newAnimal.farmId
             }
-            onValueChange={(value) => setNewAnimal({ ...newAnimal, farmId: value as IBovine['farmId'], farmStr: fincas.find((item) => item._id === value)?.nombre })}
+            onValueChange={(value) => {
+              let nombre = ((fincas && fincas.find((item) => item._id === value))?.nombre as string)
+
+              setNewAnimal({
+                ...newAnimal,
+                farmId: value as IBovine['farmId'],
+                farmStr: nombre,
+              })
+            }
+             
+            }
           >
             {(toggleModal) => (
-              <Button disabled={user.rol === 'ADMIN'} textColor='#0D0D0D' onPress={() => toggleModal()} mode="outlined" style={styles.input}>
+              <Button
+                disabled={userRol === 'ADMIN'}
+                textColor="#0D0D0D"
+                onPress={() => toggleModal()}
+                mode="outlined"
+                style={styles.input}
+              >
                 Finca: {newAnimal.farmStr || 'Seleccionar'}
               </Button>
             )}
           </CustomSelect>
-          {errors.location && <Text style={styles.errorText}>{errors.location}</Text>}
-          <Button onPress={() => setShowDatePicker(true)} textColor='#0D0D0D' mode="outlined" style={styles.input}>
-            Fecha de nacimiento: {moment(newAnimal.dateOfBirth).toDate().toLocaleDateString()}
+          {errors.location && (
+            <Text style={styles.errorText}>{errors.location}</Text>
+          )}
+          <Button
+            onPress={() => setShowDatePicker(true)}
+            textColor="#0D0D0D"
+            mode="outlined"
+            style={styles.input}
+          >
+            Fecha de nacimiento:{' '}
+            {moment(newAnimal.dateOfBirth).toDate().toLocaleDateString()}
           </Button>
           {showDatePicker && (
             <DateTimePicker
@@ -143,17 +199,22 @@ export function AddCattleModal({ visible, onClose, onAdd }: AddCattleModalProps)
               mode="date"
               display="default"
               onChange={(event, selectedDate) => {
-                setShowDatePicker(false);
+                setShowDatePicker(false)
                 if (selectedDate) {
-                  setNewAnimal({ ...newAnimal, dateOfBirth: selectedDate.toISOString().split('T')[0] });
+                  setNewAnimal({
+                    ...newAnimal,
+                    dateOfBirth: selectedDate.toISOString().split('T')[0],
+                  })
                 }
               }}
             />
           )}
           <SegmentedButtons
             value={newAnimal.status}
-            onValueChange={(value) => setNewAnimal({ ...newAnimal, status: value as IBovine['status'] })}
-            theme={{ colors: { secondaryContainer:  "rgba(27, 71, 37, 0.2)" } }}
+            onValueChange={(value) =>
+              setNewAnimal({ ...newAnimal, status: value as IBovine['status'] })
+            }
+            theme={{ colors: { secondaryContainer: 'rgba(27, 71, 37, 0.2)' } }}
             buttons={[
               { value: 'saludable', label: 'Saludable' },
               { value: 'enfermo', label: 'Enfermo' },
@@ -164,8 +225,10 @@ export function AddCattleModal({ visible, onClose, onAdd }: AddCattleModalProps)
           />
           <SegmentedButtons
             value={newAnimal.type}
-            onValueChange={(value) => setNewAnimal({ ...newAnimal, type: value as IBovine['type'] })}
-            theme={{ colors: { secondaryContainer:  "rgba(27, 71, 37, 0.2)" } }}
+            onValueChange={(value) =>
+              setNewAnimal({ ...newAnimal, type: value as IBovine['type'] })
+            }
+            theme={{ colors: { secondaryContainer: 'rgba(27, 71, 37, 0.2)' } }}
             buttons={[
               { value: 'carne', label: 'Carne' },
               { value: 'leche', label: 'Leche' },
@@ -175,8 +238,13 @@ export function AddCattleModal({ visible, onClose, onAdd }: AddCattleModalProps)
           />
           <SegmentedButtons
             value={newAnimal.gender}
-            onValueChange={(value) => setNewAnimal({ ...newAnimal, gender: value as 'macho' | 'hembra' })}
-            theme={{ colors: { secondaryContainer:  "rgba(27, 71, 37, 0.2)" } }}
+            onValueChange={(value) =>
+              setNewAnimal({
+                ...newAnimal,
+                gender: value as 'macho' | 'hembra',
+              })
+            }
+            theme={{ colors: { secondaryContainer: 'rgba(27, 71, 37, 0.2)' } }}
             buttons={[
               { value: 'macho', label: 'Macho' },
               { value: 'hembra', label: 'Hembra' },
@@ -184,17 +252,26 @@ export function AddCattleModal({ visible, onClose, onAdd }: AddCattleModalProps)
             style={styles.segmentedButtons}
           />
           <View style={styles.buttonContainer}>
-            <Button onPress={onClose} style={styles.button} textColor='#1B4725'>Cancelar</Button>
-            <Button onPress={handleAdd} mode="contained" buttonColor='#1B4725' style={styles.button}>
-              {
-                loading ? <ActivityIndicator size={20} color="#1B4725" /> : 'Crear'
-              }
+            <Button onPress={onClose} style={styles.button} textColor="#1B4725">
+              Cancelar
+            </Button>
+            <Button
+              onPress={handleAdd}
+              mode="contained"
+              buttonColor="#1B4725"
+              style={styles.button}
+            >
+              {loading ? (
+                <ActivityIndicator testID='activity-indicator' size={20} color="#1B4725" />
+              ) : (
+                'Crear'
+              )}
             </Button>
           </View>
         </ScrollView>
       </Modal>
     </Portal>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -213,7 +290,7 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 15,
-    backgroundColor: "rgba(27, 71, 37, 0.2)",
+    backgroundColor: 'rgba(27, 71, 37, 0.2)',
   },
   segmentedButtons: {
     marginBottom: 15,
@@ -232,5 +309,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 10,
   },
-});
-
+})

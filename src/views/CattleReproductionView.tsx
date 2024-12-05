@@ -8,17 +8,14 @@ import {
   DefaultTheme,
   useTheme,
 } from 'react-native-paper'
-import {
-  ReproductiveEvent,
-} from '../interfaces/ReproductiveEvent'
-import { Header } from '../components/CattleReproduction/Header'
+import { ReproductiveEvent } from '../interfaces/ReproductiveEvent'
 import { AddEventModal } from '../components/CattleReproduction/AddEventModal'
 import { EventDetailsModal } from '../components/CattleReproduction/EventDetailsModal'
 import { AddCattleModal } from '../components/CattleReproduction/AddCattleModal'
 import { AddCattleModal as AddRecentCattleModal } from '../components/Bovine/AddCattleModal'
-import useCattleReproductionStore from '../store/cattleReproductionStore'
+import { useCattleReproductionStore } from '../store/cattleReproductionStore'
 import FilterBar from '../components/CattleReproduction/FilterBar'
-import CardReproduction from '../components/CattleReproduction/CardReproduction'
+import { CardReproduction } from '../components/CattleReproduction/CardReproduction'
 import { LoadingScreen } from '../components/LoadingStream'
 import { IBovine } from '../interfaces/Livestock'
 import { FincaModel } from '../interfaces/IFinca'
@@ -28,16 +25,15 @@ import { useBovinosStore } from '../store/useBovinoStore'
 interface CattleDetailScreenProps {
   route: {
     params: {
-      animal: IBovine | FincaModel;
-      type: "cattle" | "farm"
-    };
-  };
+      animal: IBovine | FincaModel
+      type: 'cattle' | 'farm'
+    }
+  }
 }
 
-export default function CattleReproductionView({route}:CattleDetailScreenProps) {
+export const CattleReproductionView = ({ route }: CattleDetailScreenProps) => {
+  const { animal } = route.params
 
-  const { animal } = route.params;
-  
   const {
     cattleData,
     searchQuery,
@@ -54,44 +50,53 @@ export default function CattleReproductionView({route}:CattleDetailScreenProps) 
     getReproductiveEventsByFinca,
   } = useCattleReproductionStore()
 
-  const { crearGanado } = useBovinosStore();
+  const { crearGanado } = useBovinosStore()
 
-  
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true)
 
-  const [selectedEvent, setSelectedEvent] = useState<ReproductiveEvent | null>(null)
-  const [isEventDetailsModalVisible, setIsEventDetailsModalVisible] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState<ReproductiveEvent | null>(
+    null
+  )
+  const [isEventDetailsModalVisible, setIsEventDetailsModalVisible] =
+    useState(false)
 
-  const [bovinos, setBovinos] = useState<IBovine[]>([]);
-  const [isAddRecentBirthModalVisible, setIsAddRecentBirthModalVisible] = useState(false);
+  const [bovinos, setBovinos] = useState<IBovine[]>([])
+  const [isAddRecentBirthModalVisible, setIsAddRecentBirthModalVisible] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
-      if (route.params.type === "cattle") {
-        await getReproductiveEventsByBovino((animal as IBovine).id);
-      } else {
-        await getReproductiveEventsByFinca((animal as FincaModel)._id);
-        const bovinos = await obtenerGanadoPorFincaServices((animal as FincaModel)._id);
-        setBovinos(bovinos.filter(item => item.gender === "hembra"));
+      try {
+        if (route.params.type === 'cattle') {
+          await getReproductiveEventsByBovino((animal as IBovine).id)
+        } else {
+          let fincaId = (animal as FincaModel)._id as string
+          await getReproductiveEventsByFinca(fincaId)
+          const bovinos = (await obtenerGanadoPorFincaServices(
+            fincaId
+          )) as IBovine[]
+          setBovinos(bovinos.filter((item) => item.gender === 'hembra'))
+        }
+      } catch (error) {
+        console.error('Error fetching data', error)
+      } finally {
+        setLoading(false)
       }
+    }
 
-      setLoading(false);
-    };
+    fetchData()
+  }, [])
 
-    fetchData();
-  }, []);
-
-  const handleAddCattle = useCallback(async (newCattle: IBovine)  => {
-    await crearGanado(newCattle);
-    setIsAddRecentBirthModalVisible(false);
-  }, []);
+  const handleAddCattle = useCallback(async (newCattle: IBovine) => {
+    await crearGanado(newCattle)
+    setIsAddRecentBirthModalVisible(false)
+  }, [])
 
   const theme = useTheme()
-  theme.colors.primary = '#1B5E20';
+  theme.colors.primary = '#1B5E20'
 
-    if (loading) {
-      return <LoadingScreen />; // Muestra un mensaje de carga
-    }
+  if (loading) {
+    return <LoadingScreen /> // Muestra un mensaje de carga
+  }
 
   const filteredCattleData = cattleData.filter(
     (cattle) =>
@@ -137,7 +142,7 @@ export default function CattleReproductionView({route}:CattleDetailScreenProps) 
             visible={isAddModalVisible}
             onClose={() => toggleAddModal(false)}
             onAdd={addEventToCattle}
-            cattleId={selectedCattle?.id}
+            cattleId={selectedCattle?.id as string}
             existingEvents={selectedCattle ? selectedCattle.events : []}
             openAddRecentBirthModal={openAddRecentBirthModal}
           />
@@ -189,5 +194,4 @@ const styles = StyleSheet.create({
     bottom: 60,
     backgroundColor: '#1B5E20',
   },
-  
 })

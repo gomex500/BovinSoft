@@ -2,6 +2,7 @@
 import { create } from 'zustand';
 import { CattleReproduction, ReproductiveEvent, ReproductiveEventType } from '../interfaces/ReproductiveEvent';
 import { createReproductiveEventService, createReproductiveProcessService, getReproductiveEventsByBovinoService, getReproductiveEventsByFincaService } from '../services/reproductionsServices';
+import { IBovine } from '../interfaces/Livestock';
 
 const mockData: CattleReproduction[] = [
   {
@@ -51,9 +52,10 @@ interface CattleReproductionState {
   addCattle: (name: string, bovinoId: string) => Promise<void>
   getReproductiveEventsByBovino: (bovinoId: string) => Promise<void>
   getReproductiveEventsByFinca: (fincaId: string) => Promise<void>
+  setCattle: (cattle: CattleReproduction[]) => void
 }
 
-const useCattleReproductionStore = create<CattleReproductionState>((set, get) => ({
+export const useCattleReproductionStore = create<CattleReproductionState>((set, get) => ({
   cattleData: [],
   searchQuery: '',
   filterType: 'all',
@@ -123,6 +125,7 @@ const useCattleReproductionStore = create<CattleReproductionState>((set, get) =>
         cattleData: data,
       }));
     },
+    setCattle: (cattle: CattleReproduction []) => {
+      set({ cattleData: cattle });
+    },
 }));
-
-export default useCattleReproductionStore;

@@ -12,7 +12,7 @@ import {
 import { View, StyleSheet } from 'react-native'
 import { Timeline } from './Timeline'
 import { FontAwesome5, Feather } from '@expo/vector-icons'
-import useCattleReproductionStore from '../../store/cattleReproductionStore'
+import { useCattleReproductionStore } from '../../store/cattleReproductionStore'
 
 interface CardReproductionProp {
   cattle: CattleReproduction
@@ -20,12 +20,12 @@ interface CardReproductionProp {
   setIsEventDetailsModalVisible: (isVisible: boolean) => void
 }
 
-const CardReproduction = ({
+export const CardReproduction = ({
   cattle,
   setIsEventDetailsModalVisible,
   setSelectedEvent,
 }: CardReproductionProp) => {
-  const { openAddModal } = useCattleReproductionStore()
+  const { openAddModal } = useCattleReproductionStore.getState()
   const reproductiveStatus = getReproductiveStatus(cattle)
   const statusColor = getStatusColor(reproductiveStatus)
   const { phase, progress, color } = calculateEstrusProgress(cattle)
@@ -77,7 +77,7 @@ const CardReproduction = ({
                 color="#1B5E20"
               />
               <Text style={styles.statText}>
-                Due Date: {getDueDate(cattle).toLocaleDateString()}{' '}
+                Due Date: {(getDueDate(cattle) as Date).toLocaleDateString()}{' '}
               </Text>
             </View>
           )}
@@ -94,8 +94,6 @@ const CardReproduction = ({
     </Card>
   )
 }
-
-export default CardReproduction
 
 const styles = StyleSheet.create({
   card: {

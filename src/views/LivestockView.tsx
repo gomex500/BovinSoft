@@ -94,7 +94,7 @@ interface LivestockViewProps {
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>
 
 export default function LivestockView({route}:LivestockViewProps) {
-  const { farm } = route.params;
+  const farm = route?.params?.farm || undefined
   const [searchQuery, setSearchQuery] = useState('')
   const {
     bovinos,
@@ -117,7 +117,7 @@ export default function LivestockView({route}:LivestockViewProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (farm !== null) {
+      if (farm !== undefined) {
         await obtenerGanadoPorFinca(farm._id)
       } else {
         await obtenerGanadoPorUsuario()

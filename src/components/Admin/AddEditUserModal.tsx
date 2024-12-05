@@ -18,6 +18,7 @@ export function AddEditUserModal({ visible, onClose, onSave, user }: AddEditUser
   const [status, setStatus] = useState<'active' | 'inactive'>('active');
   const [premiumUser, setPremiumUser] = useState(false);
   const [image, setImage] = useState('');
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -48,7 +49,7 @@ export function AddEditUserModal({ visible, onClose, onSave, user }: AddEditUser
       create_at: user ? user.create_at : new Date(),
       tipoSuscripcion: premiumUser ? 'premium' : 'básica',
       image,
-      password: "123456789",
+      password: password,
     };
 
     if (user) {
@@ -86,6 +87,12 @@ export function AddEditUserModal({ visible, onClose, onSave, user }: AddEditUser
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
+          style={styles.input}
+        />
+        <TextInput
+          label="Contraseña"
+          value={password}
+          onChangeText={setPassword}
           style={styles.input}
         />
         <Button onPress={pickImage} >

@@ -1,5 +1,6 @@
 import { createAxiosInstance, PATH_LIST } from "../helpers/axiosIntance";
 import { FincaModel } from "../interfaces/IFinca";
+import { UserModel } from "../interfaces/IUser";
 import { useAuthStore } from "../store/authStore";
 
 export const createFincaServices = async (finca:FincaModel) => {
@@ -16,7 +17,7 @@ export const createFincaServices = async (finca:FincaModel) => {
 export const obtenerFincaPorUsuarioService = async () => {
   try {
     const stateUser = useAuthStore.getState();
-    const userId = stateUser.user._id;
+    const userId = (stateUser.user as UserModel)._id;
     const axiosInstance = createAxiosInstance(PATH_LIST.Fincas);
     const response = await axiosInstance.get(`/${userId}`);
 
