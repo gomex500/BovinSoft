@@ -15,7 +15,6 @@ import Fincas from '../views/Fincas'
 import Metricas from '../views/Metricas'
 import Feed from '../views/Comunidad'
 import Profile from '../views/Profile'
-import FormFinca from '../views/FormFinca'
 import { createStackNavigator } from '@react-navigation/stack'
 import FormBovino from '../views/FormBovino'
 import InfoFinca from '../views/InfoFinca'
@@ -46,7 +45,7 @@ import {
 import FarmerProfileScreen from './ProfileOwner/FarmerProfileScreen'
 import WorkerManagementScreen from './ProfileOwner/WorkerManagementScreen'
 import Avatar from './ProfileOwner/Avatar'
-import { authService } from '../services/authService'
+import { FormFinca } from '../views/FormFinca'
 
 const Tab = createBottomTabNavigator()
 const Drawer = createDrawerNavigator()

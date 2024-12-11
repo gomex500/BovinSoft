@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native'
-import { ICordenadas } from '../interfaces/IFinca'
+import { FincaModel, ICordenadas } from '../interfaces/IFinca'
 import { useFincaStore } from '../store/fincaStore'
 import { useAuthStore } from '../store/authStore'
 import {
@@ -21,15 +21,16 @@ import {
 import { CustomInput } from '../components/CustomInput'
 import { BollGroup } from '../components/BollGroup'
 import { FarmResourcesList } from '../components/FarmResourcesList'
+import { UserModel } from '../interfaces/IUser'
 
 interface handle {
   text: string
   index: number
 }
 
-const FormFinca = () => {
-  const { createFinca } = useFincaStore()
-  const { user } = useAuthStore()
+export const FormFinca = () => {
+  const { createFinca } = useFincaStore.getState()
+  const { user } = useAuthStore.getState() 
   const [nombre, setNombre] = useState('')
   const [descripcion, setDescripcion] = useState('')
   const [image, setImage] = useState('')
@@ -49,15 +50,21 @@ const FormFinca = () => {
     colo2: '#c2c2c2',
   })
 
-  const handleCoordenadasChange = (text, index) => {
-    const newCoordenadas = { ...coordenadas }
-    newCoordenadas[index] = text // Actualiza el recurso en el índice correspondiente
+  const handleCoordenadasChange = (text: string, index: string) => {
+    let newCoordenadas = { ...coordenadas }
+
+    if (index === 'latitud') {
+      newCoordenadas.latitud = text as string
+    } else {
+      newCoordenadas.longitud = text as string
+    }
+    
     setCoordenadas(newCoordenadas)
   }
 
   const handleSubmit = async () => {
     setLoading(true)
-    const data = {
+    const data:FincaModel = {
       nombre,
       descripcion,
       image,
@@ -65,7 +72,7 @@ const FormFinca = () => {
       coordenadas,
       tamano,
       recursosN: resources,
-      idUsuario: user._id,
+      idUsuario: (user as UserModel)._id as string,
     }
     let result = await createFinca(data)
 
@@ -206,7 +213,7 @@ const FormFinca = () => {
             style={disabledButton ? styles.btn2 : styles.btn}
             onPress={handleSubmit}
           >
-            <Text style={disabledButton ? styles.btnText : styles.btnText2}>
+            <Text style={disabledButton ? styles.btnText : styles.btnText2} testID={disabledButton ? 'btnText' : 'btnText2'}>
               Enviar
             </Text>
           </TouchableOpacity>
@@ -324,5 +331,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 })
-
-export default FormFinca

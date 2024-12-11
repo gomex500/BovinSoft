@@ -15,8 +15,8 @@ export interface FincaModel {
 }
 
 export interface ICordenadas {
-  latitud: number | string;
-  longitud: number | string;
+    latitud: number | string;
+    longitud: number | string;
 }
 
 export interface ICantidadClasificacionGanado {

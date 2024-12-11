@@ -51,7 +51,7 @@ export const createWeatherNotification = async (idUsuario: string, idFinca:strin
       titulo: "Reporte del clima",
     },
     leido: false, // Este campo es opcional; si no se incluye, se establecerá en false por defecto
-    run_time: "00 08 * * *" // Campo adicional que has solicitado
+    run_time: "20 08 * * *" // Campo adicional que has solicitado
   };
 
   try {

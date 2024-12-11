@@ -82,57 +82,6 @@ const Metricas = () => {
         <Text style={styles.title}>Gráficos</Text>
         { user?.rol !== "WORKER" && <WeatherMetric fincas={fincas} />}
         <LivestockClassificationMetric fincas={fincas} />
-        <View style={styles.contChart}>
-          <Text style={{ textAlign: 'center', fontSize: 20 }}>
-            Gráfico de Pastel
-          </Text>
-          <PieChart
-            data={data2}
-            width={320} // Ancho del gráfico
-            height={220} // Altura del gráfico
-            chartConfig={{
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-            }}
-            accessor="population" // Propiedad que se usará para calcular el tamaño de las secciones
-            backgroundColor="transparent"
-            paddingLeft="15"
-            absolute // Si se establece en true, el gráfico mostrará valores absolutos
-          />
-        </View>
-        <View style={styles.contChart}>
-          <Text style={{ textAlign: 'center', fontSize: 20 }}>
-            Gráfico de Barras
-          </Text>
-          <BarChart
-            data={data3}
-            yAxisLabel="$"
-            yAxisSuffix="K"
-            width={320} // Ancho del gráfico
-            height={220} // Altura del gráfico
-            chartConfig={{
-              backgroundColor: '#1E2923',
-              backgroundGradientFrom: '#1E2923',
-              backgroundGradientTo: '#08130D',
-              decimalPlaces: 2, // Cantidad de decimales
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-              propsForLabels: {
-                fontSize: 12,
-              },
-            }}
-            style={{
-              marginVertical: 8,
-              borderRadius: 16,
-            }}
-          />
-        </View>
       </View>
     </ScrollView>
   )

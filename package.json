@@ -10,8 +10,8 @@
     "build:tailwind": "tailwindcss --input input.css --output tailwind.css --no-autoprefixer && tailwind-rn",
     "dev:tailwind": "concurrently \"tailwindcss --input input.css --output tailwind.css --no-autoprefixer --watch\" \"tailwind-rn --watch\"",
     "test": "jest",
-    "jest:Form": "jest ./src/__tests__/FormBovino.test.tsx",
-    "jest:StoreBovino": "jest ./src/__tests__/useBovineStore.test.ts",
+    "jest:formFinca": "jest ./src/__tests__/formFinca.test.tsx",
+    "jest:cattleReproductionStore": "jest ./src/__tests__/cattleReproductionStore.test.ts",
     "coverage": "jest --collect-coverage",
     "jest:clear": "jest --clearCache"
   },

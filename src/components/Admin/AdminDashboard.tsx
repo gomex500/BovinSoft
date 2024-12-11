@@ -58,25 +58,19 @@ export default function AdminDashboard({
       <View style={styles.metricsContainer}>
         {renderMetricCard(
           'Total Users',
-          '1,234',
+          '16',
           <FontAwesome6 name="users" size={24} color="#1B5E20" />,
           '#1B5E20'
         )}
         {renderMetricCard(
           'Premium Users',
-          '256',
+          '7',
           <FontAwesome5 name="crown" size={24} color="#FFA000" />,
           '#FFA000'
         )}
         {renderMetricCard(
-          'Active Tickets',
-          '12',
-          <Entypo name="lifebuoy" size={24} color="#D32F2F" />,
-          '#D32F2F'
-        )}
-        {renderMetricCard(
           'New Requests',
-          '8',
+          '2',
           <AntDesign name="adduser" size={24} color="#1976D2" />,
           '#1976D2'
         )}

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert } from 'react-native'
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
+import React, { useState } from 'react'
+import { View, Text, StyleSheet, Image, ScrollView, Alert } from 'react-native'
 import { FincaModel } from '../interfaces/IFinca'
 import { useTailwind } from 'tailwind-rn'
 import { useFincaStore } from '../store/fincaStore'
@@ -11,13 +10,14 @@ import { CustomPieChart, PieData } from '../components/CustomPieChart'
 import { Button } from 'react-native-paper'
 import { createWeatherNotification } from '../helpers/notification'
 import { useAuthStore } from '../store/authStore'
+import { UserModel } from '../interfaces/IUser'
 
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 const InfoFinca = () => {
 
-  const fincaSelected  = useFincaStore().fincaSelected as FincaModel;
+  const fincaSelected  = useFincaStore.getState().fincaSelected as FincaModel;
   const navigation = useNavigation<NavigationProps>();
   const { user } = useAuthStore();
 
@@ -42,20 +42,22 @@ const InfoFinca = () => {
 
   const [recursosN, setRecursosN] = useState(fincaSelected?.recursosN || [])
 
+  if (!fincaSelected) return <></>;
+
   const data: PieData[] = [
-    { key: 'Ternero', value: fincaSelected?.cantidadClasificacionGanado?.ternero, color: '#1E2923' },
-    { key: 'Novillo', value: fincaSelected?.cantidadClasificacionGanado?.novillo, color: '#375746' },
-    { key: 'Vaquilla', value: fincaSelected?.cantidadClasificacionGanado?.vaquilla, color: '#4B7B62' },
-    { key: 'Toro', value: fincaSelected?.cantidadClasificacionGanado?.toro, color: '#5B9778' },
-    { key: 'Vaca', value: fincaSelected?.cantidadClasificacionGanado?.vaca, color: '#75c199' },
+    { key: 'Ternero', value: (fincaSelected?.cantidadClasificacionGanado?.ternero as number), color: '#1E2923' },
+    { key: 'Novillo', value: (fincaSelected?.cantidadClasificacionGanado?.novillo as number), color: '#375746' },
+    { key: 'Vaquilla', value: (fincaSelected?.cantidadClasificacionGanado?.vaquilla as number), color: '#4B7B62' },
+    { key: 'Toro', value: (fincaSelected?.cantidadClasificacionGanado?.toro as number), color: '#5B9778' },
+    { key: 'Vaca', value: (fincaSelected?.cantidadClasificacionGanado?.vaca as number), color: '#75c199' },
   ];
 
   const habilitarNotifications = async () => {
-    const response = await createWeatherNotification(user._id as string, fincaSelected._id as string);
+    let userId = (user as UserModel)._id as string;
+    let fincaId = (fincaSelected as FincaModel)._id as string;
+    const response = await createWeatherNotification(userId, fincaId);
     Alert.alert('Notificación enviada', response);
   };
-
-  if (!fincaSelected) return <></>;
 
   return (
     <ScrollView
@@ -93,21 +95,6 @@ const InfoFinca = () => {
             </Text>
           </View>
         ))}
-        <Text style={styles.caratT}>Ubicacion:</Text>
-        <View>
-          <MapView
-            provider={PROVIDER_GOOGLE}
-            style={styles.map}
-            initialRegion={{
-              latitude: origin.latitude,
-              longitude: origin.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
-          >
-          
-          </MapView>
-        </View>
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.title}>Clasificación del Ganado</Text>
           <CustomPieChart data={data} />
